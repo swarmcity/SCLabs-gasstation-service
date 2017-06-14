@@ -3,6 +3,7 @@ var app = express();
 var cors = require('cors');
 var Web3 = require('web3');
 var HookedWeb3Provider = require("hooked-web3-provider");
+var EthJStx = require("ethereumjs-tx");
 var lightwallet = require("eth-lightwallet");
 var config = require('./config.json');
 
@@ -92,6 +93,15 @@ app.get('/price', function(req, res) {
 });
 
 app.get('/fill', function(req, res) {
+
+	var tx = "{"type":"Buffer","data":[248,168,1,131,15,66,64,131,3,208,144,148,185,231,248,86,142,8,213,101,159,93,41,196,153,113,115,216,76,223,38,7,128,184,68,9,94,167,179,0,0,0,0,0,0,0,0,0,0,0,0,246,147,221,142,45,98,58,201,109,142,103,107,114,175,249,67,73,44,214,204,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,27,160,131,187,47,19,233,152,250,29,99,116,55,238,205,94,221,231,241,114,215,226,104,104,183,189,84,172,49,48,189,179,239,49,160,9,145,23,106,128,190,199,196,34,92,187,143,19,86,75,155,45,116,161,149,216,14,17,10,212,81,239,103,219,254,122,40]}";
+
+	tx = JSON.parse(tx);
+
+	EthJStx
+
+	console.log('hallo');
+	console.log(req);
 		res.status(200).json({
 			msg: 'address added to blacklist'
 		});
