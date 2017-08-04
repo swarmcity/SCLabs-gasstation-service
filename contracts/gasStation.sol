@@ -24,7 +24,7 @@ contract gasStation is Ownable {
 	// _numerator = the numerator of the fraction for the exchange rate
 	// _denominator = the denominator of the fraction for the exchange rate
 	// _triggerCost = Wei deducted for calling the exchange function
-	function gasStation(address _tokenAddress, uint _numerator, uint _denominator, uint _triggerCost){
+	function gasStation(address _tokenAddress, uint _numerator, uint _denominator, uint _triggerCost) payable {
 		token = IMiniMeToken(_tokenAddress);
 		addAllowedCaller(msg.sender);
 		setExchangeRate(_numerator,_denominator);
@@ -55,19 +55,23 @@ contract gasStation is Ownable {
 		token.transfer(_to,token.balanceOf(this));
 	}
 
+	function getExchangeRate(uint _tokens) returns (uint){
+		return _tokens * exchangerate_numerator / exchangerate_denominator;
+	}
+
 	// the actual exchange function.
 	// - calculate the amount of Wei we need to send.
 	// - do some sanity checks
 	// - get _tokens amount of ERC20 tokens
 	// - send wei to _receiver
 	// 
-	function fillMeUp(address _receiver, uint _tokens){
+	function fillMeUp(uint _tokens){
 		// only whitelisted addresses can trigger this function
-		if (whitelist[msg.sender] != true){
-			throw;
-		}
+		// if (whitelist[msg.sender] != true){
+		// 	throw;
+		// }
 		// calculate how much Wei to send
-		uint amount = _tokens * exchangerate_numerator / exchangerate_denominator;
+		uint amount = getExchangeRate(_tokens);
 		if (amount < triggercost) { throw; }
 		if (this.balance < amount) {
 			// gas tank is empty
@@ -75,12 +79,12 @@ contract gasStation is Ownable {
 		}
 
 		// get the tokens from the receiver
-		if (!token.transferFrom(_receiver,this,_tokens)){
+		if (!token.transferFrom(msg.sender,this,_tokens)){
 			throw;
 		}
 
 		// send equivalent in gas - minus the cost for executing this function
-		_receiver.transfer(amount - triggercost);
+		msg.sender.transfer(amount - triggercost);
 
 	}
 
