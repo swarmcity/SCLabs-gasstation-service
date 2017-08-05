@@ -1,6 +1,7 @@
 var MiniMeTokenFactory = artifacts.require("./MiniMeToken.sol");
 var MiniMeToken = artifacts.require("./MiniMeToken.sol");
 var gasStation = artifacts.require("./gasStation.sol");
+// var etherDelta = artifacts.require("./etherdelta.sol");
 
 contract('Token Setup', function(accounts) {
 
