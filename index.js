@@ -6,10 +6,13 @@ var HookedWeb3Provider = require("hooked-web3-provider");
 var EthJStx = require("ethereumjs-tx");
 var lightwallet = require("eth-lightwallet");
 var config = require('./config.json');
+const sha256 = require('js-sha256').sha256;
 
 var keystore = JSON.stringify(require("./wallet.json"));
 
 var secretSeed = lightwallet.keystore.generateRandomSeed();
+
+var utility = require('./utility.js')();
 
 // check for valid Eth address
 function isAddress(address) {
@@ -33,10 +36,12 @@ function strStartsWith(str, prefix) {
 }
 
 var account;
+var account_privatekey;
+var pwderivedkey;
 var web3;
 
-lightwallet.keystore.deriveKeyFromPassword("test", function(err, pwDerivedKey) {
-
+lightwallet.keystore.deriveKeyFromPassword("testing", function(err, pwDerivedKey) {
+	pwderivedkey = pwDerivedKey;
 	lightwallet.upgrade.upgradeOldSerialized(keystore, "testing", function(err, b) {
 
 		var keystore = new lightwallet.keystore.deserialize(b);
@@ -48,6 +53,8 @@ lightwallet.keystore.deriveKeyFromPassword("test", function(err, pwDerivedKey) {
 			transaction_signer: keystore
 		});
 
+		//var web3Provider = new Web3.providers.HttpProvider(config.web3.host);
+
 		web3 = new Web3();
 		web3.setProvider(web3Provider);
 
@@ -58,12 +65,43 @@ lightwallet.keystore.deriveKeyFromPassword("test", function(err, pwDerivedKey) {
 		console.log("Wallet initted addr=" + keystore.getAddresses()[0]);
 
 		account = fixaddress(keystore.getAddresses()[0]);
+        account_privatekey = keystore.exportPrivateKey(account, pwderivedkey);
+
+ 		const condensed = utility.pack(
+          [
+            account, //'this.config.contractEtherDeltaAddr,
+            0, //tokenGet,
+            1, //amountGet,
+            0, //tokenGive,
+            1, //amountGive,
+            100, //expires,
+            1// orderNonce,
+          ],
+          [160, 160, 256, 160, 256, 256, 256]);
+        const hash = sha256(new Buffer(condensed, 'hex'));
+
+
+		utility.sign(web3,account,hash,account_privatekey,function(err,signature){
+			if (err){
+				return console.log(err);
+			}
+			//console.log('OKAY=',a);
+
+			utility.verify(web3, account, signature.v, signature.r, signature.s, hash, function(err, res) {
+				console.log('verify result=', res);
+				//done();
+			});
+
+		});
+
+//web3, address, msgToSignIn, privateKeyIn, callback
+
 
 		// start webserver...
 		app.listen(config.httpport, function() {
 			console.log('Fawcet listening on port ', config.httpport);
 		});
-	});
+	}.bind(this));
 });
 
 

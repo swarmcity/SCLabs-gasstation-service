@@ -2,6 +2,6 @@
 	"etherscanroot": "http://etherscan.io/address/",
 	"httpport": 3000,
 	"web3": {
-		"host": "http://localhost:8545"
+		"host": "http://localhost:8546"
 	}
 }

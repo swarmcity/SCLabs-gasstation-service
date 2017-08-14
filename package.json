@@ -23,8 +23,14 @@
     "eth-lightwallet": "^2.3.1",
     "express": "^4.13.4",
     "hooked-web3-provider": "^1.0.0",
+    "js-sha256": "^0.6.0",
     "lodash": "^4.11.1",
-    "web3": "^0.15.3"
-  },  
+    "request": "2.72.0",
+    "web3": "^0.15.3",
+    "keythereum": "0.2.6",
+    "ethereumjs-tx": "1.1.1",
+    "ethereumjs-util": "4.5.0",
+    "bignumber.js": "4.0.1"
+  },
   "homepage": "https://github.com/swarmcity/sc-gasstation#readme"
 }
