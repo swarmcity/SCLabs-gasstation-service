@@ -11,7 +11,10 @@ contract('Token Setup', function(accounts) {
 
 
   var ETHseller = accounts[3];
-  var gastankClient = accounts[4];
+  var gastankInstance = accounts[4];
+  // fill in the private key of gastankInstance here
+  var gastankInstancePrivateKey = '826b25292b2ba3d8d3cfeed25b8fd3042db714eef5121feadda94dc22aa2cbec';
+
 
   var miniMeTokenFactory;
   var swtToken;
@@ -57,8 +60,8 @@ contract('Token Setup', function(accounts) {
       });
     });
 
-    it("should mint tokens for gastankClient", function(done) {
-      swtToken.generateTokens(gastankClient, 1 * 1e18).then(function() {
+    it("should mint tokens for gastankInstance", function(done) {
+      swtToken.generateTokens(gastankInstance, 1 * 1e18).then(function() {
         done();
       });
     });
@@ -97,24 +100,24 @@ contract('Token Setup', function(accounts) {
       });
     });
 
-    it("gastankClient should give allowance for 1 SWT to EtherDelta", function(done) {
+    it("gastankInstance should give allowance for 1 SWT to EtherDelta", function(done) {
       swtToken.approve(etherDeltaInstance.address, 1 * 1e18, {
-        from: gastankClient,
+        from: gastankInstance,
       }).then(function(r) {
         done();
       });
     });
 
-    it("gastankClient should deposit 1 SWT to EtherDelta", function(done) {
+    it("gastankInstance should deposit 1 SWT to EtherDelta", function(done) {
       etherDeltaInstance.depositToken(swtToken.address, 1 * 1e18, {
-        from: gastankClient,
+        from: gastankInstance,
       }).then(function(r) {
         done();
       });
     });
 
-    it("gastankClient should have 1 SWT in the EtherDelta contract", function(done) {
-      etherDeltaInstance.balanceOf.call(swtToken.address, gastankClient).then(function(balance) {
+    it("gastankInstance should have 1 SWT in the EtherDelta contract", function(done) {
+      etherDeltaInstance.balanceOf.call(swtToken.address, gastankInstance).then(function(balance) {
         assert.equal(balance.valueOf(), 1 * 1e18, "account not correct amount");
         done();
       });
@@ -152,7 +155,7 @@ contract('Token Setup', function(accounts) {
     //   bytes32 hash = 
 
 
-    it("Avaiable volume of order should be 1 * 1e18", function(done) {
+    it("Available volume of order should be 1 * 1e18", function(done) {
 
 
 
@@ -170,17 +173,12 @@ contract('Token Setup', function(accounts) {
 
       console.log('hash=', hash);
 
-
-      //console.log('web3=',web3);
-
-      utility.sign(null, gastankClient, hash, '826b25292b2ba3d8d3cfeed25b8fd3042db714eef5121feadda94dc22aa2cbec', function(err, signature) {
+      utility.sign(null, gastankInstance, hash, gastankInstancePrivateKey, function(err, signature) {
         if (err) {
           console.log('ERR', err);
           return done();
         }
         console.log('sig=', signature);
-
-
 
         etherDeltaInstance.availableVolume.call(
           swtToken.address,
@@ -221,7 +219,7 @@ contract('Token Setup', function(accounts) {
 
       console.log('hash=', hash);
 
-      utility.sign(null, gastankClient, hash, '826b25292b2ba3d8d3cfeed25b8fd3042db714eef5121feadda94dc22aa2cbec', function(err, signature) {
+      utility.sign(null, gastankInstance, hash, gastankInstancePrivateKey, function(err, signature) {
         if (err) {
           console.log('ERR', err);
           return done();
@@ -244,7 +242,7 @@ contract('Token Setup', function(accounts) {
           return `0x${msg.toString('hex')}`;
         }
 
-        utility.verify(null, gastankClient, signature.v, signature.r, signature.s, prefixMessage('0x' + hash), function(err, res) {
+        utility.verify(null, gastankInstance, signature.v, signature.r, signature.s, prefixMessage('0x' + hash), function(err, res) {
           if (err) {
             console.log('verify err', err);
           }
@@ -261,16 +259,11 @@ contract('Token Setup', function(accounts) {
             signature.v,
             signature.r,
             signature.s, 1 * 1e10, {
-              from: gastankClient
+              from: gastankInstance
             }).then(function(r) {
             done();
           });
         });
-
-        //return;
-
-        // web3, addressIn, // eslint-disable-line consistent-return
-        //     v, rIn, sIn, valueIn, callback) {
 
       });
     });
