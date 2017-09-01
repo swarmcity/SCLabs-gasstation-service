@@ -2,6 +2,30 @@
 
 An experimental service providing a way to exchange ERC20 tokens in ETH to pay for future transactions. 
 
+# Installing
+
+```
+$ npm install -g testrpc
+```
+
+# running the component
+
+In one terminal - start testRPC
+
+```
+$ testrpc -p 8546
+```
+
+go to the polymer client and run it
+
+
+```
+$ cd gs-client
+$ bower install
+$ polymer serve
+```
+
+
 ![Fill me up](images/station.jpeg)
 
 ## How does it work for a gastank ?
