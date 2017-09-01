@@ -16,13 +16,19 @@ In one terminal - start testRPC
 $ testrpc -p 8546
 ```
 
-go to the polymer client and run it
+in another terminal - go to the polymer client and run it
 
 
 ```
 $ cd gs-client
 $ bower install
 $ polymer serve
+```
+
+then browse to 
+
+```
+http://localhost/components/gs-client/demo/
 ```
 
 
