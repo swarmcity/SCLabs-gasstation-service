@@ -13,7 +13,7 @@ contract('Token Setup', function(accounts) {
   var ETHseller = accounts[3];
   var gastankInstance = accounts[4];
   // fill in the private key of gastankInstance here
-  var gastankInstancePrivateKey = '826b25292b2ba3d8d3cfeed25b8fd3042db714eef5121feadda94dc22aa2cbec';
+  var gastankInstancePrivateKey = 'ab802b1dce45b32047f71f21eb1aef8713b52962f773255d49653d1465424146';
 
 
   var miniMeTokenFactory;

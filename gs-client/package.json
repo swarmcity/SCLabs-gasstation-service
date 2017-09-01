@@ -1,0 +1,18 @@
+{
+  "name": "gs-client",
+  "version": "1.0.0",
+  "description": "gasstation client",
+  "main": "bundle.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "keythereum": "^1.0.2",
+    "web3": "^1.0.0-beta.18"
+  }
+}
