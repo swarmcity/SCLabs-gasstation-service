@@ -5,7 +5,7 @@ An experimental service providing a way to exchange ERC20 tokens in ETH to pay f
 # Installing
 
 ```
-$ npm install -g testrpc
+$ npm install -g ethereumjs-testrpc
 ```
 
 # running the component
