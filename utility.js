@@ -887,29 +887,29 @@ module.exports = (config) => {
   //   });
   // };
 
-  // utility.zeroPad = function zeroPad(num, places) {
-  //   const zero = (places - num.toString().length) + 1;
-  //   return Array(+(zero > 0 && zero)).join('0') + num;
-  // };
+  utility.zeroPad = function zeroPad(num, places) {
+    const zero = (places - num.toString().length) + 1;
+    return Array(+(zero > 0 && zero)).join('0') + num;
+  };
 
-  // utility.decToHex = function decToHex(dec, lengthIn) {
-  //   let length = lengthIn;
-  //   if (!length) length = 32;
-  //   if (dec < 0) {
-  //     // return convertBase((Math.pow(2, length) + decStr).toString(), 10, 16);
-  //     return (new BigNumber(2)).pow(length).add(new BigNumber(dec)).toString(16);
-  //   }
-  //   let result = null;
-  //   try {
-  //     result = utility.convertBase(dec.toString(), 10, 16);
-  //   } catch (err) {
-  //     result = null;
-  //   }
-  //   if (result) {
-  //     return result;
-  //   }
-  //   return (new BigNumber(dec)).toString(16);
-  // };
+  utility.decToHex = function decToHex(dec, lengthIn) {
+    let length = lengthIn;
+    if (!length) length = 32;
+    if (dec < 0) {
+      // return convertBase((Math.pow(2, length) + decStr).toString(), 10, 16);
+      return (new BigNumber(2)).pow(length).add(new BigNumber(dec)).toString(16);
+    }
+    let result = null;
+    try {
+      result = utility.convertBase(dec.toString(), 10, 16);
+    } catch (err) {
+      result = null;
+    }
+    if (result) {
+      return result;
+    }
+    return (new BigNumber(dec)).toString(16);
+  };
 
   // utility.hexToDec = function hexToDec(hexStrIn, length) {
   //   // length implies this is a two's complement number
@@ -924,23 +924,23 @@ module.exports = (config) => {
   //   return answer > max / 2 ? max : answer;
   // };
 
-  // utility.pack = function pack(dataIn, lengths) {
-  //   let packed = '';
-  //   const data = dataIn.map(x => x);
-  //   for (let i = 0; i < lengths.length; i += 1) {
-  //     if (typeof (data[i]) === 'string' && data[i].substring(0, 2) === '0x') {
-  //       if (data[i].substring(0, 2) === '0x') data[i] = data[i].substring(2);
-  //       packed += utility.zeroPad(data[i], lengths[i] / 4);
-  //     } else if (typeof (data[i]) !== 'number' && /[a-f]/.test(data[i])) {
-  //       if (data[i].substring(0, 2) === '0x') data[i] = data[i].substring(2);
-  //       packed += utility.zeroPad(data[i], lengths[i] / 4);
-  //     } else {
-  //       // packed += zeroPad(new BigNumber(data[i]).toString(16), lengths[i]/4);
-  //       packed += utility.zeroPad(utility.decToHex(data[i], lengths[i]), lengths[i] / 4);
-  //     }
-  //   }
-  //   return packed;
-  // };
+  utility.pack = function pack(dataIn, lengths) {
+    let packed = '';
+    const data = dataIn.map(x => x);
+    for (let i = 0; i < lengths.length; i += 1) {
+      if (typeof (data[i]) === 'string' && data[i].substring(0, 2) === '0x') {
+        if (data[i].substring(0, 2) === '0x') data[i] = data[i].substring(2);
+        packed += utility.zeroPad(data[i], lengths[i] / 4);
+      } else if (typeof (data[i]) !== 'number' && /[a-f]/.test(data[i])) {
+        if (data[i].substring(0, 2) === '0x') data[i] = data[i].substring(2);
+        packed += utility.zeroPad(data[i], lengths[i] / 4);
+      } else {
+        // packed += zeroPad(new BigNumber(data[i]).toString(16), lengths[i]/4);
+        packed += utility.zeroPad(utility.decToHex(data[i], lengths[i]), lengths[i] / 4);
+      }
+    }
+    return packed;
+  };
 
   // utility.unpack = function unpack(str, lengths) {
   //   const data = [];
@@ -952,69 +952,69 @@ module.exports = (config) => {
   //   return data;
   // };
 
-  // utility.convertBase = function convertBase(str, fromBase, toBase) {
-  //   const digits = utility.parseToDigitsArray(str, fromBase);
-  //   if (digits === null) return null;
-  //   let outArray = [];
-  //   let power = [1];
-  //   for (let i = 0; i < digits.length; i += 1) {
-  //     if (digits[i]) {
-  //       outArray = utility.add(outArray,
-  //         utility.multiplyByNumber(digits[i], power, toBase), toBase);
-  //     }
-  //     power = utility.multiplyByNumber(fromBase, power, toBase);
-  //   }
-  //   let out = '';
-  //   for (let i = outArray.length - 1; i >= 0; i -= 1) {
-  //     out += outArray[i].toString(toBase);
-  //   }
-  //   if (out === '') out = 0;
-  //   return out;
-  // };
+  utility.convertBase = function convertBase(str, fromBase, toBase) {
+    const digits = utility.parseToDigitsArray(str, fromBase);
+    if (digits === null) return null;
+    let outArray = [];
+    let power = [1];
+    for (let i = 0; i < digits.length; i += 1) {
+      if (digits[i]) {
+        outArray = utility.add(outArray,
+          utility.multiplyByNumber(digits[i], power, toBase), toBase);
+      }
+      power = utility.multiplyByNumber(fromBase, power, toBase);
+    }
+    let out = '';
+    for (let i = outArray.length - 1; i >= 0; i -= 1) {
+      out += outArray[i].toString(toBase);
+    }
+    if (out === '') out = 0;
+    return out;
+  };
 
-  // utility.parseToDigitsArray = function parseToDigitsArray(str, base) {
-  //   const digits = str.split('');
-  //   const ary = [];
-  //   for (let i = digits.length - 1; i >= 0; i -= 1) {
-  //     const n = parseInt(digits[i], base);
-  //     if (isNaN(n)) return null;
-  //     ary.push(n);
-  //   }
-  //   return ary;
-  // };
+  utility.parseToDigitsArray = function parseToDigitsArray(str, base) {
+    const digits = str.split('');
+    const ary = [];
+    for (let i = digits.length - 1; i >= 0; i -= 1) {
+      const n = parseInt(digits[i], base);
+      if (isNaN(n)) return null;
+      ary.push(n);
+    }
+    return ary;
+  };
 
-  // utility.add = function add(x, y, base) {
-  //   const z = [];
-  //   const n = Math.max(x.length, y.length);
-  //   let carry = 0;
-  //   let i = 0;
-  //   while (i < n || carry) {
-  //     const xi = i < x.length ? x[i] : 0;
-  //     const yi = i < y.length ? y[i] : 0;
-  //     const zi = carry + xi + yi;
-  //     z.push(zi % base);
-  //     carry = Math.floor(zi / base);
-  //     i += 1;
-  //   }
-  //   return z;
-  // };
+  utility.add = function add(x, y, base) {
+    const z = [];
+    const n = Math.max(x.length, y.length);
+    let carry = 0;
+    let i = 0;
+    while (i < n || carry) {
+      const xi = i < x.length ? x[i] : 0;
+      const yi = i < y.length ? y[i] : 0;
+      const zi = carry + xi + yi;
+      z.push(zi % base);
+      carry = Math.floor(zi / base);
+      i += 1;
+    }
+    return z;
+  };
 
-  // utility.multiplyByNumber = function multiplyByNumber(numIn, x, base) {
-  //   let num = numIn;
-  //   if (num < 0) return null;
-  //   if (num === 0) return [];
-  //   let result = [];
-  //   let power = x;
-  //   while (true) { // eslint-disable-line no-constant-condition
-  //     if (num & 1) { // eslint-disable-line no-bitwise
-  //       result = utility.add(result, power, base);
-  //     }
-  //     num = num >> 1; // eslint-disable-line operator-assignment, no-bitwise
-  //     if (num === 0) break;
-  //     power = utility.add(power, power, base);
-  //   }
-  //   return result;
-  // };
+  utility.multiplyByNumber = function multiplyByNumber(numIn, x, base) {
+    let num = numIn;
+    if (num < 0) return null;
+    if (num === 0) return [];
+    let result = [];
+    let power = x;
+    while (true) { // eslint-disable-line no-constant-condition
+      if (num & 1) { // eslint-disable-line no-bitwise
+        result = utility.add(result, power, base);
+      }
+      num = num >> 1; // eslint-disable-line operator-assignment, no-bitwise
+      if (num === 0) break;
+      power = utility.add(power, power, base);
+    }
+    return result;
+  };
 
   // utility.getRandomInt = function getRandomInt(min, max) {
   //   return Math.floor(Math.random() * (max - min)) + min;

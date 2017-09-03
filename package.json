@@ -20,18 +20,19 @@
     "url": "https://github.com/swarmcity/sc-gasstation/issues"
   },
   "dependencies": {
+    "bignumber.js": "4.0.1",
     "cors": "^2.7.1",
-    "eth-lightwallet": "^2.3.1",
+    "eth-lightwallet": "git+https://github.com/BlockTube/eth-lightwallet.git",
+    "ethereumjs-tx": "1.1.1",
+    "ethereumjs-util": "^4.5.0",
     "express": "^4.13.4",
     "hooked-web3-provider": "^1.0.0",
     "js-sha256": "^0.6.0",
-    "lodash": "^4.11.1",
-    "request": "2.72.0",
-    "web3": "^0.15.3",
     "keythereum": "0.2.6",
-    "ethereumjs-tx": "1.1.1",
-    "ethereumjs-util": "4.5.0",
-    "bignumber.js": "4.0.1"
+    "lodash": "^4.11.1",
+    "memory-cache": "^0.2.0",
+    "request": "^2.72.0",
+    "web3": "^0.15.3"
   },
   "homepage": "https://github.com/swarmcity/sc-gasstation#readme"
 }
