@@ -720,7 +720,6 @@
 
             var tx1 = '0x' + serializedTx.toString('hex');
 
-debugger;
             var gasstation = self.web3.eth.contract(self.gasstation.abi);
             self.gasstationInstance = gasstation.at(self.getPriceResult.from);
 
