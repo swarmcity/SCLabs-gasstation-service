@@ -5,24 +5,49 @@
 <script src="./bower_components/web3/dist/web3.min.js"></script>
 <script src="./bower_components/browser-builds/dist/ethereumjs-tx.js"></script>
 
+<link rel="import" href="./bower_components/iron-pages/iron-pages.html">
+
 <dom-module id="gs-client">
   <template>
+
     <style>
       :host {
         display: block;
       }
     </style>
-    <h2>Hello</h2>
-    <div>My address</div>
-    <div>0x[[address]]</div>
-    <hr>
-    <div on-tap="getPrice">Get Personalized Price-Offer (tap me)</div>
-    <div><pre>[[getPriceResult_pre]]</pre></div>
-    <div on-tap="fillUp">Fill Me Up (tap me)</div>
-    <div><pre>[[fillUpResult_pre]]</pre></div>
 
+    <div>My address: <b>0x[[address]]</b></div>
+    <hr>
+
+    <iron-pages selected="{{selectedpage}}">
+      <div on-tap="getPrice">
+        <h1>Welcome to the gas station!</h1>
+        <p>How many transactions do you want to fill up for?</p>
+        <form>
+          <input type="radio" name="txs" value="10">1</input><br />
+          <input type="radio" name="txs" value="10">10</input><br />
+          <input type="radio" name="txs" value="10">20</input><br />
+          <input type="radio" name="txs" value="10">50</input><br />
+          <input type="radio" name="txs" value="10">100</input>
+        </form>
+      </div>
+      <div>
+        <h1>Our best offer:</h1>
+        <div><pre>[[getPriceResult_pre]]</pre></div>
+        <div on-tap="fillUp"><b>Fill her up</b></div>
+      </div>
+      <div>
+        <h1>Filling now</h1>
+        <div><pre>[[fillUpResult_pre]]</pre></div>
+      </div>
+      <div>
+        <h1>Done!</h1>
+        <div>You now have: ETH balance / SWT balance</div>
+      </div>
+    </iron-pages>
 
     <!-- <pre>[[keyObject]]</pre> -->
+
   </template>
 
   <script>
@@ -50,7 +75,10 @@
               return window.keythereum;
             }
           },
-
+          selectedpage: {
+            type: Number,
+            value: 0
+          },
           gasstation: {
             type: Object,
             value: {
@@ -672,6 +700,7 @@
 
       getPrice() {
         //debugger;
+        this.selectedpage = 1;
         return new Promise((resolve, reject) => {
           // Load the translations.json file
           const xobj = new XMLHttpRequest();
@@ -693,6 +722,8 @@
       }
 
       fillUp() {
+
+        this.selectedpage = 2;
         var self=this;
 
         var txData = this.minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
