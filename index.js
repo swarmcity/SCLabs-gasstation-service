@@ -10,6 +10,7 @@ var config = require('./config.json');
 const sha256 = require('js-sha256').sha256;
 var cache = require('memory-cache');
 var request = require('request');
+require('dotenv').config();
 
 
 var secretSeed = lightwallet.keystore.generateRandomSeed();
