@@ -1,4 +1,5 @@
-<link rel="import" href="../polymer/polymer-element.html">
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+<link rel="import" href="./bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 <script src="utility.js"></script>
 <script src="keythereum.js"></script>
 <script src="./bower_components/web3/dist/web3.min.js"></script>
@@ -12,7 +13,16 @@
       }
     </style>
     <h2>Hello</h2>
-    <pre>[[keyObject]]</pre>
+    <div>My address</div>
+    <div>0x[[address]]</div>
+    <hr>
+    <div on-tap="getPrice">Get Personalized Price-Offer (tap me)</div>
+    <div><pre>[[getPriceResult_pre]]</pre></div>
+    <div on-tap="fillUp">Fill Me Up (tap me)</div>
+    <div><pre>[[fillUpResult_pre]]</pre></div>
+
+
+    <!-- <pre>[[keyObject]]</pre> -->
   </template>
 
   <script>
@@ -24,7 +34,7 @@
      * @polymer
      * @demo demo/index.html
      */
-    class GsClient extends Polymer.Element {
+    class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       static get is() { return 'gs-client'; }
       static get properties() {
         return {
@@ -40,6 +50,92 @@
               return window.keythereum;
             }
           },
+
+          gasstation: {
+            type: Object,
+            value: {
+              abi: [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "name": "valid_until",
+          "type": "uint256"
+        },
+        {
+          "name": "random",
+          "type": "uint256"
+        },
+        {
+          "name": "upfront",
+          "type": "uint256"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "v",
+          "type": "uint8"
+        },
+        {
+          "name": "r",
+          "type": "bytes32"
+        },
+        {
+          "name": "s",
+          "type": "bytes32"
+        }
+      ],
+      "name": "fillup",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "name": "_tokenAddress",
+          "type": "address"
+        }
+      ],
+      "payable": true,
+      "type": "constructor"
+    }
+  ]
+            }
+          },
+
           minimetoken: {
             type: Object,
             value: {
@@ -573,57 +669,107 @@
         };
       }
 
-      ready() {
-        super.ready();
 
-        var self = this;
-
-        var minimeAddress = "0x0000000000000000000000000000000000000000";
-        var gastankaddress = "0x0000000000000000000000000000000000000000";
-        var tokenamount = 1;
-        var gasPrice = 10;
-
-        var dk = this.keythereum.create();
-        var keyObject = keythereum.dump("none", dk.privateKey, dk.salt, dk.iv);
-        debugger;
-        this.set('keyObject', JSON.stringify(keyObject, null, 2));
-        this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8546"));
-        var minime = this.web3.eth.contract(this.minimetoken.abi);
-        this.minimeInstance = minime.at(minimeAddress);
-
-        var txData = this.minimeInstance.approve.getData(gastankaddress, tokenamount, function(a, b) {
-          debugger;
+      getPrice() {
+        //debugger;
+        return new Promise((resolve, reject) => {
+          // Load the translations.json file
+          const xobj = new XMLHttpRequest();
+          xobj.overrideMimeType('application/json');
+          xobj.open('GET', './price?from=' + this.address, true);
+          xobj.onreadystatechange = () => {
+            if (xobj.readyState == 4 && xobj.status == '200') {
+              // Parse the response
+              const json = JSON.parse(xobj.responseText);
+              //debugger;
+              this.getPriceResult = json;
+              this.getPriceResult_pre = JSON.stringify(json, null, 2);
+              this.showfill = true;
+              resolve();
+            }
+          };
+          xobj.send(null);
         });
-        this.minimeInstance.approve.estimateGas(gastankaddress, tokenamount, {
-          from: keyObject.address
+      }
+
+      fillUp() {
+        var self=this;
+
+        var txData = this.minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
+          //debugger;
+        });
+        this.minimeInstance.approve.estimateGas(this.getPriceResult.to, this.gastankaddress, this.tokenamount, {
+          from: this.address
         }, function(err, res) {
 
           // get nonce
-          self.web3.eth.getTransactionCount(keyObject.address, function(err, nonce) {
-
+          self.web3.eth.getTransactionCount(this.address, function(err, nonce) {
 
             var txParams = {
-              nonce: nonce,
-              gasPrice: gasPrice,
+              nonce: nonce || 0,
+              gasPrice: self.gasPrice,
               gasLimit: res,
-              to: minimeAddress,
-              value: '0x00',
+              to: self.swtAddress,
               data: txData,
               chainId: 1
             }
 
             var tx = new EthJS.Tx(txParams);
-            tx.sign(dk.privateKey);
+            tx.sign(self.dk.privateKey);
             var serializedTx = tx.serialize(); //.toString('hex');
+
+            var tx1 = '0x' + serializedTx.toString('hex');
+
+debugger;
+            var gasstation = self.web3.eth.contract(self.gasstation.abi);
+            self.gasstationInstance = gasstation.at(self.getPriceResult.from);
+
+            txData = self.gasstationInstance.fillup.getData(
+              self.getPriceResult.price,
+              self.getPriceResult.valid_until,
+              self.getPriceResult.random,
+              self.getPriceResult.upfront,
+              100,
+              self.getPriceResult.sig.v,
+              self.getPriceResult.sig.r,
+              self.getPriceResult.sig.s,
+              function(a, b) {
+                //debugger;
+              });
+
+
+            txParams = {
+              nonce: nonce+1,
+              gasPrice: self.gasPrice,
+              gasLimit: 1000000,
+              to: self.getPriceResult.from,
+              data: txData,
+              chainId: 1
+            }
+
+            var tx2 = new EthJS.Tx(txParams);
+            tx2.sign(self.dk.privateKey);
+            serializedTx = tx2.serialize(); //.toString('hex');
+
+            var tx2 = '0x' + serializedTx.toString('hex');
+
+
+            var res = {
+              tx1: tx1,
+              tx2: tx2
+            };
+
+
+            self.fillUpResult_pre = JSON.stringify(res, null, 2);
 
             // serializedTx is sent over the HTTP API
             // then the service does this :
 
-            var decodetx = new EthJS.Tx(serializedTx);
-            var txGas = self.web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
-            var txGasPrice = self.web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
+            // var decodetx = new EthJS.Tx(serializedTx);
+            // var txGas = self.web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
+            // var txGasPrice = self.web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
 
-            var weiNeeded = txGas.mul(txGasPrice).toNumber(10);
+            // var weiNeeded = txGas.mul(txGasPrice).toNumber(10);
 
             //decodetx.
 
@@ -633,10 +779,28 @@
           });
         });
 
+      }
 
-        // get gasprice
+      ready() {
+        super.ready();
 
+        var self = this;
 
+        this.swtAddress = "0x2a52dfa1802877775fa7cd4eb7c88bcd0d3873a6";
+        //var gastankaddress = "0x0000000000000000000000000000000000000000";
+        this.tokenamount = 100;
+        this.gasPrice = 2;
+
+        this.dk = this.keythereum.create();
+        var keyObject = keythereum.dump("none", this.dk.privateKey, this.dk.salt, this.dk.iv);
+        //debugger;
+        this.set('keyObject', JSON.stringify(keyObject, null, 2));
+
+        this.address = '0x' + keyObject.address;
+
+        this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8546"));
+        var minime = this.web3.eth.contract(this.minimetoken.abi);
+        this.minimeInstance = minime.at(this.swtAddress);
 
       }
     }
