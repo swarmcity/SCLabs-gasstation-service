@@ -23,7 +23,6 @@
       p {
          @apply --small-light;
          text-align: center;
-
       }
 
       .btn {
@@ -54,11 +53,13 @@
     </style>
 
     <p>My address: <b>0x[[address]]</b></p>
+    <p>My ETH balance: <b>0x[[address]]</b></p>
+    <p>My SWT balance: <b>0x[[address]]</b></p>
     <hr>
 
     <iron-pages selected="{{selectedpage}}">
       <div>
-        <h1>Welcome to the gas station!</h1>
+        <h1>Welcome to the Gas Station</h1>
         <p>How many transactions do you want to fill up for?</p>
         <div>
           <p>1</p>
@@ -855,13 +856,13 @@
         var self = this;
 
         this.swtAddress = "0x2a52dfa1802877775fa7cd4eb7c88bcd0d3873a6";
-        //var gastankaddress = "0x0000000000000000000000000000000000000000";
+
         this.tokenamount = 100;
         this.gasPrice = 2;
 
         this.dk = this.keythereum.create();
         var keyObject = keythereum.dump("none", this.dk.privateKey, this.dk.salt, this.dk.iv);
-        //debugger;
+
         this.set('keyObject', JSON.stringify(keyObject, null, 2));
 
         this.address = '0x' + keyObject.address;
