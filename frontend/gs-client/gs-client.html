@@ -53,8 +53,8 @@
     </style>
 
     <p>My address: <b>0x[[address]]</b></p>
-    <p>My ETH balance: <b>0x[[address]]</b></p>
-    <p>My SWT balance: <b>0x[[address]]</b></p>
+    <p>My ETH balance: <b>[[ethbalance]]</b></p>
+    <p>My SWT balance: <b>[[swtbalance]]</b></p>
     <hr>
 
     <iron-pages selected="{{selectedpage}}">
@@ -117,6 +117,12 @@
           selectedpage: {
             type: Number,
             value: 0
+          },
+          ethbalance: {
+            type: Number
+          },
+          swtbalance: {
+            type: Number
           },
           gasstation: {
             type: Object,
@@ -871,12 +877,14 @@
         var minime = this.web3.eth.contract(this.minimetoken.abi);
         this.minimeInstance = minime.at(this.swtAddress);
 
-        var ethbalance = this.web3.eth.getBalance(this.address, function(err, res){
+        this.web3.eth.getBalance(this.address, function(err, res){
           console.log(err, res.toString(10));
+          self.ethbalance = res.toString(10);
         });
 
-        var swtbalance = this.minimeInstance.balanceOf(this.address,function(err,res){
+        this.minimeInstance.balanceOf(this.address,function(err,res){
           console.log('SWT balance is', res.toFormat(2));
+          self.swtbalance = res;
         });
 
       }
