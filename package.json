@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "bignumber.js": "4.0.1",
+    "body-parser": "^1.17.2",
     "cors": "^2.7.1",
     "dotenv": "^4.0.0",
     "eth-lightwallet": "git+https://github.com/BlockTube/eth-lightwallet.git",
