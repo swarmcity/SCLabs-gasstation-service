@@ -215,6 +215,9 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       erc20: {
         type: String
       },
+      privatekey: {
+        type: String
+      },
       gasstation: {
         type: Object,
         value:
@@ -1000,7 +1003,6 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       this.tokenamount = 100;
       this.gasPrice = 2;
 
-      this.privatekey = '87c530f508c58eb8a0f3c46a4b33d420dfc3e8c0839370b03db2577fede67400';
       this.address = EthJS.Util.addHexPrefix(EthJS.Util.privateToAddress(EthJS.Util.addHexPrefix(this.privatekey)).toString('hex'));
 
       // this.dk = this.keythereum.create();
