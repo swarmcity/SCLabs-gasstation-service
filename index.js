@@ -123,7 +123,7 @@ app.get('/price', function(req, res) {
 			break;
 		default:
 			return res.status(500).json({
-				error: 'unknown token address ' + req.query.tokenaddress;
+				error: 'unknown token address ' + req.query.tokenaddress
 			});
 			break;
 	}
