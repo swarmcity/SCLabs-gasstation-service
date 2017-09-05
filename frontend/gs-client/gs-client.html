@@ -109,14 +109,13 @@
     <iron-pages selected="{{selectedpage}}">
       <div>
         <div class="vertical">
-
         <div class="big">
           <img src="/gs-client/images/gasstation.png" />
         </div>
         <h1>Gas Station</h1>
       </div>
         <p>Swarm City is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly. For every deal made on Swarm City, a transaction is registered on the Ethereum blockchain, that's why you need gas.</p>
-        <p>My current address: <b>[[address]]</b></p>
+        <p>My current address: [[address]]</p>
         <p>&nbsp;</p>
         <div class="balances">
           <div class="balance_single"><h1>[[ethbalance]]</h1><p>ETH</p></div>
@@ -196,7 +195,7 @@
           },
           gasstation: {
             type: Object,
-            value: 
+            value:
 {
   "contract_name": "gasStation",
   "abi": [
@@ -821,7 +820,7 @@
 
       getPrice() {
         //debugger;
-        this.selectedpage = 1;
+        this.selectedpage = 0;
         return new Promise((resolve, reject) => {
           // Load the translations.json file
           const xobj = new XMLHttpRequest();
@@ -939,11 +938,11 @@
                     console.log(xhr);
                 }
             }
-            //xhr.send("foo=bar&lorem=ipsum"); 
-            // xhr.send('string'); 
-            // xhr.send(new Blob()); 
-            // xhr.send(new Int8Array()); 
-            xhr.send(JSON.stringify(res)); 
+            //xhr.send("foo=bar&lorem=ipsum");
+            // xhr.send('string');
+            // xhr.send(new Blob());
+            // xhr.send(new Int8Array());
+            xhr.send(JSON.stringify(res));
             // xhr.send(document);
 
 
@@ -987,7 +986,7 @@
         this.address = '0x' + keyObject.address;
 
         this.web3 = new Web3(new Web3.providers.HttpProvider("https://ethpool.swarm.city/"));
-    
+
 
         this.web3.eth.getBalance(this.address, function(err, res){
           console.log(err, res.toString(10));
