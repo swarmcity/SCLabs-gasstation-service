@@ -999,7 +999,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
       this.address = '0x' + keyObject.address;
 
-      this.web3 = new Web3(new Web3.providers.HttpProvider("https://ethpool.swarm.city/"));
+      this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545/"));
 
     var minime = this.web3.eth.contract(this.minimetoken.abi);
     var minimeInstance = minime.at(this.erc20);
