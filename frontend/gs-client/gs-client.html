@@ -30,7 +30,7 @@
     margin-bottom: 40px;
   }
   .balance_single {
-    background-color: var(--sc-grey2);
+    background-color: var(--sc-yellow);
     @apply --layout-vertical;
     @apply --layout-center-center;
     width: 100px;
@@ -40,6 +40,10 @@
     height: 120px;
     min-width: 120px;
     min-height: 120px;
+  }
+  .address {
+    font-weight: bold;
+    text-overflow: ellipsis; overflow: hidden; width: 300px; height: 1.2em; white-space: nowrap;
   }
   .spacer {
     width: 20px;
@@ -71,8 +75,8 @@
     text-align: center;
   }
   .container {
-    margin-top: 60px;
-    max-width: 400px;
+    margin-top: 50px;
+    max-width: 300px;
   }
   h1 {
     @apply --body-default-wide;
@@ -117,30 +121,33 @@
 
   <div class="close" on-click="_close"></div>
   <div class="container">
+    <div class="vertical">
+      <div class="big">
+        <img src="/gs-client/images/gasstation.png" />
+      </div>
+      <h1>Gas Station</h1>
+    </div>
     <iron-pages selected="{{selectedpage}}">
+      <!-- page 0 -->
       <div>
-        <div class="vertical">
-          <div class="big">
-            <img src="/gs-client/images/gasstation.png" />
-          </div>
-          <h1>Gas Station</h1>
-        </div>
-        <p>{{project}} is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly. For every deal made on {{project}}, a transaction is registered on the Ethereum blockchain, that's why you need gas.</p>
-        <p>My current address: [[address]]</p>
+        <div>{{project}} is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly, that's why you need gas.</div>
+        <div>&nbsp;</div>
+        <div>Balances for current address: </div>
+        <div class="address">[[address]]</div>
         <p>&nbsp;</p>
         <div class="balances">
           <div class="balance_single"><div class="balance">[[ethbalance]]</div><div>ETH</div></div>
           <div class="spacer"></div>
-          <div class="balance_single"><div class="balance">[[swtbalance]]</div><div>{{short}}</div></div>
+          <div class="balance_single"><div class="balance">[[tokenbalance]]</div><div>{{short}}</div></div>
         </div>
         <div class="btn" on-tap="getPrice">Get more gas</div>
       </div>
 
-
+      <!-- page 1 -->
       <div>
         <p>How many deals do you want to fill up for?</p>
         <div>
-          <div class="btn" on-tap="getPrice">1 for {{pricefor1}} SWT</div>
+          <div class="btn" on-tap="getPrice">1 for {{pricefor1}} {{short}}</div>
           <div class="btn" on-tap="getPrice">10</div>
           <div class="btn" on-tap="getPrice">20</div>
           <div class="btn" on-tap="getPrice">50</div>
@@ -148,20 +155,30 @@
         </div>
         <h1>Our best offer:</h1>
         <div><pre>[[getPriceResult_pre]]</pre></div>
-        <div on-tap="fillUp"><b>Fill her up</b></div>
+        <!-- <div on-tap="fillUp"><b>Fill her up</b></div> -->
       </div>
+
+      <!-- page 2 -->
       <div>
         <h1>Filling now</h1>
         <div><pre>[[fillUpResult_pre]]</pre></div>
       </div>
+
+      <!-- page 3 -->
       <div>
         <h1>Done!</h1>
-        <div>You now have: ETH balance / SWT balance</div>
+        <p>Balances for current address: [[address]]</p>
+        <p>&nbsp;</p>
+        <div class="balances">
+          <div class="balance_single"><div class="balance">[[ethbalance]]</div><div>ETH</div></div>
+          <div class="spacer"></div>
+          <div class="balance_single"><div class="balance">[[tokenbalance]]</div><div>{{short}}</div></div>
+        </div>
+        <div class="btn" on-tap="getPrice">Exit Gas Station</div>
+
       </div>
     </iron-pages>
   </div>
-
-  <!-- <pre>[[keyObject]]</pre> -->
 
 </template>
 
@@ -203,10 +220,12 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
         value: 0
       },
       ethbalance: {
-        type: Number
+        type: Number,
+        value: 0
       },
-      swtbalance: {
-        type: Number
+      tokenbalance: {
+        type: Number,
+        value: 0
       },
       currentprice: {
         type: Number,
@@ -859,7 +878,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
           this.getPriceResult = json;
           this.getPriceResult_pre = JSON.stringify(json, null, 2);
           this.currentprice = this.getPriceResult.price;
-          this.pricefor1 = 300000 / this.getPriceResult.price;
+          this.pricefor1 = 200000 / this.getPriceResult.price;
           this.showfill = true;
           resolve();
         }
@@ -878,7 +897,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
     minimeInstance.balanceOf(this.address,function(err,res){
       console.log('SWT balance is', res.toFormat(2));
-      self.swtbalance = res;
+      self.tokenbalance = res;
     });
 
     var txData = minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
@@ -1019,7 +1038,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
     minimeInstance.balanceOf(this.address,function(err,res){
       console.log('SWT balance is', res.toFormat(2));
-      self.swtbalance = res;
+      self.tokenbalance = res;
     });
 
 
