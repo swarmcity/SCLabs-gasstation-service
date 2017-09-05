@@ -146,7 +146,7 @@ app.get('/price', function(req, res) {
 
 			const condensed = utility.pack(
 				[
-					process.env.erc20token,
+					req.query.tokenaddress,
 					price,
 					from,
 					to,
@@ -168,7 +168,7 @@ app.get('/price', function(req, res) {
 				v
 			};
 			var resp = {
-				token_address : process.env.erc20token,
+				token_address : req.query.tokenaddress,
 				price: price,
 				from: from,
 				to: to,
