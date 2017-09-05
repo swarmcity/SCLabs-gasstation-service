@@ -22,14 +22,19 @@ contract gasStation is Ownable {
 		require(token.transferFrom(msg.sender,this,amount));
 
 	    bytes32 hash = sha256(price,msg.sender,this, valid_until,random,upfront);
-	    if (
+	    require (
 			!usedhashes[hash] 
 			&& (ecrecover(hash,v,r,s) == owner) 
 			&& block.number <= valid_until
-	    ) throw;
+	    );
 
-		msg.sender.transfer(amount/price);
+		msg.sender.transfer(amount * price - upfront);
+
+		// invalidate this hash
+		usedhashes[hash] = true;
 	}
+
+	function withdraw()
 
 }
 	

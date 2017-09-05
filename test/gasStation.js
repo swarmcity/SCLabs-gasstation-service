@@ -58,7 +58,7 @@ contract('Token Setup', function(accounts) {
     it("should deploy a gasStation", function(done) {
       gasStation.new(swtToken.address, {
         gas: 4700000,
-        value: 1e18,
+        value: 100 * 1e18,  // put 100 ETH on the contract.
       }).then(function(instance) {
         gasStationInstance = instance;
         assert.isNotNull(gasStationInstance);
