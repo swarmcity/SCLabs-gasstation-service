@@ -3,3 +3,4 @@ frontend/gs-client/node_modules
 node_modules
 
 wallet.json
+/.env
