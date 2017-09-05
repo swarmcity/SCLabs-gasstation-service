@@ -125,13 +125,13 @@
           </div>
           <h1>Gas Station</h1>
         </div>
-        <p>Swarm City is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly. For every deal made on Swarm City, a transaction is registered on the Ethereum blockchain, that's why you need gas.</p>
+        <p>{{project}} is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly. For every deal made on {{project}}, a transaction is registered on the Ethereum blockchain, that's why you need gas.</p>
         <p>My current address: [[address]]</p>
         <p>&nbsp;</p>
         <div class="balances">
           <div class="balance_single"><div class="balance">[[ethbalance]]</div><div>ETH</div></div>
           <div class="spacer"></div>
-          <div class="balance_single"><div class="balance">[[swtbalance]]</div><div>SWT</div></div>
+          <div class="balance_single"><div class="balance">[[swtbalance]]</div><div>{{short}}</div></div>
         </div>
         <div class="btn" on-tap="getPrice">Get more gas</div>
       </div>
@@ -189,6 +189,14 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
         value: function(){
           return window.keythereum;
         }
+      },
+      project: {
+        type: String,
+        value: 'Swarm City'
+      },
+      short: {
+        type: String,
+        value: 'SWT'
       },
       selectedpage: {
         type: Number,
