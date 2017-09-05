@@ -24,6 +24,11 @@
     @apply --layout-center-justified;
     margin-bottom: 40px;
   }
+  .vertical {
+    @apply --layout-vertical;
+    @apply --layout-center-center;
+    margin-bottom: 40px;
+  }
   .balance_single {
     background-color: var(--sc-grey2);
     @apply --layout-vertical;
@@ -43,19 +48,19 @@
     cursor: pointer;
   }
   .big {
-    width: 115px;
-    height: 115px;
-    min-width: 115px;
-    min-height: 115px;
+    width: 80px;
+    height: 80px;
+    min-width: 80px;
+    min-height: 80px;
     overflow: hidden;
     border-radius: 50%;
     text-align: center;
   }
   .big img {
-    width: 117px;
-    height: 117px;
-    min-width: 117px;
-    min-height: 117px;
+    width: 82px;
+    height: 82px;
+    min-width: 82px;
+    min-height: 82px;
     margin: -1px 0px 0px -1px;
     text-align: center;
   }
@@ -103,12 +108,14 @@
   <div class="container">
     <iron-pages selected="{{selectedpage}}">
       <div>
+        <div class="vertical">
+
         <div class="big">
           <img src="/gs-client/images/gasstation.png" />
         </div>
         <h1>Gas Station</h1>
+      </div>
         <p>Swarm City is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly. For every deal made on Swarm City, a transaction is registered on the Ethereum blockchain, that's why you need gas.</p>
-        <p>&nbsp;</p>
         <p>My current address: <b>[[address]]</b></p>
         <p>&nbsp;</p>
         <div class="balances">
