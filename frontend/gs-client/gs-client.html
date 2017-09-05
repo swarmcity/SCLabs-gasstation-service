@@ -1001,6 +1001,14 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
       this.web3 = new Web3(new Web3.providers.HttpProvider("https://ethpool.swarm.city/"));
 
+    var minime = this.web3.eth.contract(this.minimetoken.abi);
+    var minimeInstance = minime.at(this.erc20);
+
+    minimeInstance.balanceOf(this.address,function(err,res){
+      console.log('SWT balance is', res.toFormat(2));
+      self.swtbalance = res;
+    });
+
 
       this.web3.eth.getBalance(this.address, function(err, res){
         console.log(err, res.toString(10));
