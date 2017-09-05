@@ -5,61 +5,122 @@
 <script src="./bower_components/web3/dist/web3.min.js"></script>
 <script src="./bower_components/browser-builds/dist/ethereumjs-tx.js"></script>
 
+<link rel="import" href="./bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="./shared-styles.html">
 
 <dom-module id="gs-client">
   <template>
 
-    <style include="shared-styles">
-      :host {
-        display: block;
-      }
+  <style include="shared-styles">
+  :host {
+    display: block;
+    @apply --layout-horizontal;
+    @apply --layout-center-justified;
+    background-color: var(--sc-grey1);
+  }
+  .balances {
+    @apply --layout-horizontal;
+    @apply --layout-center-justified;
+    margin-bottom: 40px;
+  }
+  .balance_single {
+    background-color: var(--sc-grey2);
+    @apply --layout-vertical;
+    @apply --layout-center-center;
+    width: 100px;
+  }
+  .spacer {
+    width: 20px;
+  }
+  .close {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    width: 20px;
+    height: 20px;
+    background: url('./images/swarm-city-sprite.png') -60px -84px;
+    cursor: pointer;
+  }
+  .big {
+    width: 115px;
+    height: 115px;
+    min-width: 115px;
+    min-height: 115px;
+    overflow: hidden;
+    border-radius: 50%;
+    text-align: center;
+  }
+  .big img {
+    width: 117px;
+    height: 117px;
+    min-width: 117px;
+    min-height: 117px;
+    margin: -1px 0px 0px -1px;
+    text-align: center;
+  }
+  .container {
+    margin-top: 60px;
+    max-width: 400px;
+  }
+  h1 {
+    @apply --body-default-wide;
+    text-align: center;
+  }
+  p {
+    @apply --body-default;
+    text-align: center;
+  }
+  .btn {
+    @apply --small-light;
+    text-align: center;
+    width: 275px;
+    height: 72px;
+    line-height: 30px;
+    text-align: center;
+    display: block;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 20px;
+    color: var(--sc-white);
+    background-color: var(--sc-blue);
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+    -o-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    margin: 10px auto 0;
+    font-weight: bold;
+    text-align: center;
+  }
 
-      h1 {
-         @apply --body-default-wide;
-         text-align: center;
-      }
-      p {
-         @apply --small-light;
-         text-align: center;
-      }
 
-      .btn {
-        @apply --small-light;
-        text-align: center;
-              width: 275px;
-              height: 72px;
-              line-height: 30px;
-              text-align: center;
-              display: block;
-              border: none;
-              font-size: 18px;
-              cursor: pointer;
-              box-sizing: border-box;
-              padding: 20px;
-              color: var(--sc-white);
-              background-color: var(--sc-blue);
-              box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
-              -o-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
-              -moz-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
-              -webkit-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
-              overflow: hidden;
-              margin: 10px auto 0;
-              font-weight: bold;
-              text-align: center;
-          }
+  </style>
 
-
-    </style>
-
-    <p>My address: <b>[[address]]</b></p>
-    <p>My ETH balance: <b>[[ethbalance]]</b> // My SWT balance: <b>[[swtbalance]]</b></p>
-    <hr>
-
+  <div class="close" on-click="_close"></div>
+  <div class="container">
     <iron-pages selected="{{selectedpage}}">
       <div>
-        <h1>Welcome to the Gas Station</h1>
+        <div class="big">
+          <img src="/gs-client/images/gasstation.png" />
+        </div>
+        <h1>Gas Station</h1>
+        <p>Swarm City is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly. For every deal made on Swarm City, a transaction is registered on the Ethereum blockchain, that's why you need gas.</p>
+        <p>&nbsp;</p>
+        <p>My current address: <b>[[address]]</b></p>
+        <p>&nbsp;</p>
+        <div class="balances">
+          <div class="balance_single"><h1>[[ethbalance]]</h1><p>ETH</p></div>
+          <div class="spacer"></div>
+          <div class="balance_single"><h1>[[swtbalance]]</h1><p>SWT</p></div>
+        </div>
+        <div class="btn" on-tap="getPrice">Get more gas</div>
+      </div>
+
+
+      <div>
         <p>How many deals do you want to fill up for?</p>
         <div>
           <div class="btn" on-tap="getPrice">1 for {{pricefor1}} SWT</div>
@@ -68,8 +129,6 @@
           <div class="btn" on-tap="getPrice">50</div>
           <div class="btn" on-tap="getPrice">100</div>
         </div>
-      </div>
-      <div>
         <h1>Our best offer:</h1>
         <div><pre>[[getPriceResult_pre]]</pre></div>
         <div on-tap="fillUp"><b>Fill her up</b></div>
@@ -83,820 +142,825 @@
         <div>You now have: ETH balance / SWT balance</div>
       </div>
     </iron-pages>
+  </div>
 
-    <!-- <pre>[[keyObject]]</pre> -->
+  <!-- <pre>[[keyObject]]</pre> -->
 
-  </template>
+</template>
 
-  <script>
-    /**
-     * `gs-client`
-     * gasstation client element
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
-    class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
-      static get is() { return 'gs-client'; }
-      static get properties() {
-        return {
-          utility: {
-            type: Object,
-            value: function(){
-              return window.utility();
+<script>
+/**
+* `gs-client`
+* gasstation client element
+*
+* @customElement
+* @polymer
+* @demo demo/index.html
+*/
+class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
+  static get is() { return 'gs-client'; }
+  static get properties() {
+    return {
+      utility: {
+        type: Object,
+        value: function(){
+          return window.utility();
+        }
+      },
+      keythereum: {
+        type: Object,
+        value: function(){
+          return window.keythereum;
+        }
+      },
+      selectedpage: {
+        type: Number,
+        value: 0
+      },
+      ethbalance: {
+        type: Number
+      },
+      swtbalance: {
+        type: Number
+      },
+      currentprice: {
+        type: Number,
+        value: 0
+      },
+      gasstation: {
+        type: Object,
+        value: {
+          abi: [
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "owner",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "price",
+                  "type": "uint256"
+                },
+                {
+                  "name": "valid_until",
+                  "type": "uint256"
+                },
+                {
+                  "name": "random",
+                  "type": "uint256"
+                },
+                {
+                  "name": "upfront",
+                  "type": "uint256"
+                },
+                {
+                  "name": "amount",
+                  "type": "uint256"
+                },
+                {
+                  "name": "v",
+                  "type": "uint8"
+                },
+                {
+                  "name": "r",
+                  "type": "bytes32"
+                },
+                {
+                  "name": "s",
+                  "type": "bytes32"
+                }
+              ],
+              "name": "fillup",
+              "outputs": [],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "newOwner",
+                  "type": "address"
+                }
+              ],
+              "name": "transferOwnership",
+              "outputs": [],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "name": "_tokenAddress",
+                  "type": "address"
+                }
+              ],
+              "payable": true,
+              "type": "constructor"
             }
-          },
-          keythereum: {
-            type: Object,
-            value: function(){
-              return window.keythereum;
-            }
-          },
-          selectedpage: {
-            type: Number,
-            value: 0
-          },
-          ethbalance: {
-            type: Number
-          },
-          swtbalance: {
-            type: Number
-          },
-          currentprice: {
-            type: Number,
-            value: 0
-          },
-          gasstation: {
-            type: Object,
-            value: {
-              abi: [
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
+          ]
         }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "price",
-          "type": "uint256"
-        },
-        {
-          "name": "valid_until",
-          "type": "uint256"
-        },
-        {
-          "name": "random",
-          "type": "uint256"
-        },
-        {
-          "name": "upfront",
-          "type": "uint256"
-        },
-        {
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "name": "v",
-          "type": "uint8"
-        },
-        {
-          "name": "r",
-          "type": "bytes32"
-        },
-        {
-          "name": "s",
-          "type": "bytes32"
-        }
-      ],
-      "name": "fillup",
-      "outputs": [],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "name": "_tokenAddress",
-          "type": "address"
-        }
-      ],
-      "payable": true,
-      "type": "constructor"
-    }
-  ]
-            }
-          },
+      },
 
-          minimetoken: {
-            type: Object,
-            value: {
-  "contract_name": "MiniMeToken",
-  "abi": [
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "name",
-      "outputs": [
-        {
-          "name": "",
-          "type": "string"
+      minimetoken: {
+        type: Object,
+        value: {
+          "contract_name": "MiniMeToken",
+          "abi": [
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "name",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "_spender",
+                  "type": "address"
+                },
+                {
+                  "name": "_amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "approve",
+              "outputs": [
+                {
+                  "name": "success",
+                  "type": "bool"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "creationBlock",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "totalSupply",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "_from",
+                  "type": "address"
+                },
+                {
+                  "name": "_to",
+                  "type": "address"
+                },
+                {
+                  "name": "_amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "transferFrom",
+              "outputs": [
+                {
+                  "name": "success",
+                  "type": "bool"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "decimals",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "uint8"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "_newController",
+                  "type": "address"
+                }
+              ],
+              "name": "changeController",
+              "outputs": [],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [
+                {
+                  "name": "_owner",
+                  "type": "address"
+                },
+                {
+                  "name": "_blockNumber",
+                  "type": "uint256"
+                }
+              ],
+              "name": "balanceOfAt",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "version",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "_cloneTokenName",
+                  "type": "string"
+                },
+                {
+                  "name": "_cloneDecimalUnits",
+                  "type": "uint8"
+                },
+                {
+                  "name": "_cloneTokenSymbol",
+                  "type": "string"
+                },
+                {
+                  "name": "_snapshotBlock",
+                  "type": "uint256"
+                },
+                {
+                  "name": "_transfersEnabled",
+                  "type": "bool"
+                }
+              ],
+              "name": "createCloneToken",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [
+                {
+                  "name": "_owner",
+                  "type": "address"
+                }
+              ],
+              "name": "balanceOf",
+              "outputs": [
+                {
+                  "name": "balance",
+                  "type": "uint256"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "parentToken",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "_owner",
+                  "type": "address"
+                },
+                {
+                  "name": "_amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "generateTokens",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "symbol",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "string"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [
+                {
+                  "name": "_blockNumber",
+                  "type": "uint256"
+                }
+              ],
+              "name": "totalSupplyAt",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "_to",
+                  "type": "address"
+                },
+                {
+                  "name": "_amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "transfer",
+              "outputs": [
+                {
+                  "name": "success",
+                  "type": "bool"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "transfersEnabled",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "parentSnapShotBlock",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "uint256"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "_spender",
+                  "type": "address"
+                },
+                {
+                  "name": "_amount",
+                  "type": "uint256"
+                },
+                {
+                  "name": "_extraData",
+                  "type": "bytes"
+                }
+              ],
+              "name": "approveAndCall",
+              "outputs": [
+                {
+                  "name": "success",
+                  "type": "bool"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "_owner",
+                  "type": "address"
+                },
+                {
+                  "name": "_amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "destroyTokens",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "bool"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [
+                {
+                  "name": "_owner",
+                  "type": "address"
+                },
+                {
+                  "name": "_spender",
+                  "type": "address"
+                }
+              ],
+              "name": "allowance",
+              "outputs": [
+                {
+                  "name": "remaining",
+                  "type": "uint256"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "tokenFactory",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": false,
+              "inputs": [
+                {
+                  "name": "_transfersEnabled",
+                  "type": "bool"
+                }
+              ],
+              "name": "enableTransfers",
+              "outputs": [],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "constant": true,
+              "inputs": [],
+              "name": "controller",
+              "outputs": [
+                {
+                  "name": "",
+                  "type": "address"
+                }
+              ],
+              "payable": false,
+              "type": "function"
+            },
+            {
+              "inputs": [
+                {
+                  "name": "_tokenFactory",
+                  "type": "address"
+                },
+                {
+                  "name": "_parentToken",
+                  "type": "address"
+                },
+                {
+                  "name": "_parentSnapShotBlock",
+                  "type": "uint256"
+                },
+                {
+                  "name": "_tokenName",
+                  "type": "string"
+                },
+                {
+                  "name": "_decimalUnits",
+                  "type": "uint8"
+                },
+                {
+                  "name": "_tokenSymbol",
+                  "type": "string"
+                },
+                {
+                  "name": "_transfersEnabled",
+                  "type": "bool"
+                }
+              ],
+              "payable": false,
+              "type": "constructor"
+            },
+            {
+              "payable": true,
+              "type": "fallback"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "name": "_from",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "name": "_to",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "name": "_amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Transfer",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "name": "_cloneToken",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "name": "_snapshotBlock",
+                  "type": "uint256"
+                }
+              ],
+              "name": "NewCloneToken",
+              "type": "event"
+            },
+            {
+              "anonymous": false,
+              "inputs": [
+                {
+                  "indexed": true,
+                  "name": "_owner",
+                  "type": "address"
+                },
+                {
+                  "indexed": true,
+                  "name": "_spender",
+                  "type": "address"
+                },
+                {
+                  "indexed": false,
+                  "name": "_amount",
+                  "type": "uint256"
+                }
+              ],
+              "name": "Approval",
+              "type": "event"
+            }
+          ]
         }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_spender",
-          "type": "address"
-        },
-        {
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "approve",
-      "outputs": [
-        {
-          "name": "success",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "creationBlock",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "totalSupply",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "name": "_to",
-          "type": "address"
-        },
-        {
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "transferFrom",
-      "outputs": [
-        {
-          "name": "success",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "decimals",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint8"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_newController",
-          "type": "address"
-        }
-      ],
-      "name": "changeController",
-      "outputs": [],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "_owner",
-          "type": "address"
-        },
-        {
-          "name": "_blockNumber",
-          "type": "uint256"
-        }
-      ],
-      "name": "balanceOfAt",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "version",
-      "outputs": [
-        {
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_cloneTokenName",
-          "type": "string"
-        },
-        {
-          "name": "_cloneDecimalUnits",
-          "type": "uint8"
-        },
-        {
-          "name": "_cloneTokenSymbol",
-          "type": "string"
-        },
-        {
-          "name": "_snapshotBlock",
-          "type": "uint256"
-        },
-        {
-          "name": "_transfersEnabled",
-          "type": "bool"
-        }
-      ],
-      "name": "createCloneToken",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "_owner",
-          "type": "address"
-        }
-      ],
-      "name": "balanceOf",
-      "outputs": [
-        {
-          "name": "balance",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "parentToken",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_owner",
-          "type": "address"
-        },
-        {
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "generateTokens",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "symbol",
-      "outputs": [
-        {
-          "name": "",
-          "type": "string"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "_blockNumber",
-          "type": "uint256"
-        }
-      ],
-      "name": "totalSupplyAt",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_to",
-          "type": "address"
-        },
-        {
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "transfer",
-      "outputs": [
-        {
-          "name": "success",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "transfersEnabled",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "parentSnapShotBlock",
-      "outputs": [
-        {
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_spender",
-          "type": "address"
-        },
-        {
-          "name": "_amount",
-          "type": "uint256"
-        },
-        {
-          "name": "_extraData",
-          "type": "bytes"
-        }
-      ],
-      "name": "approveAndCall",
-      "outputs": [
-        {
-          "name": "success",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_owner",
-          "type": "address"
-        },
-        {
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "destroyTokens",
-      "outputs": [
-        {
-          "name": "",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [
-        {
-          "name": "_owner",
-          "type": "address"
-        },
-        {
-          "name": "_spender",
-          "type": "address"
-        }
-      ],
-      "name": "allowance",
-      "outputs": [
-        {
-          "name": "remaining",
-          "type": "uint256"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "tokenFactory",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "_transfersEnabled",
-          "type": "bool"
-        }
-      ],
-      "name": "enableTransfers",
-      "outputs": [],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": true,
-      "inputs": [],
-      "name": "controller",
-      "outputs": [
-        {
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "name": "_tokenFactory",
-          "type": "address"
-        },
-        {
-          "name": "_parentToken",
-          "type": "address"
-        },
-        {
-          "name": "_parentSnapShotBlock",
-          "type": "uint256"
-        },
-        {
-          "name": "_tokenName",
-          "type": "string"
-        },
-        {
-          "name": "_decimalUnits",
-          "type": "uint8"
-        },
-        {
-          "name": "_tokenSymbol",
-          "type": "string"
-        },
-        {
-          "name": "_transfersEnabled",
-          "type": "bool"
-        }
-      ],
-      "payable": false,
-      "type": "constructor"
-    },
-    {
-      "payable": true,
-      "type": "fallback"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "name": "_from",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "_to",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "Transfer",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "name": "_cloneToken",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "_snapshotBlock",
-          "type": "uint256"
-        }
-      ],
-      "name": "NewCloneToken",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "name": "_owner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "name": "_spender",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "name": "_amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "Approval",
-      "type": "event"
-    }
-  ]
-}
-          }
-        };
       }
+    };
+  }
 
 
-      getPrice() {
-        //debugger;
-        //this.selectedpage = 1;
-        return new Promise((resolve, reject) => {
-          // Load the translations.json file
-          const xobj = new XMLHttpRequest();
-          xobj.overrideMimeType('application/json');
-          xobj.open('GET', './price?from=' + this.address, true);
-          xobj.onreadystatechange = () => {
-            if (xobj.readyState == 4 && xobj.status == '200') {
-              // Parse the response
-              const json = JSON.parse(xobj.responseText);
-              //debugger;
-              this.getPriceResult = json;
-              this.getPriceResult_pre = JSON.stringify(json, null, 2);
-              this.currentprice = this.getPriceResult.price;
-              this.pricefor1 = 300000 / this.getPriceResult.price;
-              this.showfill = true;
-              resolve();
-            }
-          };
-          xobj.send(null);
-        });
-      }
-
-      fillUp() {
-
-        this.selectedpage = 2;
-        var self=this;
-
-        var txData = this.minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
+  getPrice() {
+    //debugger;
+    //this.selectedpage = 1;
+    return new Promise((resolve, reject) => {
+      // Load the translations.json file
+      const xobj = new XMLHttpRequest();
+      xobj.overrideMimeType('application/json');
+      xobj.open('GET', './price?from=' + this.address, true);
+      xobj.onreadystatechange = () => {
+        if (xobj.readyState == 4 && xobj.status == '200') {
+          // Parse the response
+          const json = JSON.parse(xobj.responseText);
           //debugger;
-        });
-        this.minimeInstance.approve.estimateGas(this.getPriceResult.to, this.gastankaddress, this.tokenamount, {
-          from: this.address
-        }, function(err, res) {
+          this.getPriceResult = json;
+          this.getPriceResult_pre = JSON.stringify(json, null, 2);
+          this.currentprice = this.getPriceResult.price;
+          this.pricefor1 = 300000 / this.getPriceResult.price;
+          this.showfill = true;
+          resolve();
+        }
+      };
+      xobj.send(null);
+    });
+  }
 
-          // get nonce
-          self.web3.eth.getTransactionCount(this.address, function(err, nonce) {
+  fillUp() {
 
-            var txParams = {
-              nonce: nonce || 0,
-              gasPrice: self.gasPrice,
-              gasLimit: res,
-              to: self.swtAddress,
-              data: txData,
-              chainId: 1
-            }
+    this.selectedpage = 2;
+    var self=this;
 
-            var tx = new EthJS.Tx(txParams);
-            tx.sign(self.dk.privateKey);
-            var serializedTx = tx.serialize(); //.toString('hex');
+    var txData = this.minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
+      //debugger;
+    });
+    this.minimeInstance.approve.estimateGas(this.getPriceResult.to, this.gastankaddress, this.tokenamount, {
+      from: this.address
+    }, function(err, res) {
 
-            var tx1 = '0x' + serializedTx.toString('hex');
+      // get nonce
+      self.web3.eth.getTransactionCount(this.address, function(err, nonce) {
 
-            var gasstation = self.web3.eth.contract(self.gasstation.abi);
-            self.gasstationInstance = gasstation.at(self.getPriceResult.from);
+        var txParams = {
+          nonce: nonce || 0,
+          gasPrice: self.gasPrice,
+          gasLimit: res,
+          to: self.swtAddress,
+          data: txData,
+          chainId: 1
+        }
 
-            txData = self.gasstationInstance.fillup.getData(
-              self.getPriceResult.price,
-              self.getPriceResult.valid_until,
-              self.getPriceResult.random,
-              self.getPriceResult.upfront,
-              100,
-              self.getPriceResult.sig.v,
-              self.getPriceResult.sig.r,
-              self.getPriceResult.sig.s,
-              function(a, b) {
-                //debugger;
-              });
+        var tx = new EthJS.Tx(txParams);
+        tx.sign(self.dk.privateKey);
+        var serializedTx = tx.serialize(); //.toString('hex');
 
+        var tx1 = '0x' + serializedTx.toString('hex');
 
-            txParams = {
-              nonce: nonce+1,
-              gasPrice: self.gasPrice,
-              gasLimit: 1000000,
-              to: self.getPriceResult.from,
-              data: txData,
-              chainId: 1
-            }
+        var gasstation = self.web3.eth.contract(self.gasstation.abi);
+        self.gasstationInstance = gasstation.at(self.getPriceResult.from);
 
-            var tx2 = new EthJS.Tx(txParams);
-            tx2.sign(self.dk.privateKey);
-            serializedTx = tx2.serialize(); //.toString('hex');
-
-            var tx2 = '0x' + serializedTx.toString('hex');
-
-
-            var res = {
-              tx1: tx1,
-              tx2: tx2
-            };
-
-
-            self.fillUpResult_pre = JSON.stringify(res, null, 2);
-
-            // serializedTx is sent over the HTTP API
-            // then the service does this :
-
-            // var decodetx = new EthJS.Tx(serializedTx);
-            // var txGas = self.web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
-            // var txGasPrice = self.web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
-
-            // var weiNeeded = txGas.mul(txGasPrice).toNumber(10);
-
-            //decodetx.
-
-            // this.web3.eth.sendRawTransaction(serializedTx, function(err, res) {
-            //   console.log('ok', err, res);
-            // });
+        txData = self.gasstationInstance.fillup.getData(
+          self.getPriceResult.price,
+          self.getPriceResult.valid_until,
+          self.getPriceResult.random,
+          self.getPriceResult.upfront,
+          100,
+          self.getPriceResult.sig.v,
+          self.getPriceResult.sig.r,
+          self.getPriceResult.sig.s,
+          function(a, b) {
+            //debugger;
           });
+
+
+          txParams = {
+            nonce: nonce+1,
+            gasPrice: self.gasPrice,
+            gasLimit: 1000000,
+            to: self.getPriceResult.from,
+            data: txData,
+            chainId: 1
+          }
+
+          var tx2 = new EthJS.Tx(txParams);
+          tx2.sign(self.dk.privateKey);
+          serializedTx = tx2.serialize(); //.toString('hex');
+
+          var tx2 = '0x' + serializedTx.toString('hex');
+
+
+          var res = {
+            tx1: tx1,
+            tx2: tx2
+          };
+
+
+          self.fillUpResult_pre = JSON.stringify(res, null, 2);
+
+          // serializedTx is sent over the HTTP API
+          // then the service does this :
+
+          // var decodetx = new EthJS.Tx(serializedTx);
+          // var txGas = self.web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
+          // var txGasPrice = self.web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
+
+          // var weiNeeded = txGas.mul(txGasPrice).toNumber(10);
+
+          //decodetx.
+
+          // this.web3.eth.sendRawTransaction(serializedTx, function(err, res) {
+          //   console.log('ok', err, res);
+          // });
         });
+      });
 
-      }
-
-      ready() {
-        super.ready();
-
-        var self = this;
-
-        this.swtAddress = "0x2a52dfa1802877775fa7cd4eb7c88bcd0d3873a6";
-
-        this.tokenamount = 100;
-        this.gasPrice = 2;
-
-        this.dk = this.keythereum.create();
-        var keyObject = keythereum.dump("none", this.dk.privateKey, this.dk.salt, this.dk.iv);
-
-        this.set('keyObject', JSON.stringify(keyObject, null, 2));
-
-        this.address = '0x' + keyObject.address;
-
-        this.web3 = new Web3(new Web3.providers.HttpProvider("https://ethpool.swarm.city/"));
-        var minime = this.web3.eth.contract(this.minimetoken.abi);
-        this.minimeInstance = minime.at(this.swtAddress);
-
-        this.web3.eth.getBalance(this.address, function(err, res){
-          console.log(err, res.toString(10));
-          self.ethbalance = res.toString(10);
-        });
-
-        this.minimeInstance.balanceOf(this.address,function(err,res){
-          console.log('SWT balance is', res.toFormat(2));
-          self.swtbalance = res;
-        });
-
-        this.getPrice();
-
-      }
     }
 
-    window.customElements.define(GsClient.is, GsClient);
+    _close() {
+      this.fire("close");
+    }
+
+    ready() {
+      super.ready();
+
+      var self = this;
+
+      this.swtAddress = "0x2a52dfa1802877775fa7cd4eb7c88bcd0d3873a6";
+
+      this.tokenamount = 100;
+      this.gasPrice = 2;
+
+      this.dk = this.keythereum.create();
+      var keyObject = keythereum.dump("none", this.dk.privateKey, this.dk.salt, this.dk.iv);
+
+      this.set('keyObject', JSON.stringify(keyObject, null, 2));
+
+      this.address = '0x' + keyObject.address;
+
+      this.web3 = new Web3(new Web3.providers.HttpProvider("https://ethpool.swarm.city/"));
+      var minime = this.web3.eth.contract(this.minimetoken.abi);
+      this.minimeInstance = minime.at(this.swtAddress);
+
+      this.web3.eth.getBalance(this.address, function(err, res){
+        console.log(err, res.toString(10));
+        self.ethbalance = res.toString(10);
+      });
+
+      this.minimeInstance.balanceOf(this.address,function(err,res){
+        console.log('SWT balance is', res.toFormat(2));
+        self.swtbalance = res;
+      });
+
+      this.getPrice();
+
+    }
+  }
+
+  window.customElements.define(GsClient.is, GsClient);
   </script>
 </dom-module>
