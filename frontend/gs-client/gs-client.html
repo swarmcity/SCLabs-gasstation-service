@@ -7,6 +7,7 @@
 
 <link rel="import" href="./bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="./bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="./shared-styles.html">
 
 <dom-module id="gs-client">
@@ -147,12 +148,13 @@
       <div>
         <p>How many deals do you want to fill up for?</p>
         <div>
-          <div class="btn" on-tap="getPrice">1 for {{pricefor1}} {{short}}</div>
-          <div class="btn" on-tap="getPrice">10 for {{pricefor10}} {{short}}</div>
-          <div class="btn" on-tap="getPrice">20 for {{pricefor20}} {{short}}</div>
-          <div class="btn" on-tap="getPrice">50 for {{pricefor50}} {{short}}</div>
-          <div class="btn" on-tap="getPrice">100 for {{pricefor100}} {{short}}</div>
-
+          <iron-selector attr-for-selected="name" on-iron-selected="getPrice">
+            <div class="btn" name="1">1 for {{pricefor1}} {{short}}</div>
+            <div class="btn" name="10">10 for {{pricefor10}} {{short}}</div>
+            <div class="btn" name="20">20 for {{pricefor20}} {{short}}</div>
+            <div class="btn" name="50">50 for {{pricefor50}} {{short}}</div>
+            <div class="btn" name="100">100 for {{pricefor100}} {{short}}</div>
+          </iron-selector>
         </div>
         <h1>Our best offer:</h1>
         <div><pre>[[getPriceResult_pre]]</pre></div>
