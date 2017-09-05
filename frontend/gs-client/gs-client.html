@@ -60,9 +60,9 @@
     <iron-pages selected="{{selectedpage}}">
       <div>
         <h1>Welcome to the Gas Station</h1>
-        <p>How many transactions do you want to fill up for?</p>
+        <p>How many deals do you want to fill up for?</p>
         <div>
-          <div class="btn" on-tap="getPrice">1</div>
+          <div class="btn" on-tap="getPrice">1 for {{pricefor1}} SWT</div>
           <div class="btn" on-tap="getPrice">10</div>
           <div class="btn" on-tap="getPrice">20</div>
           <div class="btn" on-tap="getPrice">50</div>
@@ -122,6 +122,10 @@
           },
           swtbalance: {
             type: Number
+          },
+          currentprice: {
+            type: Number,
+            value: 0
           },
           gasstation: {
             type: Object,
@@ -744,7 +748,7 @@
 
       getPrice() {
         //debugger;
-        this.selectedpage = 1;
+        //this.selectedpage = 1;
         return new Promise((resolve, reject) => {
           // Load the translations.json file
           const xobj = new XMLHttpRequest();
@@ -757,6 +761,8 @@
               //debugger;
               this.getPriceResult = json;
               this.getPriceResult_pre = JSON.stringify(json, null, 2);
+              this.currentprice = this.getPriceResult.price;
+              this.pricefor1 = 300000 / this.getPriceResult.price;
               this.showfill = true;
               resolve();
             }
@@ -885,6 +891,8 @@
           console.log('SWT balance is', res.toFormat(2));
           self.swtbalance = res;
         });
+
+        this.getPrice();
 
       }
     }
