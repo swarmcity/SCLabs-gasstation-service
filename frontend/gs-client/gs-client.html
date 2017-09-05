@@ -131,7 +131,7 @@
         <div class="balances">
           <div class="balance_single"><div class="balance">[[ethbalance]]</div><div>ETH</div></div>
           <div class="spacer"></div>
-          <div class="balance_single"><div class="balance">[[swtbalance]]</div><div>{{short}}</div></div>
+          <div class="balance_single"><div class="balance">[[tokenbalance]]</div><div>{{short}}</div></div>
         </div>
         <div class="btn" on-tap="getPrice">Get more gas</div>
       </div>
@@ -205,7 +205,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       ethbalance: {
         type: Number
       },
-      swtbalance: {
+      tokenbalance: {
         type: Number
       },
       currentprice: {
@@ -875,7 +875,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
     minimeInstance.balanceOf(this.address,function(err,res){
       console.log('SWT balance is', res.toFormat(2));
-      self.swtbalance = res;
+      self.tokenbalance = res;
     });
 
     var txData = minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
@@ -1014,7 +1014,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
     minimeInstance.balanceOf(this.address,function(err,res){
       console.log('SWT balance is', res.toFormat(2));
-      self.swtbalance = res;
+      self.tokenbalance = res;
     });
 
 
