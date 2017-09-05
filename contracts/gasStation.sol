@@ -18,11 +18,11 @@ contract gasStation is Ownable {
 	// default function
 	function() payable {}
 
-	function fillup(address tokenAddress, uint price,uint valid_until,uint random,uint upfront,uint amount,uint8 v, bytes32 r, bytes32 s){
-		IMiniMeToken token = IMiniMeToken(tokenAddress);
+	function fillup(address token_address, uint price,uint valid_until,uint random,uint upfront,uint amount,uint8 v, bytes32 r, bytes32 s){
+		IMiniMeToken token = IMiniMeToken(token_address);
 		require(token.transferFrom(msg.sender,this,amount));
 
-	    bytes32 hash = sha256(tokenAddress,price,msg.sender,this, valid_until,random,upfront);
+	    bytes32 hash = sha256(token_address,price,msg.sender,this, valid_until,random,upfront);
 	    require (
 			!usedhashes[hash] 
 			&& (ecrecover(hash,v,r,s) == owner) 

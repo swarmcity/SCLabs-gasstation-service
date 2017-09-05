@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyparser = require('body-parser');
 var app = express();
 var cors = require('cors');
 var Web3 = require('web3');
@@ -89,7 +90,7 @@ function getFaucetBalance(denomination) {
 
 app.use(cors());
 app.use(express.static('./frontend'));
-
+app.use(bodyparser.json());
 
 function getprice(token, cb) {
 
@@ -131,13 +132,14 @@ app.get('/price', function(req, res) {
 
 			const condensed = utility.pack(
 				[
+					process.env.erc20token,
 					price,
 					from,
 					to,
 					valid_until,
 					random,
 					upfront
-				], [256,160,160, 256, 256, 256]);
+				], [160,256,160,160, 256, 256, 256]);
 			const hash = sha256(new Buffer(condensed, 'hex'));
 
 			const sig = ethUtil.ecsign(
@@ -152,6 +154,7 @@ app.get('/price', function(req, res) {
 				v
 			};
 			var resp = {
+				token_address : process.env.erc20token,
 				price: price,
 				from: from,
 				to: to,
@@ -167,8 +170,22 @@ app.get('/price', function(req, res) {
 
 app.post('/fillup', function(req, res) {
 	console.log('hallo');
-	console.log(req);
+	console.log(req.body);
+
+
+    var decodetx = new EthJStx(req.body.tx1);
+    // var txGas = web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
+    // var txGasPrice = web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
+    // var weiNeeded = txGas.mul(txGasPrice).toNumber(10);
+
+    //var tx1res = [txGasPrice,txGas,weiNeeded];
+    console.log(decodetx);
+
+    web3.eth.sendRawTransaction(decodetx.raw,function(err,res){
+    	console.log('tx sent',err,res);
+    })
+
 	res.status(200).json({
-		msg: 'address added to blacklist'
+		msg: 'sent for processing - hang in there...'
 	});
 });
