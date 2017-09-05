@@ -7,6 +7,7 @@
 
 <link rel="import" href="./bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="./bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="./shared-styles.html">
 
 <dom-module id="gs-client">
@@ -147,11 +148,13 @@
       <div>
         <p>How many deals do you want to fill up for?</p>
         <div>
-          <div class="btn" on-tap="getPrice">1 for {{pricefor1}} {{short}}</div>
-          <div class="btn" on-tap="getPrice">10</div>
-          <div class="btn" on-tap="getPrice">20</div>
-          <div class="btn" on-tap="getPrice">50</div>
-          <div class="btn" on-tap="getPrice">100</div>
+          <iron-selector attr-for-selected="name" on-iron-selected="getPrice">
+            <div class="btn" name="1">1 for {{pricefor1}} {{short}}</div>
+            <div class="btn" name="10">10 for {{pricefor10}} {{short}}</div>
+            <div class="btn" name="20">20 for {{pricefor20}} {{short}}</div>
+            <div class="btn" name="50">50 for {{pricefor50}} {{short}}</div>
+            <div class="btn" name="100">100 for {{pricefor100}} {{short}}</div>
+          </iron-selector>
         </div>
         <h1>Our best offer:</h1>
         <div><pre>[[getPriceResult_pre]]</pre></div>
@@ -879,8 +882,17 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
           //debugger;
           this.getPriceResult = json;
           this.getPriceResult_pre = JSON.stringify(json, null, 2);
+          // this.currentprice = wei for 1 swt
           this.currentprice = this.getPriceResult.price;
-          this.pricefor1 = 200000 / this.getPriceResult.price;
+
+          this.weineeded = 200000 * 2 * 1e9;
+          this.swtneeded = this.weineeded / this.currentprice;
+          this.pricefor1 = this.swtneeded.toFixed(4);
+          this.pricefor10 = this.pricefor1 * 10;
+          this.pricefor20 = this.pricefor1 * 20;
+          this.pricefor50 = this.pricefor1 * 50;
+          this.pricefor100 = this.pricefor1 * 100;
+
           this.showfill = true;
           resolve();
         }
