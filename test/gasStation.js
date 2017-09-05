@@ -47,7 +47,7 @@ contract('Token Setup', function(accounts) {
     });
 
     it("should mint tokens for accounts[1] ( owner ) ", function(done) {
-      swtToken.generateTokens(accounts[1], 4 * 2137880000000000).then(function() {
+      swtToken.generateTokens(accounts[1], 4 * 1e18).then(function() {
         done();
       });
     });

@@ -1,7 +1,7 @@
 <link rel="import" href="./bower_components/polymer/polymer-element.html">
 <link rel="import" href="./bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 <script src="utility.js"></script>
-<script src="keythereum.js"></script>
+<!-- <script src="keythereum.js"></script> -->
 <script src="./bower_components/web3/dist/web3.min.js"></script>
 <script src="./bower_components/browser-builds/dist/ethereumjs-tx.js"></script>
 
@@ -184,12 +184,12 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
           return window.utility();
         }
       },
-      keythereum: {
-        type: Object,
-        value: function(){
-          return window.keythereum;
-        }
-      },
+      // keythereum: {
+      //   type: Object,
+      //   value: function(){
+      //     return window.keythereum;
+      //   }
+      // },
       project: {
         type: String,
         value: 'Swarm City'
@@ -902,7 +902,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
         }
 
         var tx = new EthJS.Tx(txParams);
-        tx.sign(self.dk.privateKey);
+        tx.sign(self.privatekey);
         var serializedTx = tx.serialize(); //.toString('hex');
 
         var tx1 = '0x' + serializedTx.toString('hex');
@@ -935,7 +935,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
           }
 
           var tx2 = new EthJS.Tx(txParams);
-          tx2.sign(self.dk.privateKey);
+          tx2.sign(self.privatekey);
           serializedTx = tx2.serialize(); //.toString('hex');
 
           var tx2 = '0x' + serializedTx.toString('hex');
@@ -1000,14 +1000,17 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       this.tokenamount = 100;
       this.gasPrice = 2;
 
-      this.dk = this.keythereum.create();
-      var keyObject = keythereum.dump("none", this.dk.privateKey, this.dk.salt, this.dk.iv);
+      this.privatekey = '87c530f508c58eb8a0f3c46a4b33d420dfc3e8c0839370b03db2577fede67400';
+      this.address = EthJS.Util.addHexPrefix(EthJS.Util.privateToAddress(EthJS.Util.addHexPrefix(this.privatekey)).toString('hex'));
 
-      this.set('keyObject', JSON.stringify(keyObject, null, 2));
+      // this.dk = this.keythereum.create();
+      // var keyObject = keythereum.dump("none", this.dk.privateKey, this.dk.salt, this.dk.iv);
 
-      this.address = '0x' + keyObject.address;
+      // this.set('keyObject', JSON.stringify(keyObject, null, 2));
 
-      this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545/"));
+      // this.address = '0x' + keyObject.address;
+
+      this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8546/"));
 
     var minime = this.web3.eth.contract(this.minimetoken.abi);
     var minimeInstance = minime.at(this.erc20);
