@@ -6,30 +6,68 @@
 <script src="./bower_components/browser-builds/dist/ethereumjs-tx.js"></script>
 
 <link rel="import" href="./bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="./shared-styles.html">
 
 <dom-module id="gs-client">
   <template>
 
-    <style>
+    <style include="shared-styles">
       :host {
         display: block;
       }
+
+      h1 {
+         @apply --body-default-wide;
+         text-align: center;
+      }
+      p {
+         @apply --small-light;
+         text-align: center;
+
+      }
+
+      .btn {
+              width: 275px;
+              height: 72px;
+              line-height: 30px;
+              text-align: center;
+              display: block;
+              border: none;
+              font-size: 15px;
+              cursor: pointer;
+              box-sizing: border-box;
+              padding: 20px;
+              color: var(--sc-white);
+              background-color: var(--sc-blue);
+              box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+              -o-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+              -moz-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+              -webkit-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+              overflow: hidden;
+              margin: 30px auto 0;
+              font-size: 18px;
+              font-weight: bold;
+              text-align: center;
+          }
+
+
     </style>
 
-    <div>My address: <b>0x[[address]]</b></div>
+    <p>My address: <b>0x[[address]]</b></p>
     <hr>
 
     <iron-pages selected="{{selectedpage}}">
-      <div on-tap="getPrice">
+      <div>
         <h1>Welcome to the gas station!</h1>
         <p>How many transactions do you want to fill up for?</p>
-        <form>
-          <input type="radio" name="txs" value="10">1</input><br />
-          <input type="radio" name="txs" value="10">10</input><br />
-          <input type="radio" name="txs" value="10">20</input><br />
-          <input type="radio" name="txs" value="10">50</input><br />
-          <input type="radio" name="txs" value="10">100</input>
-        </form>
+        <div>
+          <p>1</p>
+          <p>10</p>
+          <p>20</p>
+          <p>50</p>
+          <p>100</p>
+        </div>
+        <div class="btn" on-tap="getPrice"><p>Continue</p></div>
       </div>
       <div>
         <h1>Our best offer:</h1>

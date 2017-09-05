@@ -1,0 +1,998 @@
+<!--
+@license
+Copyright (c) 2017 Swarm City
+This code may only be used under the license found at https://github.com/swarmcity/license
+-->
+<link rel="import" href="./bower_components/polymer/polymer-element.html">
+<!--
+Only add styles that are being used on more than one page.
+Page specific styles belong on the page not here.
+Colors are all lower case, There is a space after the :
+-->
+<dom-module id="shared-styles">
+    <template>
+        <style>
+             :host {
+                /* users can not select unless we explicity allow */
+                -webkit-tap-highlight-color: transparent;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                cursor: default;
+
+                /*----------COLORS----------*/
+                /* Primary tone */
+                --sc-yellow: #EFD96F;
+                --sc-blue: #24B1FF;
+                /* Secondary tone */
+                --sc-green: #7AD69C;
+                --sc-red: #F55858;
+                --sc-grey4: #333333;
+                /* Additional colors */
+                --sc-white: #FAFAFA;
+                --sc-grey1: #F2F2F2;
+                --sc-grey2: #BFBFBF;
+                --sc-grey3: #666666;
+                --sc-green2: #23B460;
+                --sc-red2: #D0021B;
+
+                /*----------TYPOGRAPHY----------*/
+                --main-title1: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 700;
+                    font-size: 35px;
+                    letter-spacing: 0;
+                    line-height: 36px;
+                }
+                --main-title1-wide: {
+                    @apply --main-title1;
+                    font-size: 55px;
+                    line-height: 55px;
+                }
+                --main-title2: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 700;
+                    font-size: 28px;
+                    letter-spacing: 0;
+                    line-height: 36px;
+                }
+                --main-title3: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 700;
+                    font-size: 26px;
+                    letter-spacing: 0px;
+                    line-height: 32px;
+                }
+                --main-title4: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 700;
+                    font-size: 22px;
+                    letter-spacing: 0;
+                    line-height: 27px;
+                }
+                --body-default: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 300;
+                    font-size: 16px;
+                    letter-spacing: 0;
+                    line-height: 19px;
+                }
+                --body-default-wide: {
+                    @apply --body-default;
+                    font-size: 25px;
+                    line-height: 25px;
+                }
+                --body-bold: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 700;
+                    font-size: 16px;
+                    letter-spacing: 0;
+                    line-height: 19px;
+                }
+                --body-detail: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 200;
+                    font-size: 20px;
+                    letter-spacing: 0;
+                    line-height: 24px;
+                }
+                --body-button: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 700;
+                    font-size: 18px;
+                    letter-spacing: 0;
+                    line-height: 22px;
+                }
+                --small-light: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 300;
+                    font-size: 12px;
+                    letter-spacing: 0;
+                    line-height: 15px;
+                }
+                --small-light-wide: {
+                    @apply --small-light;
+                    font-size: 16px;
+                    line-height: 19px;
+                }
+                --small-bold: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 700;
+                    font-size: 12px;
+                    letter-spacing: 0;
+                    line-height: 15px;
+                }
+                --smallest-light: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 300;
+                    font-size: 10px;
+                    letter-spacing: 0;
+                    line-height: 13px;
+                }
+                --smallest-bold: {
+                    font-family: Montserrat, sans-serif;
+                    font-weight: 700;
+                    font-size: 10px;
+                    letter-spacing: 0;
+                    line-height: 13px;
+                }
+
+                /*----------ICONS----------*/
+                --retina: {
+                    background-image: url('../../images/SwarmCity-Sprite-doublesize-green.png');
+                }
+                --sprite: {
+                    background-image: url('../../images/SwarmCity-Sprite-normal.png');
+                    background-repeat: no-repeat;
+                    background-size: 288px 270px;
+                }
+                --icon-normal: {
+                    @apply --sprite;
+                    width: 54px;
+                    height: 54px;
+                }
+                --icon-small: {
+                    @apply --sprite;
+                    width: 36px;
+                    height: 36px;
+                }
+                --icon-mini: {
+                    @apply --sprite;
+                    width: 18px;
+                    height: 18px;
+                }
+                --vmark-grey4-normal: {
+                    @apply --icon-normal;
+                    background-position: -0px -0px;
+                }
+                --vmark-blue-normal: {
+                    @apply --icon-normal;
+                    background-position: -0px -54px;
+                }
+                --vmark-green-normal: {
+                    @apply --icon-normal;
+                    background-position: -0px -108px;
+                }
+                --vmark-red-normal: {
+                    @apply --icon-normal;
+                    background-position: -0px -162px;
+                }
+                --vmark-white-normal: {
+                    @apply --icon-normal;
+                    background-position: -0px -216px;
+                }
+                --xmark-grey4-normal: {
+                    @apply --icon-normal;
+                    background-position: -54px -0px;
+                }
+                --xmark-grey3-normal: {
+                    @apply --icon-normal;
+                    background-position: -54px -54px;
+                }
+                --xmark-white-normal: {
+                    @apply --icon-normal;
+                    background-position: -54px -108px;
+                }
+                --xmark-white-small: {
+                    @apply --icon-small;
+                    background-position: -144px -234px;
+                }
+                --xmark-grey4-small: {
+                    @apply --icon-small;
+                    background-position: -180px -234px;
+                }
+                --xmark-grey3-small: {
+                    @apply --icon-small;
+                    background-position: -216px -234px;
+                }
+                --arrowleft-grey3-normal: {
+                    @apply --icon-normal;
+                    background-position: -54px -162px;
+                }
+                --arrowleft-grey3-small: {
+                    @apply --icon-small;
+                    background-position: -180px -198px;
+                }
+                --arrowup-white-small: {
+                    @apply --icon-small;
+                    background-position: -108px -234px;
+                }
+                --logout-grey3-normal: {
+                    @apply --icon-normal;
+                    background-position: -54px -216px;
+                }
+                --logout-grey3-mini: {
+                    @apply --icon-mini;
+                    background-position: -216px -198px;
+                }
+                --reply-blue-normal: {
+                    @apply --icon-normal;
+                    background-position: -108px -0px;
+                }
+                --reply-grey4-mini: {
+                    @apply --icon-mini;
+                    background-position: -270px -0px;
+                }
+                --alert-blue-normal: {
+                    @apply --icon-normal;
+                    background-position: -108px -54px;
+                }
+                --plus-blue-normal: {
+                    @apply --icon-normal;
+                    background-position: -162px -0px;
+                }
+                --refresh-blue-normal: {
+                    @apply --icon-normal;
+                    background-position: -162px -54px;
+                }
+                --next-blue-normal: {
+                    @apply --icon-normal;
+                    background-position: -216px -0px;
+                }
+                --next-blue-small: {
+                    @apply --icon-small;
+                    background-position: -252px -198px;
+                }
+                --rotate-blue-normal: {
+                    @apply --icon-normal;
+                    background-position: -216px -54px;
+                }
+                --chat-blue-normal: {
+                    @apply --icon-normal;
+                    background-position: -216px -108px;
+                }
+                --eyeball-grey4-small: {
+                    @apply --icon-small;
+                    background-position: -180px -162px;
+                }
+                --globe-grey4-small: {
+                    @apply --icon-small;
+                    background-position: -216px -162px;
+                }
+                --locationmarker-grey4-small: {
+                    @apply --icon-small;
+                    background-position: -252px -162px;
+                }
+                --swlogo-grey4: {
+                    @apply --sprite;
+                    width: 108px;
+                    height: 54px;
+                    background-position: -108px -108px;
+                }
+                --defaultavatar-grey4: {
+                    @apply --sprite;
+                    width: 72px;
+                    height: 72px;
+                    background-position: -108px -162px;
+                }
+
+                /*----------CUSTOM ELEMENTS----------*/
+                --base-shadow: {
+                    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+                    -webkit-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+                    -moz-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+                    -o-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+                }
+                --icon-button-big: {
+                    @apply --layout-horizontal;
+                    @apply --layout-center-center;
+                    @apply --base-shadow;
+                    background-color: var(--sc-white);
+                    width: 72px;
+                    height: 72px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                }
+                --text-button-big: {
+                    @apply --body-button;
+                    @apply --base-shadow;
+                    text-align: center;
+                    outline: none;
+                    border: 0;
+                    padding: 25px 42px;
+                    border-radius: 2px;
+                    background-color: rgba(255, 255, 255, 0.2);
+                    cursor: pointer;
+                }
+                --text-button-small: {
+                    @apply --small-bold;
+                    @apply --base-shadow;
+                    outline: none;
+                    border: 0;
+                    padding: 18px 24px;
+                    border-radius: 2px;
+                    background-color: rgba(255, 255, 255, 0.2);
+                    cursor: pointer;
+                }
+
+                --button-active: {
+                    transform: scale(0.97, 0.97);
+                }
+
+                --close: {
+                    position: fixed;
+                    top: 18px;
+                    right: 18px;
+                    cursor: pointer;
+                }
+
+
+                /*----------PAGE STRUCTURE----------*/
+                /* STOP SIGNUP */
+                --stop-signup-host: {
+                    background-color: var(--sc-blue);
+                    height: 100vh;
+                    width: 100vw;
+                    display: block;
+                }
+                --stop-signup-container: {
+                    background-color: var(--sc-blue);
+                    height: 100%;
+                    width: 100%;
+                    @apply --layout-vertical;
+                }
+                --stop-signup-upper: {
+                    height: 70%;
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-center-justified;
+                    box-sizing: border-box;
+                    padding: 0 14vw;
+                }
+                --stop-signup-upper-wide: {
+                    height: 55%;
+                    padding: 0 12vw 7vh;
+                    @apply --layout-start;
+                    @apply --layout-end-justified;
+                }
+                --stop-signup-title: {
+                    @apply --main-title1;
+                    color: var(--sc-white);
+                    text-align: center;
+                }
+                --stop-signup-title-wide: {
+                    @apply --main-title1-wide;
+                    text-align: left;
+                }
+                --stop-signup-subtitle: {
+                    @apply --small-light;
+                    margin: 20px 0 0;
+                    color: var(--sc-white);
+                    text-align: center;
+                }
+                --stop-signup-subtitle-wide: {
+                    @apply --small-light-wide;
+                    text-align: left;
+                }
+                --stop-signup-bottom: {
+                    box-sizing: border-box;
+                    padding: 0 14vw;
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-start-justified;
+                    height: 30%;
+                }
+                --stop-signup-bottom-wide: {
+                    height: 45%;
+                    padding: 0 12vw;
+                    @apply --layout-start;
+                }
+                --stop-signup-buttons: {
+                    @apply --layout-horizontal;
+                    @apply --layout-center-center;
+                }
+                --stop-signup-xmark: {
+                    @apply --xmark-grey4-normal;
+                    cursor: pointer;
+                    margin-right: 20px;
+                }
+                --stop-signup-xmark-active: {
+                    @apply --button-active;
+                }
+                --stop-signup-icon-button-big: {
+                    @apply --icon-button-big;
+                }
+                --stop-signup-icon-button-big-active: {
+                    @apply --button-active;
+                }
+                --stop-signup-vmark: {
+                    @apply --vmark-blue-normal;
+                }
+
+                /* LOCATION */
+                --location-host: {
+                    background-color: var(--sc-blue);
+                    height: 100vh;
+                    width: 100vw;
+                    display: block;
+                }
+                --location-container: {
+                    background-color: var(--sc-blue);
+                    height: 100%;
+                    width: 100%;
+                    @apply --layout-vertical;
+                }
+                --location-upper: {
+                    height: 70%;
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-center-justified;
+                    box-sizing: border-box;
+                    padding: 0 14vw;
+                }
+                --location-upper-wide: {
+                    height: 55%;
+                    padding: 0 12vw 7vh;
+                    @apply --layout-start;
+                    @apply --layout-end-justified;
+                }
+                --location-title: {
+                    @apply --main-title1;
+                    color: var(--sc-white);
+                    text-align: center;
+                }
+                --location-title-wide: {
+                    @apply --main-title1-wide;
+                    text-align: left;
+                }
+                --location-subtitle: {
+                    @apply --small-light;
+                    margin: 20px 0 0;
+                    color: var(--sc-white);
+                    text-align: center;
+                }
+                --location-subtitle-wide: {
+                    @apply --small-light-wide;
+                    text-align: left;
+                }
+                --location-bottom: {
+                    box-sizing: border-box;
+                    padding: 0 14vw;
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-start-justified;
+                    height: 30%;
+                }
+                --location-bottom-wide: {
+                    height: 45%;
+                    padding: 0 12vw;
+                    @apply --layout-start;
+                }
+                --location-buttons: {
+                    @apply --layout-horizontal;
+                    @apply --layout-center-center;
+                }
+                --location-xmark: {
+                    @apply --xmark-grey4-normal;
+                    cursor: pointer;
+                    margin-right: 20px;
+                }
+                --location-xmark-active: {
+                    @apply --button-active;
+                }
+                --location-icon-button-big: {
+                    @apply --icon-button-big;
+                }
+                --location-icon-button-big-active: {
+                    @apply --button-active;
+                }
+                --location-vmark: {
+                    @apply --vmark-blue-normal;
+                }
+
+                /* NEW-HERE */
+                --new-here-host: {
+                    background-color: var(--sc-blue);
+                    height: 100vh;
+                    width: 100vw;
+                    display: block;
+                }
+                --new-here-container: {
+                    background-color: var(--sc-blue);
+                    height: 100%;
+                    width: 100%;
+                    @apply --layout-vertical;
+                }
+                --new-here-upper: {
+                    height: 60%;
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-center-justified;
+                    box-sizing: border-box;
+                    padding: 0 14vw;
+                }
+                --new-here-upper-wide: {
+                    height: 55%;
+                    padding: 0 12vw 7vh;
+                    @apply --layout-start;
+                    @apply --layout-end-justified;
+                }
+                --new-here-title: {
+                    @apply --main-title1;
+                    color: var(--sc-white);
+                    text-align: center;
+                }
+                --new-here-title-wide: {
+                    @apply --main-title1-wide;
+                    text-align: left;
+                }
+                --new-here-subtitle: {
+                    @apply --small-light;
+                    margin: 20px 0 0;
+                    color: var(--sc-white);
+                    text-align: center;
+                }
+                --new-here-subtitle-wide: {
+                    @apply --small-light-wide;
+                    text-align: left;
+                }
+                --new-here-bottom: {
+                    box-sizing: border-box;
+                    padding: 0 14vw;
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-start-justified;
+                    height: 40%;
+                }
+                --new-here-bottom-wide: {
+                    height: 45%;
+                    padding: 0 12vw;
+                    @apply --layout-start;
+                }
+                --new-here-buttons: {
+                    @apply --layout-vertical;
+                    @apply --layout-center-center;
+                    width: 100%;
+                }
+                --new-here-buttons-wide: {
+                    @apply --layout-horizontal;
+                    @apply --layout-start-justified;
+                }
+                --new-here-text-button-big: {
+                    @apply --layout-vertical;
+                    @apply --layout-center-center;
+                    @apply --text-button-big;
+                    color: var(--sc-white);
+                    box-sizing: border-box;
+                    width: 100%;
+                    height: 15vh;
+                    margin: 0 14px 14px 0;
+                    max-width: 276px;
+                    max-height: 75px;
+                }
+                --new-here-text-button-big-active: {
+                    @apply --button-active;
+                }
+                --new-here-close: {
+                    @apply --xmark-white-normal;
+                    @apply --close;
+                }
+
+                /* RESTORE-ACCOUNT */
+                --restore-account-host: {
+                    background-color: var(--sc-white);
+                    height: 100vh;
+                    width: 100vw;
+                    display: block;
+                }
+                --restore-account-container: {
+                    @apply --layout-vertical;
+                    background-color: var(--sc-white);
+                    height: 100%;
+                    width: 100%;
+                }
+                --restore-account-upper: {
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-center-justified;
+                    height: 60%;
+                    box-sizing: border-box;
+                    padding: 0 14vw;
+                }
+                --restore-account-upper-wide: {
+                    height: 55%;
+                    padding: 0 12vw 7vh;
+                    @apply --layout-start;
+                    @apply --layout-end-justified;
+                }
+                --restore-account-text: {
+                    @apply --body-default;
+                    text-align: center;
+                }
+                --restore-account-text-wide: {
+                    @apply --body-default-wide;
+                }
+
+                --restore-account-bottom: {
+                    box-sizing: border-box;
+                    padding: 0 14vw;
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-start-justified;
+                    height: 40%;
+                }
+                --restore-account-bottom-wide: {
+                    @apply --layout-start;
+                    height: 45%;
+                    padding: 0 12vw;
+                }
+                --restore-account-buttons: {
+                    @apply --layout-vertical;
+                    @apply --layout-center-center;
+                    width: 100%;
+                }
+                --restore-account-buttons-wide: {
+                    @apply --layout-horizontal;
+                    @apply --layout-start-justified;
+                }
+                --restore-account-text-button-big: {
+                    @apply --layout-vertical;
+                    @apply --layout-center-center;
+                    @apply --text-button-big;
+                    background-color: var(--sc-grey1);
+                    color: var(--sc-blue);
+                    box-sizing: border-box;
+                    width: 100%;
+                    height: 15vh;
+                    margin: 0 14px 14px 0;
+                    max-width: 276px;
+                    max-height: 75px;
+                }
+                --restore-account-text-button-big-active: {
+                    @apply --button-active;
+                }
+                --restore-account-close: {
+                    @apply --xmark-grey4-normal;
+                    @apply --close;
+                }
+
+                /* JSON-FILE */
+                --json-file-host: {
+                    background-color: var(--sc-white);
+                    height: 100vh;
+                    width: 100vw;
+                    display: block;
+                }
+                --json-file-container: {
+                    @apply --layout-vertical;
+                    background-color: var(--sc-white);
+                    height: 100%;
+                    width: 100%;
+                }
+                --json-file-upper: {
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-center-justified;
+                    height: 60%;
+                    box-sizing: border-box;
+                    padding: 0 14vw;
+                }
+                --json-file-upper-wide: {
+                    @apply --layout-start;
+                    @apply --layout-end-justified;
+                    height: 55%;
+                    padding: 0 12vw 7vh;
+                }
+                --json-file-group: {
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-center-justified;
+                    width: 100%;
+                    margin: 20vh 0 0 0;
+                }
+
+                --json-file-text: {
+                    @apply --body-default;
+                    text-align: center;
+                }
+                --json-file-text-wide: {
+                    @apply --body-default-wide;
+                }
+
+                --json-file-text-button-big: {
+                    @apply --layout-vertical;
+                    @apply --layout-center-center;
+                    @apply --text-button-big;
+                    background-color: var(--sc-grey1);
+                    color: var(--sc-blue);
+                    box-sizing: border-box;
+                    width: 100%;
+                    max-width: 326px;
+                    max-height: 75px;
+                    margin: 20px 0 0;
+                }
+                --json-file-text-button-big-active: {
+                    @apply --button-active;
+                }
+
+                --json-file-bottom: {
+                    box-sizing: border-box;
+                    padding: 0 14vw;
+                    @apply --layout-vertical;
+                    @apply --layout-center;
+                    @apply --layout-start-justified;
+                    height: 40%;
+                }
+                --json-file-bottom-wide: {
+                    @apply --layout-start;
+                    height: 45%;
+                    padding: 0 12vw;
+                }
+
+                --json-file-icon-button-big: {
+                    @apply --icon-button-big;
+                }
+                --json-file-icon-button-big-active: {
+                    @apply --button-active;
+                }
+                --json-file-vmark: {
+                    @apply --vmark-blue-normal;
+                }
+                --json-file-close: {
+                    @apply --xmark-grey4-normal;
+                    @apply --close;
+                }
+
+
+                /***********************************/
+                --blue-links: {
+                    color: var(--swarm-city-blue);
+                    text-decoration: none;
+                    border-bottom: 1px dotted var(--swarm-city-blue);
+                    font-size: 12px;
+                    font-weight: 400;
+                    cursor: pointer;
+                }
+                --grey-links: {
+                    color: var(--grey-4);
+                    text-decoration: none;
+                    border-bottom: 1px dotted var(--grey-4);
+                    font-size: 12px;
+                    font-weight: 400;
+                    cursor: pointer;
+                }
+                --big-btn: {
+                    width: 276px;
+                    height: 30px;
+                    line-height: 30px;
+                    text-align: center;
+                    margin-bottom: 10px;
+                    display: block;
+                    border: none;
+                    outline: none;
+                    font-size: 15px;
+                    cursor: pointer;
+                    font-weight: 900;
+                    color: var(--grey-4);
+                    padding: 28px 42px 28px 42px;
+                    background-color: rgba(255, 255, 255, 0.1);
+                    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+                    -o-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+                    -moz-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+                    -webkit-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+                    overflow: hidden;
+                }
+                --big-btn-hover: {
+                    color: black;
+                }
+
+                --display-my-info-balance: {
+                    font-weight: 800;
+                    font-size: 24px;
+                    color: #EFD96F;
+                }
+                --display-my-info-username: {
+                    line-height: 20px;
+                    min-width: 270px;
+                    font-weight: 800;
+                    color: #333333;
+                    font-size: 12px;
+                }
+                --display-my-info-avatar: {
+                    border-radius: 50%;
+                    height: 60px;
+                    width: 60px;
+                    background-color: grey;
+                    padding-right: 22px;
+                }
+                --display-my-info-container: {
+                    @apply --layout-horizontal;
+                    margin: 85px 0 0 85px;
+                    max-width: 420px;
+                }
+                --display-hashtag-list-container: {
+                    margin-left: 10px;
+                    margin-top: 10px;
+                }
+                --display-hashtag-list-hashtag: {
+                    height: 36px;
+                    width: 206px;
+                    color: #353435;
+                    font-size: 30px;
+                    font-weight: 800;
+                    line-height: 36px;
+                    line-height: 36px;
+                    cursor: pointer
+                }
+                --display-hashtag-list-deals: {
+                    height: 13px;
+                    width: 250.08px;
+                    color: #353435;
+                    font-size: 10px;
+                    font-weight: 300;
+                    line-height: 20px;
+                    margin-bottom: 20px;
+                }
+                --page-hashtag-list-back: {
+                    width: 40px;
+                    height: 40px;
+                    border-radius: 50%;
+                    margin-bottom: 10px;
+                    background: url('../../../images/swarm-city-sprite.png') -45px 60px;
+                }
+                --display-deal-btn: {
+                    display: block;
+                    width: 80px;
+                    height: 80px;
+                    background: url('../../../images/swarm-city-sprite.png') -770px -89px;
+                    cursor: pointer;
+                }
+                --distance-slider-container: {
+                    width: 100%;
+                    min-width: 280px;
+                    @apply --layout-vertical;
+                }
+                --distance-slider-filter-list: {
+                    font-size: 12px;
+                    font-weight: 800;
+                    text-align: right;
+                    text-decoration: underline;
+                    cursor: pointer;
+                    color: var(--grey-2);
+                }
+                --distance-slider: {
+                    --paper-slider-knob-color: var(--swarm-city-yellow);
+                    --paper-slider-active-color: var(--swarm-city-yellow);
+                    width: 100%;
+                    cursor: pointer;
+                    margin-bottom: 18px;
+                }
+                --distance-slider-description: {
+                    font-size: 11px;
+                    font-weight: 400;
+                    margin: 0 0 0 10px;
+                }
+                --display-hashtag-about-toggle: {
+                    color: var(--swarm-city-blue);
+                    font-size: 12px;
+                    line-height: 15px;
+                    font-weight: 800;
+                    margin: 5px 0px 10px 0px;
+                    text-transform: lowercase;
+                    cursor: pointer;
+                    text-decoration: underline;
+                }
+                --display-hashtag-about-box: {
+                    position: relative;
+                    z-index: -1;
+                    background-color: rgb(235, 235, 235);
+                    padding: 20px;
+                }
+                --display-hashtag-about-maintained: {
+                    color: #797979;
+                    font-weight: 400;
+                    font-size: 13px;
+                }
+                --display-hashtag-about-contact: {
+                    color: #CACACA;
+                    padding: 20px 0 10px 0;
+                    font-size: 13px;
+                }
+                --display-hashtag-deals-container: {
+                    margin-bottom: 2px;
+                    padding: 15px;
+                    background-color: var(--swarm-city-white);
+                    cursor: pointer;
+                }
+                --display-hashtag-deals-avatar: {
+                    border-radius: 50%;
+                    height: 30px;
+                    width: 30px;
+                }
+                --display-hashtag-deals-top-container: {
+                    margin-left: 8px;
+                    width: 180px;
+                    display: block;
+                    @apply --layout-horizontal;
+                    @apply --layout-wrap;
+                }
+                --display-hashtag-deals-time: {
+                    width: 100%;
+                    display: block;
+                    font-size: 10px;
+                    font-weight: 400;
+                    text-transform: lowercase;
+                    color: var(--grey-2);
+                }
+                --display-hashtag-deals-name: {
+                    width: 100%;
+                    display: block;
+                    color: var(--swarm-city-blue);
+                    text-decoration: none;
+                    font-size: 12px;
+                    font-weight: bold;
+                }
+                --display-hashtag-deals-description: {
+                    @apply --body-default;
+                    color: var(--grey-4);
+                    width: 220px;
+                    margin-top: 10px;
+                }
+                --display-hashtag-deals-for: {
+                    font-size: 10px;
+                    width: 100%;
+                    display: block;
+                }
+                --display-hashtag-deals-amount: {
+                    width: 80px;
+                    color: var(--swarm-city-yellow);
+                    font-weight: bold;
+                    font-size: 14px;
+                    padding-top: 24px;
+                    text-align: right;
+                }
+                --display-upload-container: {
+                    display: block;
+                    height: var(--display-upload-file-height, 135px);
+                    width: var(--display-upload-file-width, 135px);
+                    position: relative;
+                }
+                --display-upload-button: {
+                    overflow: hidden;
+                    position: absolute;
+                    cursor: pointer;
+                    right: var(--display-upload-file-button-right, -10px);
+                    bottom: var(--display-upload-file-button-bottom, -10px);
+                    height: var(--display-upload-file-button-height, 45px);
+                    width: var(--display-upload-file-button-width, 45px);
+                    border-radius: 50%;
+                    border: 1px solid var(--display-upload-file-button-border-color, #979797);
+                    background-color: var(--display-upload-file-button-backgrond-color, #59B2FC);
+                }
+                --display-upload-preview: {
+                    height: 135px;
+                    width: 135px;
+                    border-radius: 50%;
+                    border: 1px solid #979797;
+                    background-color: #D8D8D8;
+                }
+                --display-upload-input: {
+                    position: relative;
+                    top: -200px;
+                    left: -200px;
+                }
+            }
+        </style>
+    </template>
+</dom-module>
