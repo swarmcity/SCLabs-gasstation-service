@@ -5,61 +5,122 @@
 <script src="./bower_components/web3/dist/web3.min.js"></script>
 <script src="./bower_components/browser-builds/dist/ethereumjs-tx.js"></script>
 
+<link rel="import" href="./bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="./bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="./shared-styles.html">
 
 <dom-module id="gs-client">
   <template>
 
-    <style include="shared-styles">
-      :host {
-        display: block;
-      }
+  <style include="shared-styles">
+  :host {
+    display: block;
+    @apply --layout-horizontal;
+    @apply --layout-center-justified;
+    background-color: var(--sc-grey1);
+  }
+  .balances {
+    @apply --layout-horizontal;
+    @apply --layout-center-justified;
+    margin-bottom: 40px;
+  }
+  .balance_single {
+    background-color: var(--sc-grey2);
+    @apply --layout-vertical;
+    @apply --layout-center-center;
+    width: 100px;
+  }
+  .spacer {
+    width: 20px;
+  }
+  .close {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    width: 20px;
+    height: 20px;
+    background: url('./images/swarm-city-sprite.png') -60px -84px;
+    cursor: pointer;
+  }
+  .big {
+    width: 115px;
+    height: 115px;
+    min-width: 115px;
+    min-height: 115px;
+    overflow: hidden;
+    border-radius: 50%;
+    text-align: center;
+  }
+  .big img {
+    width: 117px;
+    height: 117px;
+    min-width: 117px;
+    min-height: 117px;
+    margin: -1px 0px 0px -1px;
+    text-align: center;
+  }
+  .container {
+    margin-top: 60px;
+    max-width: 400px;
+  }
+  h1 {
+    @apply --body-default-wide;
+    text-align: center;
+  }
+  p {
+    @apply --body-default;
+    text-align: center;
+  }
+  .btn {
+    @apply --small-light;
+    text-align: center;
+    width: 275px;
+    height: 72px;
+    line-height: 30px;
+    text-align: center;
+    display: block;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    box-sizing: border-box;
+    padding: 20px;
+    color: var(--sc-white);
+    background-color: var(--sc-blue);
+    box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+    -o-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+    -moz-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    margin: 10px auto 0;
+    font-weight: bold;
+    text-align: center;
+  }
 
-      h1 {
-         @apply --body-default-wide;
-         text-align: center;
-      }
-      p {
-         @apply --small-light;
-         text-align: center;
-      }
 
-      .btn {
-        @apply --small-light;
-        text-align: center;
-              width: 275px;
-              height: 72px;
-              line-height: 30px;
-              text-align: center;
-              display: block;
-              border: none;
-              font-size: 18px;
-              cursor: pointer;
-              box-sizing: border-box;
-              padding: 20px;
-              color: var(--sc-white);
-              background-color: var(--sc-blue);
-              box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
-              -o-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
-              -moz-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
-              -webkit-box-shadow: 0px 1px 2px -1px rgba(0, 0, 0, 0.5);
-              overflow: hidden;
-              margin: 10px auto 0;
-              font-weight: bold;
-              text-align: center;
-          }
+  </style>
 
-
-    </style>
-
-    <p>My address: <b>[[address]]</b></p>
-    <p>My ETH balance: <b>[[ethbalance]]</b> // My SWT balance: <b>[[swtbalance]]</b></p>
-    <hr>
-
+  <div class="close" on-click="_close"></div>
+  <div class="container">
     <iron-pages selected="{{selectedpage}}">
       <div>
-        <h1>Welcome to the Gas Station</h1>
+        <div class="big">
+          <img src="/gs-client/images/gasstation.png" />
+        </div>
+        <h1>Gas Station</h1>
+        <p>Swarm City is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly. For every deal made on Swarm City, a transaction is registered on the Ethereum blockchain, that's why you need gas.</p>
+        <p>&nbsp;</p>
+        <p>My current address: <b>[[address]]</b></p>
+        <p>&nbsp;</p>
+        <div class="balances">
+          <div class="balance_single"><h1>[[ethbalance]]</h1><p>ETH</p></div>
+          <div class="spacer"></div>
+          <div class="balance_single"><h1>[[swtbalance]]</h1><p>SWT</p></div>
+        </div>
+        <div class="btn" on-tap="getPrice">Get more gas</div>
+      </div>
+
+
+      <div>
         <p>How many deals do you want to fill up for?</p>
         <div>
           <div class="btn" on-tap="getPrice">1 for {{pricefor1}} SWT</div>
@@ -68,8 +129,6 @@
           <div class="btn" on-tap="getPrice">50</div>
           <div class="btn" on-tap="getPrice">100</div>
         </div>
-      </div>
-      <div>
         <h1>Our best offer:</h1>
         <div><pre>[[getPriceResult_pre]]</pre></div>
         <div on-tap="fillUp"><b>Fill her up</b></div>
@@ -83,10 +142,11 @@
         <div>You now have: ETH balance / SWT balance</div>
       </div>
     </iron-pages>
+  </div>
 
-    <!-- <pre>[[keyObject]]</pre> -->
+  <!-- <pre>[[keyObject]]</pre> -->
 
-  </template>
+</template>
 
   <script>
     /**
