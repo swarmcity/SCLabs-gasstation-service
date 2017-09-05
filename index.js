@@ -114,7 +114,21 @@ function getprice(token, cb) {
 }
 
 app.get('/price', function(req, res) {
-	getprice('swarm-city', function(error, p) {
+
+	var tokensymbol;
+
+	switch(req.query.tokenaddress){
+		case '0x622344764c896380a437ba2a24db0992ea11796c': // testRPC
+			tokensymbol = 'swarm-city';
+			break;
+		default:
+			return res.status(500).json({
+				error: 'unknown token address ' + req.query.tokenaddress;
+			});
+			break;
+	}
+
+	getprice(tokensymbol, function(error, p) {
 		if (error) {
 			return res.status(500).json({
 				error: error
