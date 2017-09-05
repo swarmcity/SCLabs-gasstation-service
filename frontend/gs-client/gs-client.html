@@ -140,7 +140,7 @@
           <div class="spacer"></div>
           <div class="balance_single"><div class="balance">[[tokenbalance]]</div><div>{{short}}</div></div>
         </div>
-        <div class="btn" on-tap="getPrice">Get more gas</div>
+        <div class="btn" on-tap="toStation">Get more gas</div>
       </div>
 
       <!-- page 1 -->
@@ -861,10 +861,12 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
     };
   }
 
+  toStation() {
+    this.selectedpage = 1;
+  }
 
   getPrice() {
     //debugger;
-    this.selectedpage = 0;
     return new Promise((resolve, reject) => {
       // Load the translations.json file
       const xobj = new XMLHttpRequest();
