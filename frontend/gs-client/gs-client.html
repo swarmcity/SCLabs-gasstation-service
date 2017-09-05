@@ -34,6 +34,12 @@
     @apply --layout-vertical;
     @apply --layout-center-center;
     width: 100px;
+    overflow: hidden;
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    min-width: 120px;
+    min-height: 120px;
   }
   .spacer {
     width: 20px;
@@ -75,6 +81,11 @@
   p {
     @apply --body-default;
     text-align: center;
+  }
+  .balance {
+    @apply --body-default-wide;
+    font-size: 26px;
+    margin-bottom: 5px;
   }
   .btn {
     @apply --small-light;
@@ -118,9 +129,9 @@
         <p>My current address: [[address]]</p>
         <p>&nbsp;</p>
         <div class="balances">
-          <div class="balance_single"><h1>[[ethbalance]]</h1><p>ETH</p></div>
+          <div class="balance_single"><div class="balance">[[ethbalance]]</div><div>ETH</div></div>
           <div class="spacer"></div>
-          <div class="balance_single"><h1>[[swtbalance]]</h1><p>SWT</p></div>
+          <div class="balance_single"><div class="balance">[[swtbalance]]</div><div>SWT</div></div>
         </div>
         <div class="btn" on-tap="getPrice">Get more gas</div>
       </div>
