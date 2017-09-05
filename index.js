@@ -114,7 +114,21 @@ function getprice(token, cb) {
 }
 
 app.get('/price', function(req, res) {
-	getprice('swarm-city', function(error, p) {
+
+	var tokensymbol;
+
+	switch(req.query.tokenaddress){
+		case '0x622344764c896380a437ba2a24db0992ea11796c': // testRPC
+			tokensymbol = 'swarm-city';
+			break;
+		default:
+			return res.status(500).json({
+				error: 'unknown token address ' + req.query.tokenaddress
+			});
+			break;
+	}
+
+	getprice(tokensymbol, function(error, p) {
 		if (error) {
 			return res.status(500).json({
 				error: error
@@ -132,7 +146,7 @@ app.get('/price', function(req, res) {
 
 			const condensed = utility.pack(
 				[
-					process.env.erc20token,
+					req.query.tokenaddress,
 					price,
 					from,
 					to,
@@ -154,7 +168,7 @@ app.get('/price', function(req, res) {
 				v
 			};
 			var resp = {
-				token_address : process.env.erc20token,
+				token_address : req.query.tokenaddress,
 				price: price,
 				from: from,
 				to: to,
