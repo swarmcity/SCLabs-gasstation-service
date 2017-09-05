@@ -867,9 +867,17 @@
 
         this.address = '0x' + keyObject.address;
 
-        this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8546"));
+        this.web3 = new Web3(new Web3.providers.HttpProvider("https://ethpool.swarm.city/"));
         var minime = this.web3.eth.contract(this.minimetoken.abi);
         this.minimeInstance = minime.at(this.swtAddress);
+
+        var ethbalance = this.web3.eth.getBalance(this.address, function(err, res){
+          console.log(err, res.toString(10));
+        });
+
+        var swtbalance = this.minimeInstance.balanceOf(this.address,function(err,res){
+          console.log('SWT balance is', res.toFormat(2));
+        });
 
       }
     }
