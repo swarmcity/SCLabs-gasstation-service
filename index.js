@@ -118,7 +118,7 @@ app.get('/price', function(req, res) {
 	var tokensymbol;
 
 	switch(req.query.tokenaddress){
-		case '0x4fb32f39331ebd6edad2e2aa1f672eac7dc2315a': // testRPC
+		case '0x528bcefc62fab000a82d2360fd20ddcda3e7dd00': // testRPC
 			tokensymbol = 'swarm-city';
 			break;
 		default:
@@ -195,7 +195,7 @@ app.post('/fillup', function(req, res) {
     //var tx1res = [txGasPrice,txGas,weiNeeded];
     console.log(decodetx);
 
-    web3.eth.sendRawTransaction(decodetx.raw,function(err,res){
+    web3.eth.sendRawTransaction(req.body.tx1,function(err,res){
     	console.log('tx sent',err,res);
     })
 
