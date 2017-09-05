@@ -118,7 +118,7 @@ app.get('/price', function(req, res) {
 	var tokensymbol;
 
 	switch(req.query.tokenaddress){
-		case '0x622344764c896380a437ba2a24db0992ea11796c': // testRPC
+		case '0x4fb32f39331ebd6edad2e2aa1f672eac7dc2315a': // testRPC
 			tokensymbol = 'swarm-city';
 			break;
 		default:
