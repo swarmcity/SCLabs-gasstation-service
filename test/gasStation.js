@@ -58,22 +58,43 @@ contract('Token Setup', function(accounts) {
     it("should deploy a gasStation", function(done) {
       gasStation.new(swtToken.address, {
         gas: 4700000,
-        value: 100 * 1e18,  // put 100 ETH on the contract.
+        from: accounts[0]
+        //value: self.web3.toWei(1, "ether"), // put 100 ETH on the contract.
       }).then(function(instance) {
         gasStationInstance = instance;
         assert.isNotNull(gasStationInstance);
         console.log('gasstation created at address', gasStationInstance.address);
-        
+        console.log('owner is ',accounts[0]);
         done();
       });
     });
 
+
     it("should read balance of the gasstation", function(done) {
-      self.web3.eth.getBalance(accounts[1], function(err, ethbalance) {
+      self.web3.eth.getBalance(gasStationInstance.address, function(err, ethbalance) {
         console.log('gasstation owns', ethbalance.toNumber(10), 'Wei');
         done();
       });
     });
+
+    it("should be able to refill the gasStation", function(done) {
+      self.web3.eth.sendTransaction({
+        from: accounts[0],
+        to: gasStationInstance.address,
+        value: self.web3.toWei(1, "ether")
+      },function(err){
+        done();
+      })
+    });
+
+
+    it("should read balance of the gasstation", function(done) {
+      self.web3.eth.getBalance(gasStationInstance.address, function(err, ethbalance) {
+        console.log('gasstation owns', ethbalance.toNumber(10), 'Wei');
+        done();
+      });
+    });
+
   });
 
   // describe('access gasstation', function() {
