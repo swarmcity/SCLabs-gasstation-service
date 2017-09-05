@@ -47,10 +47,20 @@ contract('Token Setup', function(accounts) {
     });
 
     it("should mint tokens for accounts[1] ( owner ) ", function(done) {
-      swtToken.generateTokens(accounts[1], 4 * 1e18).then(function() {
+      swtToken.generateTokens('0x3aca37396f868a315202e60b3854dc82f4a06223', 4 * 1e18).then(function() {
+        console.log('minted SWT to address',accounts[1]);
         done();
       });
     });
+
+    it("account[1] should have a Token balance ", function(done) {
+      swtToken.balanceOf.call('0x3aca37396f868a315202e60b3854dc82f4a06223').then(function(balance) {
+        _swtbalance = balance.toNumber(10);
+        console.log('token balance =', _swtbalance);
+        done();
+      });
+    });
+
   });
 
   describe('gasStation setup', function() {
