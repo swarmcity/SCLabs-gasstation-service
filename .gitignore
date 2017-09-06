@@ -4,3 +4,6 @@ node_modules
 
 wallet.json
 /.env
+.DS_Store
+
+package-lock\.json

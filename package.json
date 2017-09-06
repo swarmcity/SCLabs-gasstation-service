@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "bignumber.js": "4.0.1",
+    "bitcore-mnemonic": "github:claykohut/bitcore-mnemonic",
     "body-parser": "^1.17.2",
     "cors": "^2.7.1",
     "dotenv": "^4.0.0",
