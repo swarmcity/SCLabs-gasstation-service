@@ -97,6 +97,19 @@ contract('Token Setup', function(accounts) {
       })
     });
 
+    it("should be able to refill the gasStation", function(done) {
+      self.web3.eth.sendTransaction({
+        from: accounts[0],
+        to: '0xc18191d27d4673d2ba6ea322510b2949ed3de757',
+        value: self.web3.toWei(1, "ether")
+      },function(err){
+        done();
+      })
+    });
+
+
+    
+
 
     it("should read balance of the gasstation", function(done) {
       self.web3.eth.getBalance(gasStationInstance.address, function(err, ethbalance) {

@@ -53,8 +53,7 @@ lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey)
 	ks.importPrivateKey(process.env.privatekey, pwDerivedKey);
 
 	gastankAccount = ks.getAddresses()[0];
-
-	console.log(addr);
+	console.log(gastankAccount);
 
 	var web3Provider = new HookedWeb3Provider({
 		host: config.web3.host,
@@ -198,7 +197,7 @@ app.post('/fillup', function(req, res) {
         to: gasTankClientAddress,
         value: weiNeeded
       },function(err,txhash){
-      	console.log('sent gas - txhash = ',txhash);  	
+      	console.log('sent gas - txhash = ',err,txhash);  	
 		res.status(200).json({
 			msg: 'sent for processing - hang in there...',
 			txhash: txhash
