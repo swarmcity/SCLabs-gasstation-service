@@ -149,7 +149,7 @@
         <p>How many deals do you want to fill up for?</p>
         <div>
           <iron-selector attr-for-selected="name" on-iron-selected="getPrice">
-            <div class="btn" name="1">1 for {{pricefor1}} {{short}}</div>
+            <div class="btn" on-tap="fillUp" name="1">1 for {{pricefor1}} {{short}}</div>
             <div class="btn" name="10">10 for {{pricefor10}} {{short}}</div>
             <div class="btn" name="20">20 for {{pricefor20}} {{short}}</div>
             <div class="btn" name="50">50 for {{pricefor50}} {{short}}</div>
@@ -204,12 +204,12 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
           return window.utility();
         }
       },
-      // keythereum: {
-      //   type: Object,
-      //   value: function(){
-      //     return window.keythereum;
-      //   }
-      // },
+      keythereum: {
+        type: Object,
+        value: function(){
+          return window.keythereum;
+        }
+      },
       project: {
         type: String,
         value: 'Swarm City'
@@ -938,7 +938,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
         }
 
         var tx = new EthJS.Tx(txParams);
-        tx.sign(self.privatekey);
+        tx.sign(self.privatekey_buffer);
         var serializedTx = tx.serialize(); //.toString('hex');
 
         var tx1 = '0x' + serializedTx.toString('hex');
@@ -971,7 +971,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
           }
 
           var tx2 = new EthJS.Tx(txParams);
-          tx2.sign(self.privatekey);
+          tx2.sign(self.privatekey_buffer);
           serializedTx = tx2.serialize(); //.toString('hex');
 
           var tx2 = '0x' + serializedTx.toString('hex');
@@ -1038,8 +1038,12 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
       this.address = EthJS.Util.addHexPrefix(EthJS.Util.privateToAddress(EthJS.Util.addHexPrefix(this.privatekey)).toString('hex'));
 
+      this.privatekey_buffer = new EthJS.Buffer.Buffer(this.privatekey, "hex");
+ 
       // this.dk = this.keythereum.create();
       // var keyObject = keythereum.dump("none", this.dk.privateKey, this.dk.salt, this.dk.iv);
+      // debugger;
+      // var r =  this.dk.privateKey.toString('hex');
 
       // this.set('keyObject', JSON.stringify(keyObject, null, 2));
 
@@ -1051,8 +1055,10 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
     var minimeInstance = minime.at(this.erc20);
 
     minimeInstance.balanceOf(this.address,function(err,res){
-      console.log('SWT balance is', res.toFormat(2));
-      self.tokenbalance = res;
+      if (!err){
+        console.log('SWT balance is', res.toFormat(2));
+        self.tokenbalance = res;
+      }
     });
 
 

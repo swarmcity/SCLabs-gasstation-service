@@ -195,9 +195,9 @@ app.post('/fillup', function(req, res) {
     //var tx1res = [txGasPrice,txGas,weiNeeded];
     console.log(decodetx);
 
-    web3.eth.sendRawTransaction(req.body.tx1,function(err,res){
-    	console.log('tx sent',err,res);
-    })
+    // web3.eth.sendRawTransaction(req.body.tx1,function(err,res){
+    // 	console.log('tx sent',err,res);
+    // })
 
 	res.status(200).json({
 		msg: 'sent for processing - hang in there...'
