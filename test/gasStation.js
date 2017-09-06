@@ -2,6 +2,7 @@ var MiniMeTokenFactory = artifacts.require("./MiniMeToken.sol");
 var MiniMeToken = artifacts.require("./MiniMeToken.sol");
 var gasStation = artifacts.require("./gasStation.sol");
 // var etherDelta = artifacts.require("./etherdelta.sol");
+var utility = require('../utility.js')();
 
 contract('Token Setup', function(accounts) {
 
@@ -46,43 +47,37 @@ contract('Token Setup', function(accounts) {
       });
     });
 
-    it("should mint tokens for accounts[1] ( owner ) ", function(done) {
+    it("should mint tokens for gasstation client ", function(done) {
       swtToken.generateTokens('0x3aca37396f868a315202e60b3854dc82f4a06223', 4 * 1e18).then(function() {
-        console.log('minted SWT to address',accounts[1]);
+        console.log('minted SWT to address', accounts[1]);
         done();
       });
     });
 
-    it("account[1] should have a Token balance ", function(done) {
-      swtToken.balanceOf.call('0x3aca37396f868a315202e60b3854dc82f4a06223').then(function(balance) {
-        _swtbalance = balance.toNumber(10);
-        console.log('token balance =', _swtbalance);
+    it("should send ETH to the gasstation-server", function(done) {
+      self.web3.eth.sendTransaction({
+        from: accounts[0],
+        to: '0xc18191d27d4673d2ba6ea322510b2949ed3de757',
+        value: self.web3.toWei(1, "ether")
+      }, function(err) {
         done();
-      });
+      })
     });
 
   });
 
   describe('gasStation setup', function() {
 
-    it("should deploy a gasStation", function(done) {
+    it("should deploy a gasStation-contract", function(done) {
       gasStation.new(swtToken.address, {
         gas: 4700000,
         from: accounts[0]
-        //value: self.web3.toWei(1, "ether"), // put 100 ETH on the contract.
+          //value: self.web3.toWei(1, "ether"), // put 100 ETH on the contract.
       }).then(function(instance) {
         gasStationInstance = instance;
         assert.isNotNull(gasStationInstance);
         console.log('gasstation created at address', gasStationInstance.address);
-        console.log('owner is ',accounts[0]);
-        done();
-      });
-    });
-
-
-    it("should read balance of the gasstation", function(done) {
-      self.web3.eth.getBalance(gasStationInstance.address, function(err, ethbalance) {
-        console.log('gasstation owns', ethbalance.toNumber(10), 'Wei');
+        console.log('owner is ', accounts[0]);
         done();
       });
     });
@@ -92,30 +87,54 @@ contract('Token Setup', function(accounts) {
         from: accounts[0],
         to: gasStationInstance.address,
         value: self.web3.toWei(1, "ether")
-      },function(err){
+      }, function(err) {
         done();
       })
     });
 
-    it("should be able to refill the gasStation", function(done) {
-      self.web3.eth.sendTransaction({
-        from: accounts[0],
-        to: '0xc18191d27d4673d2ba6ea322510b2949ed3de757',
-        value: self.web3.toWei(1, "ether")
-      },function(err){
-        done();
-      })
-    });
+  });
 
+  describe('post-setup tests', function() {
 
-    
-
-
-    it("should read balance of the gasstation", function(done) {
-      self.web3.eth.getBalance(gasStationInstance.address, function(err, ethbalance) {
-        console.log('gasstation owns', ethbalance.toNumber(10), 'Wei');
+    it("gasstation-server should have ETH", function(done) {
+      self.web3.eth.getBalance('0xc18191d27d4673d2ba6ea322510b2949ed3de757', function(err, ethbalance) {
+        console.log('gasstation-server owns', ethbalance.toNumber(10), 'Wei');
+        assert.ok(ethbalance.toNumber(10)>0);
         done();
       });
+    });
+
+
+    it("gasstation-contract should have ETH", function(done) {
+      self.web3.eth.getBalance(gasStationInstance.address, function(err, ethbalance) {
+        console.log('gasstation-contract owns', ethbalance.toNumber(10), 'Wei');
+        assert.ok(ethbalance.toNumber(10)>0);
+        done();
+      });
+    });
+
+    it("gasstation-client should have a Token balance ", function(done) {
+      swtToken.balanceOf.call('0x3aca37396f868a315202e60b3854dc82f4a06223').then(function(balance) {
+        _swtbalance = balance.toNumber(10);
+        console.log('gasstation-client token balance =', _swtbalance);
+        assert.ok(_swtbalance>0);
+        done();
+      });
+    });
+
+    it("should print instructions", function(done) {
+      console.log('----------------------------------------------------');
+      console.log('-----------------STEP 1-----------------------------');
+      console.log('put in frontend/index.html -> gs-client attribute');
+      console.log('erc20="'+swtToken.address+'"');
+      console.log('-----------------STEP 2-----------------------------');
+      console.log('put in file .env');
+      console.log('gastankaddress=\''+gasStationInstance.address+'\'');
+      console.log('erc20token=\''+swtToken.address+'\'');
+      console.log('----------------------------------------------------');
+      done();
+
+
     });
 
   });

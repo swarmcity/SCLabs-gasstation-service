@@ -35,8 +35,9 @@ contract gasStation is Ownable {
 		usedhashes[hash] = true;
 	}
 
-	function withdraw(){
-
+	function withdraw(address token_address,address to) onlyOwner {
+		IMiniMeToken token = IMiniMeToken(token_address);
+		require(token.transfer(to,token.balanceOf(this)));
 	}
 
 }

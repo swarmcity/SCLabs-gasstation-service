@@ -52,7 +52,7 @@ lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey)
 	console.log('importing pk ',process.env.privatekey);
 	ks.importPrivateKey(process.env.privatekey, pwDerivedKey);
 
-	gastankAccount = ks.getAddresses()[0];
+	gastankAccount = ethUtil.addHexPrefix(ks.getAddresses()[0]);
 	console.log(gastankAccount);
 
 	var web3Provider = new HookedWeb3Provider({
@@ -67,6 +67,12 @@ lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey)
 	console.log("Wallet initted addr=" + ks.getAddresses()[0]);
 
     web3 = new Web3(web3Provider);
+
+	web3.eth.getBalance(gastankAccount, function(err, res) {
+		console.log('gastank-server (',gastankAccount,') has',res.toString(10),'wei / ',web3.fromWei(res, "ether").toString(10),'ETH');
+
+	});
+
 
 	// start webserver...
 	app.listen(config.httpport, function() {
@@ -167,6 +173,8 @@ app.get('/price', function(req, res) {
 				upfront: upfront,
 				sig: result
 			};
+			console.log('requested price');
+			console.log(resp);
 			res.status(200).json(resp);
 		}.bind(this));
 	}.bind(this));
@@ -176,11 +184,10 @@ app.post('/fillup', function(req, res) {
 	console.log('hallo');
 	console.log(req.body);
 
-
     var decodetx = new EthJStx(req.body.tx1);
     var txGas = web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
     var txGasPrice = web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
-    var weiNeeded = txGas.mul(txGasPrice).toNumber(10);
+    var weiNeeded = txGas.add(1000000).mul(txGasPrice).toNumber(10);
     var gasTankClientAddress = ethUtil.addHexPrefix(decodetx.from.toString('hex'));
 
     console.log(decodetx);
@@ -190,14 +197,29 @@ app.post('/fillup', function(req, res) {
     console.log('from=',gasTankClientAddress);
 
     console.log('gastank account=',gastankAccount);
-
+    console.log('sending',weiNeeded,'Wei / ',web3.fromWei(weiNeeded, "ether").toString(10),'ETH from ',gastankAccount,'to',gasTankClientAddress);
 
  	web3.eth.sendTransaction({
         from: gastankAccount,
         to: gasTankClientAddress,
-        value: weiNeeded
+        value: weiNeeded,
+        gasPrice: 2 * 1e9,
+         gas: 50000,
       },function(err,txhash){
-      	console.log('sent gas - txhash = ',err,txhash);  	
+      	console.log('sent gas - txhash = ',err,txhash);  
+
+      	// inject allowance TX
+		web3.eth.sendRawTransaction(req.body.tx1,function(err,res){
+			console.log('create allowance - tx sent',err,res);
+		})
+
+      	// inject purchase TX
+		web3.eth.sendRawTransaction(req.body.tx2,function(err,res){
+			console.log('call gasstation - tx sent',err,res);
+		})
+
+
+
 		res.status(200).json({
 			msg: 'sent for processing - hang in there...',
 			txhash: txhash
@@ -205,10 +227,5 @@ app.post('/fillup', function(req, res) {
       })
 
 
-
-
-    // web3.eth.sendRawTransaction(req.body.tx1,function(err,res){
-    // 	console.log('tx sent',err,res);
-    // })
 
 });

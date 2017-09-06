@@ -918,17 +918,20 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       //debugger;
     });
     minimeInstance.approve.estimateGas(this.getPriceResult.to, this.gastankaddress, this.tokenamount, {
-      from: this.address
+      from: self.address
     }, function(err, res) {
 
       var gasRequired = res;
 
       // get nonce
-      self.web3.eth.getTransactionCount(this.address, function(err, nonce) {
+      self.web3.eth.getTransactionCount(self.address, function(err, nonce) {
 
         if (!nonce){
+          console.log('nonce of address',self.address,'is undefined...');
           nonce = 0;
         }
+
+        console.log('nonce of address',self.address,'is',nonce);
 
         var txParams = {
           nonce: nonce++,
@@ -944,6 +947,11 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
         var serializedTx = tx.serialize(); //.toString('hex');
 
         var tx1 = '0x' + serializedTx.toString('hex');
+
+
+        console.log('tx1');
+        console.log(txParams);
+        console.log(tx1);
 
         var gasstation = self.web3.eth.contract(self.gasstation.abi);
         self.gasstationInstance = gasstation.at(self.getPriceResult.from);
@@ -978,11 +986,15 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
           var tx2 = '0x' + serializedTx.toString('hex');
 
+          console.log('tx2');
+          console.log(txParams);
+          console.log(tx2);
 
           var res = {
             tx1: tx1,
             tx2: tx2
           };
+
 
           // send the TX to the backend
           var xhr = new XMLHttpRequest();
