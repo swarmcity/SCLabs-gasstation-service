@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 import './IMiniMeToken.sol';
-import '../installed_contracts/zeppelin/contracts/ownership/Ownable.sol';
+import './Ownable.sol';
 
 
 contract gasStation is Ownable {
