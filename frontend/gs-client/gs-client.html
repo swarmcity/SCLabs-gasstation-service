@@ -222,6 +222,8 @@
     </iron-pages>
   </div>
 
+  <div on-tap="gettankbalance">bal</div>
+
 </template>
 
 <script>
@@ -981,6 +983,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
           gasPrice: self.gasPrice,
           gasLimit: gasRequired,
           to: self.getPriceResult.to,
+          from: self.getPriceResult.from,
           data: txData,
           chainId: 1
         }
@@ -1018,7 +1021,8 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
             nonce: nonce++,
             gasPrice: self.gasPrice,
             gasLimit: 1000000,
-            to: self.getPriceResult.from,
+            from: self.getPriceResult.from,
+            to: self.getPriceResult.to,
             data: txData,
             chainId: 1
           }
@@ -1055,6 +1059,18 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
         });
       });
 
+    }
+
+    gettankbalance() {
+      var minime = this.web3.eth.contract(this.minimetoken.abi);
+      var minimeInstance = minime.at(this.erc20);
+      var self = this;
+      minimeInstance.balanceOf(this.getPriceResult.to, function(err, res) {
+        if (!err) {
+          console.log('GT balance at '+self.getPriceResult.to+'is', res.toFormat(2));
+          //self.tokenbalance = res;
+        }
+      });
     }
 
     ready() {
