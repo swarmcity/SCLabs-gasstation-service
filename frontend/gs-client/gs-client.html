@@ -23,6 +23,7 @@
   .balances {
     @apply --layout-horizontal;
     @apply --layout-center-justified;
+    @apply(--layout-center);
     margin-bottom: 40px;
   }
   .vertical {
@@ -47,7 +48,10 @@
     text-overflow: ellipsis; overflow: hidden; width: 300px; height: 1.2em; white-space: nowrap;
   }
   .spacer {
-    width: 20px;
+    width: 30px;
+    text-align: center;
+    color: var(--sc-lightgray);
+    font-size: 26px;
   }
   .close {
     position: fixed;
@@ -193,11 +197,26 @@
             <div class="gasbtn" name="50">50</div>
           </iron-selector>
         </div>
-        <div class="btn" on-tap="toStation">Continue ></div>
+        <div class="btn" on-tap="toPersonalizedoffer">Continue ></div>
 
         <!-- <h1>Our best offer:</h1>
         <div><pre>[[getPriceResult_pre]]</pre></div> -->
         <!-- <div on-tap="fillUp"><b>Fill her up</b></div> -->
+      </div>
+
+      <!-- page personalizedoffer -->
+      <div>
+        <div>
+          <p>This offer is personal and limited to the next 5 blocks.</p>
+          <div class="balances">
+            <div class="balance_single"><div class="balance">[[numberofdeals]]</div><div>DEALS</div></div>
+            <div class="spacer">=</div>
+            <div class="balance_single"><div class="balance">[[swtamount]]</div><div>{{short}}</div></div>
+          </div>
+
+        </div>
+        <div class="btn" on-tap="fillUp">Start filling</div>
+
       </div>
 
       <!-- page 2 -->
@@ -907,6 +926,10 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
     this.selectedpage = 1;
   }
 
+  toPersonalizedoffer() {
+    this.selectedpage = 2;
+  }
+
   doSomething() {
     console.log('something was selected, ', this.selecteditem);
   }
@@ -1077,7 +1100,9 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       minimeInstance.balanceOf(this.address, function(err, res) {
         if (!err) {
           console.log('SWT balance is', res.toFormat(2));
-          self.tokenbalance = res;
+          var tokenshit = res / 1e18;
+          self.tokenbalance = tokenshit.toFixed(2);
+          //self.tokenbalance = res;
         }
       });
 
