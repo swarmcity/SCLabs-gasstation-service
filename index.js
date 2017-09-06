@@ -5,7 +5,7 @@ var cors = require('cors');
 var Web3 = require('web3');
 var HookedWeb3Provider = require("hooked-web3-provider");
 var EthJStx = require("ethereumjs-tx");
-var ethUtil = require('ethereumjs-util');
+var ethUtil = require("ethereumjs-util");
 var lightwallet = require("eth-lightwallet");
 var config = require('./config.json');
 const sha256 = require('js-sha256').sha256;
@@ -39,9 +39,7 @@ function strStartsWith(str, prefix) {
 	return str.indexOf(prefix) === 0;
 }
 
-var account;
-var account_privatekey;
-var pwderivedkey;
+var gastankAccount;
 var web3;
 
 password = '1234';
@@ -50,10 +48,11 @@ lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey)
 
 	var seed = 'unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle';
 	var ks = new lightwallet.keystore(seed, pwDerivedKey);
-
+	
+	console.log('importing pk ',process.env.privatekey);
 	ks.importPrivateKey(process.env.privatekey, pwDerivedKey);
 
-	var addr = ks.getAddresses();
+	gastankAccount = ks.getAddresses()[0];
 
 	console.log(addr);
 
@@ -78,15 +77,6 @@ lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey)
 
 
 });
-
-function getTimeStamp() {
-	return Math.floor(new Date().getTime() / 1000);
-}
-
-// Get faucet balance in ether ( or other denomination if given )
-function getFaucetBalance(denomination) {
-	return parseFloat(web3.fromWei(web3.eth.getBalance(account).toNumber(), denomination || 'ether'));
-}
 
 app.use(cors());
 app.use(express.static('./frontend'));
@@ -118,12 +108,13 @@ app.get('/price', function(req, res) {
 	var tokensymbol;
 
 	switch(req.query.tokenaddress){
-		case '0x528bcefc62fab000a82d2360fd20ddcda3e7dd00': // testRPC
+		case process.env.erc20token: // testRPC
 			tokensymbol = 'swarm-city';
 			break;
 		default:
+			var err = 'unknown token address ' + req.query.tokenaddress + ' - I only know ' + process.env.erc20token
 			return res.status(500).json({
-				error: 'unknown token address ' + req.query.tokenaddress
+				error: err
 			});
 			break;
 	}
@@ -191,11 +182,29 @@ app.post('/fillup', function(req, res) {
     var txGas = web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
     var txGasPrice = web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
     var weiNeeded = txGas.mul(txGasPrice).toNumber(10);
+    var gasTankClientAddress = ethUtil.addHexPrefix(decodetx.from.toString('hex'));
 
     console.log(decodetx);
     console.log('txGas=',txGas);
     console.log('txGasPrice=',txGasPrice);
     console.log('weiNeeded=',weiNeeded);
+    console.log('from=',gasTankClientAddress);
+
+    console.log('gastank account=',gastankAccount);
+
+
+ 	web3.eth.sendTransaction({
+        from: gastankAccount,
+        to: gasTankClientAddress,
+        value: weiNeeded
+      },function(err,txhash){
+      	console.log('sent gas - txhash = ',txhash);  	
+		res.status(200).json({
+			msg: 'sent for processing - hang in there...',
+			txhash: txhash
+		});
+      })
+
 
 
 
@@ -203,7 +212,4 @@ app.post('/fillup', function(req, res) {
     // 	console.log('tx sent',err,res);
     // })
 
-	res.status(200).json({
-		msg: 'sent for processing - hang in there...'
-	});
 });
