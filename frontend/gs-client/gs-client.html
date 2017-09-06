@@ -913,7 +913,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       console.log('SWT balance is', res.toFormat(2));
       self.tokenbalance = res;
     });
-
+debugger;
     var txData = minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
       //debugger;
     });
@@ -932,7 +932,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
           nonce: nonce++,
           gasPrice: self.gasPrice,
           gasLimit: res,
-          to: self.swtAddress,
+          to: this.getPriceResult.to,
           data: txData,
           chainId: 1
         }
@@ -982,45 +982,19 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
             tx2: tx2
           };
 
+          // send the TX to the backend
           var xhr = new XMLHttpRequest();
           xhr.open("POST", '/fillup', true);
-
-          //Send the proper header information along with the request
           xhr.setRequestHeader("Content-Type", "application/json");
-          //xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-          //            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-          xhr.onreadystatechange = function() {//Call a function when the state changes.
+          xhr.onreadystatechange = function() {
             if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-              // Request finished. Do processing here.
               console.log(xhr);
             }
           }
-          //xhr.send("foo=bar&lorem=ipsum");
-          // xhr.send('string');
-          // xhr.send(new Blob());
-          // xhr.send(new Int8Array());
           xhr.send(JSON.stringify(res));
-          // xhr.send(document);
-
-
 
           self.fillUpResult_pre = JSON.stringify(res, null, 2);
 
-          // serializedTx is sent over the HTTP API
-          // then the service does this :
-
-          // var decodetx = new EthJS.Tx(serializedTx);
-          // var txGas = self.web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
-          // var txGasPrice = self.web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
-
-          // var weiNeeded = txGas.mul(txGasPrice).toNumber(10);
-
-          //decodetx.
-
-          // this.web3.eth.sendRawTransaction(serializedTx, function(err, res) {
-          //   console.log('ok', err, res);
-          // });
         });
       });
 
@@ -1031,38 +1005,26 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
       var self = this;
 
-      //this.swtAddress = "0x2a52dfa1802877775fa7cd4eb7c88bcd0d3873a6";
-
       this.tokenamount = 100;
-      this.gasPrice = 2;
+      this.gasPrice = 2 * 1e9; // 2 GWei
 
       this.address = EthJS.Util.addHexPrefix(EthJS.Util.privateToAddress(EthJS.Util.addHexPrefix(this.privatekey)).toString('hex'));
 
       this.privatekey_buffer = new EthJS.Buffer.Buffer(this.privatekey, "hex");
- 
-      // this.dk = this.keythereum.create();
-      // var keyObject = keythereum.dump("none", this.dk.privateKey, this.dk.salt, this.dk.iv);
-      // debugger;
-      // var r =  this.dk.privateKey.toString('hex');
-
-      // this.set('keyObject', JSON.stringify(keyObject, null, 2));
-
-      // this.address = '0x' + keyObject.address;
 
       this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8546/"));
 
-    var minime = this.web3.eth.contract(this.minimetoken.abi);
-    var minimeInstance = minime.at(this.erc20);
+      var minime = this.web3.eth.contract(this.minimetoken.abi);
+      var minimeInstance = minime.at(this.erc20);
 
-    minimeInstance.balanceOf(this.address,function(err,res){
-      if (!err){
-        console.log('SWT balance is', res.toFormat(2));
-        self.tokenbalance = res;
-      }
-    });
+      minimeInstance.balanceOf(this.address, function(err, res) {
+        if (!err) {
+          console.log('SWT balance is', res.toFormat(2));
+          self.tokenbalance = res;
+        }
+      });
 
-
-      this.web3.eth.getBalance(this.address, function(err, res){
+      this.web3.eth.getBalance(this.address, function(err, res) {
         console.log(err, res.toString(10));
         self.ethbalance = res.toString(10);
       });

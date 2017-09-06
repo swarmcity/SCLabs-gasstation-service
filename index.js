@@ -188,12 +188,16 @@ app.post('/fillup', function(req, res) {
 
 
     var decodetx = new EthJStx(req.body.tx1);
-    // var txGas = web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
-    // var txGasPrice = web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
-    // var weiNeeded = txGas.mul(txGasPrice).toNumber(10);
+    var txGas = web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
+    var txGasPrice = web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
+    var weiNeeded = txGas.mul(txGasPrice).toNumber(10);
 
-    //var tx1res = [txGasPrice,txGas,weiNeeded];
     console.log(decodetx);
+    console.log('txGas=',txGas);
+    console.log('txGasPrice=',txGasPrice);
+    console.log('weiNeeded=',weiNeeded);
+
+
 
     // web3.eth.sendRawTransaction(req.body.tx1,function(err,res){
     // 	console.log('tx sent',err,res);
