@@ -913,13 +913,15 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       console.log('SWT balance is', res.toFormat(2));
       self.tokenbalance = res;
     });
-debugger;
+
     var txData = minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
       //debugger;
     });
     minimeInstance.approve.estimateGas(this.getPriceResult.to, this.gastankaddress, this.tokenamount, {
       from: this.address
     }, function(err, res) {
+
+      var gasRequired = res;
 
       // get nonce
       self.web3.eth.getTransactionCount(this.address, function(err, nonce) {
@@ -931,8 +933,8 @@ debugger;
         var txParams = {
           nonce: nonce++,
           gasPrice: self.gasPrice,
-          gasLimit: res,
-          to: this.getPriceResult.to,
+          gasLimit: gasRequired,
+          to: self.getPriceResult.to,
           data: txData,
           chainId: 1
         }
