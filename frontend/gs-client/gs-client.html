@@ -158,6 +158,8 @@
 
   </style>
 
+  <template is="dom-if" if="{{gasstationready}}">
+
   <div class="close" on-click="_close"></div>
   <div class="container">
     <div class="vertical">
@@ -250,7 +252,26 @@
   </iron-pages>
 </div>
 
-<div on-tap="gettankbalance">bal</div>
+</template>
+
+<template is="dom-if" if="{{!gasstationready}}">
+  <div class="container">
+    <div class="vertical">
+      <div class="big">
+        <img src="/gs-client/images/gasstation.png" />
+      </div>
+      <h1>Gas Station</h1>
+      <p>&nbsp;</p>
+      <p><b>Could not find a valid wallet.</b></p>
+      <p>Gas Station could not find a valid wallet. Follow the instructions to set up your wallet to see this amazing component in action.</p>
+      <p>&nbsp;</p>
+      <div class="btn" on-tap="">Retry</div>
+
+    </div>
+  </div>
+</template>
+
+<!-- <div on-tap="gettankbalance">bal</div> -->
 
 </template>
 
@@ -278,6 +299,10 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
         value: function(){
           return window.keythereum;
         }
+      },
+      gasstationready: {
+        type: Boolean,
+        value: false
       },
       project: {
         type: String,
