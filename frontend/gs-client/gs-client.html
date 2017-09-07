@@ -222,13 +222,15 @@
 
       </div>
 
-      <!-- page 2 -->
+      <!-- page 3 -->
       <div>
-        <h1>Filling now</h1>
+        <p>Filling now</p>
+        <h1>{{fillingbalance}} / {{swtamount}} SWT</h1>
         <div><pre>[[fillUpResult_pre]]</pre></div>
+        <div class="btn" on-tap="getPrice">Continue</div>
       </div>
 
-      <!-- page 3 -->
+      <!-- page 4 -->
       <div>
         <h1>Done!</h1>
         <p>Balances for current address: [[address]]</p>
@@ -302,6 +304,10 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       },
       privatekey: {
         type: String
+      },
+      fillingbalance: {
+        type: Number,
+        value: 0
       },
       gasstation: {
         type: Object,
@@ -974,120 +980,137 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
   fillUp() {
 
-    //this.selectedpage = 2;
-    var self=this;
+    this.selectedpage = 3;
 
-    var minime = this.web3.eth.contract(this.minimetoken.abi);
-    var minimeInstance = minime.at(this.getPriceResult.token_address);
+    this.swtamount = 1;
 
-    minimeInstance.balanceOf(this.address,function(err,res){
-      console.log('SWT balance is', res.toFormat(2));
-      self.tokenbalance = res;
-    });
+    var self = this;
+    var now = 0;
 
-    console.log('sending approval for ',this.tokenamount,'to',this.getPriceResult.to);
+    var x = setInterval(function() {
+      now = now+0.01;
+      self.fillingbalance = now.toFixed(2);
 
-    var txData = minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
-      //debugger;
-    });
-    minimeInstance.approve.estimateGas(this.getPriceResult.to, this.gastankaddress, this.tokenamount, {
-      from: self.address
-    }, function(err, res) {
-
-      var gasRequired = res;
-
-      // get nonce
-      self.web3.eth.getTransactionCount(self.address, function(err, nonce) {
-
-        if (!nonce){
-          console.log('nonce of address',self.address,'is undefined...');
-          nonce = 0;
-        }
-
-        console.log('nonce of address',self.address,'is',nonce);
-
-        var txParams = {
-          nonce: nonce++,
-          gasPrice: self.gasPrice,
-          gasLimit: gasRequired,
-          to: self.getPriceResult.to,
-          from: self.getPriceResult.from,
-          data: txData,
-          chainId: 1
-        }
-
-        var tx = new EthJS.Tx(txParams);
-        tx.sign(self.privatekey_buffer);
-        var serializedTx = tx.serialize(); //.toString('hex');
-
-        var tx1 = '0x' + serializedTx.toString('hex');
-
-
-        console.log('tx1');
-        console.log(txParams);
-        console.log(tx1);
-
-        var gasstation = self.web3.eth.contract(self.gasstation.abi);
-        self.gasstationInstance = gasstation.at(self.getPriceResult.from);
-
-        console.log('price * amount - upfront = ' , self.getPriceResult.price*1-self.getPriceResult.upfront);
-
-        txData = self.gasstationInstance.fillup.getData(
-          self.getPriceResult.token_address,
-          self.getPriceResult.price,
-          self.getPriceResult.valid_until,
-          self.getPriceResult.random,
-          self.getPriceResult.upfront,
-          1,
-          self.getPriceResult.sig.v,
-          self.getPriceResult.sig.r,
-          self.getPriceResult.sig.s,
-          function(a, b) {
-            //debugger;
-          });
-
-
-          txParams = {
-            nonce: nonce++,
-            gasPrice: self.gasPrice,
-            gasLimit: 1000000,
-            from: self.getPriceResult.from,
-            to: self.getPriceResult.to,
-            data: txData,
-            chainId: 1
-          }
-
-          var tx2 = new EthJS.Tx(txParams);
-          tx2.sign(self.privatekey_buffer);
-          serializedTx = tx2.serialize(); //.toString('hex');
-
-          var tx2 = '0x' + serializedTx.toString('hex');
-
-          console.log('tx2');
-          console.log(txParams);
-          console.log(tx2);
-
-          var res = {
-            tx1: tx1,
-            tx2: tx2
-          };
-
-
-          // send the TX to the backend
-          var xhr = new XMLHttpRequest();
-          xhr.open("POST", '/fillup', true);
-          xhr.setRequestHeader("Content-Type", "application/json");
-          xhr.onreadystatechange = function() {
-            if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-              console.log(xhr);
-            }
-          }
-          xhr.send(JSON.stringify(res));
-
-          self.fillUpResult_pre = JSON.stringify(res, null, 2);
-
-        });
-      });
+      // If the count down is finished, write some text
+      if (now >= self.swtamount) {
+        var audio = new Audio('/gs-client/images/done.wav');
+        audio.play();
+        clearInterval(x);
+      }
+    }, 100);
+    //
+    //
+    // var minime = this.web3.eth.contract(this.minimetoken.abi);
+    // var minimeInstance = minime.at(this.getPriceResult.token_address);
+    //
+    // minimeInstance.balanceOf(this.address,function(err,res){
+    //   console.log('SWT balance is', res.toFormat(2));
+    //   self.tokenbalance = res;
+    // });
+    //
+    // console.log('sending approval for ',this.tokenamount,'to',this.getPriceResult.to);
+    //
+    // var txData = minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
+    //   //debugger;
+    // });
+    // minimeInstance.approve.estimateGas(this.getPriceResult.to, this.gastankaddress, this.tokenamount, {
+    //   from: self.address
+    // }, function(err, res) {
+    //
+    //   var gasRequired = res;
+    //
+    //   // get nonce
+    //   self.web3.eth.getTransactionCount(self.address, function(err, nonce) {
+    //
+    //     if (!nonce){
+    //       console.log('nonce of address',self.address,'is undefined...');
+    //       nonce = 0;
+    //     }
+    //
+    //     console.log('nonce of address',self.address,'is',nonce);
+    //
+    //     var txParams = {
+    //       nonce: nonce++,
+    //       gasPrice: self.gasPrice,
+    //       gasLimit: gasRequired,
+    //       to: self.getPriceResult.to,
+    //       from: self.getPriceResult.from,
+    //       data: txData,
+    //       chainId: 1
+    //     }
+    //
+    //     var tx = new EthJS.Tx(txParams);
+    //     tx.sign(self.privatekey_buffer);
+    //     var serializedTx = tx.serialize(); //.toString('hex');
+    //
+    //     var tx1 = '0x' + serializedTx.toString('hex');
+    //
+    //
+    //     console.log('tx1');
+    //     console.log(txParams);
+    //     console.log(tx1);
+    //
+    //     var gasstation = self.web3.eth.contract(self.gasstation.abi);
+    //     self.gasstationInstance = gasstation.at(self.getPriceResult.from);
+    //
+    //     console.log('price * amount - upfront = ' , self.getPriceResult.price*1-self.getPriceResult.upfront);
+    //
+    //     txData = self.gasstationInstance.fillup.getData(
+    //       self.getPriceResult.token_address,
+    //       self.getPriceResult.price,
+    //       self.getPriceResult.valid_until,
+    //       self.getPriceResult.random,
+    //       self.getPriceResult.upfront,
+    //       1,
+    //       self.getPriceResult.sig.v,
+    //       self.getPriceResult.sig.r,
+    //       self.getPriceResult.sig.s,
+    //       function(a, b) {
+    //         //debugger;
+    //       });
+    //
+    //
+    //       txParams = {
+    //         nonce: nonce++,
+    //         gasPrice: self.gasPrice,
+    //         gasLimit: 1000000,
+    //         from: self.getPriceResult.from,
+    //         to: self.getPriceResult.to,
+    //         data: txData,
+    //         chainId: 1
+    //       }
+    //
+    //       var tx2 = new EthJS.Tx(txParams);
+    //       tx2.sign(self.privatekey_buffer);
+    //       serializedTx = tx2.serialize(); //.toString('hex');
+    //
+    //       var tx2 = '0x' + serializedTx.toString('hex');
+    //
+    //       console.log('tx2');
+    //       console.log(txParams);
+    //       console.log(tx2);
+    //
+    //       var res = {
+    //         tx1: tx1,
+    //         tx2: tx2
+    //       };
+    //
+    //
+    //       // send the TX to the backend
+    //       var xhr = new XMLHttpRequest();
+    //       xhr.open("POST", '/fillup', true);
+    //       xhr.setRequestHeader("Content-Type", "application/json");
+    //       xhr.onreadystatechange = function() {
+    //         if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+    //           console.log(xhr);
+    //         }
+    //       }
+    //       xhr.send(JSON.stringify(res));
+    //
+    //       self.fillUpResult_pre = JSON.stringify(res, null, 2);
+    //
+    //     });
+    //   });
 
     }
 
