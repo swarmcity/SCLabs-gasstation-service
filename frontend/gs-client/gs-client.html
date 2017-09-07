@@ -1,4 +1,3 @@
-<link rel="import" href="./bower_components/polymer/polymer-element.html">
 <link rel="import" href="./bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 <script src="utility.js"></script>
 <!-- <script src="keythereum.js"></script> -->
@@ -88,6 +87,11 @@
     text-align: center;
   }
   p {
+    @apply --body-default;
+    text-align: center;
+  }
+
+  div {
     @apply --body-default;
     text-align: center;
   }
@@ -230,7 +234,7 @@
       <h1>{{fillingbalance}} / {{swtamount}} SWT</h1>
       <div><pre>[[fillUpResult_pre]]</pre></div>
       <p>&nbsp;</p>
-      <div id="balancesview" hidden>
+      <div id="balancesview">
         <div class="balances">
           <div class="balance_single"><div class="balance">[[ethbalance]]</div><div>ETH</div></div>
           <div class="spacer"></div>
@@ -247,7 +251,7 @@
       <p>&nbsp;</p>
       <input type="checkbox" name="autofill" value=""> Automatically fill up my gas tank
       <p>&nbsp;</p>
-      <div class="btn" on-tap="getPrice">Exit Gas Station</div>
+      <div class="btn" on-tap="exitStation">Exit Gas Station</div>
     </div>
   </iron-pages>
 </div>
@@ -302,7 +306,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       },
       gasstationready: {
         type: Boolean,
-        value: false
+        value: true
       },
       project: {
         type: String,
@@ -978,6 +982,10 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
     this.selectedpage = 4;
   }
 
+  exitStation() {
+    this.selectedpage = 0;
+  }
+
   doSomething() {
     console.log('something was selected, ', this.selecteditem);
   }
@@ -1017,6 +1025,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
   showbalances() {
     var self = this;
+    //debugger;
     // animation to open up the balances view and check the current balance.
     setTimeout(function() {
       //your code to be executed after 1 second
@@ -1038,7 +1047,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
     var x = setInterval(function() {
       now = now+0.01;
-      audio.play();
+      //audio.play();
       self.fillingbalance = now.toFixed(2);
 
       // If the count down is finished, write some text

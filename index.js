@@ -23,7 +23,7 @@ function isAddress(address) {
 	return /^(0x)?[0-9a-f]{40}$/i.test(address);
 };
 
-// Add 0x to address 
+// Add 0x to address
 function fixaddress(address) {
 	// Strip all spaces
 	address = address.replace(' ', '');
@@ -48,7 +48,7 @@ lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey)
 
 	var seed = 'unhappy nerve cancel reject october fix vital pulse cash behind curious bicycle';
 	var ks = new lightwallet.keystore(seed, pwDerivedKey);
-	
+
 	console.log('importing pk ',process.env.privatekey);
 	ks.importPrivateKey(process.env.privatekey, pwDerivedKey);
 
@@ -69,7 +69,7 @@ lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey)
     web3 = new Web3(web3Provider);
 
 	web3.eth.getBalance(gastankAccount, function(err, res) {
-		console.log('gastank-server (',gastankAccount,') has',res.toString(10),'wei / ',web3.fromWei(res, "ether").toString(10),'ETH');
+		//console.log('gastank-server (',gastankAccount,') has',res.toString(10),'wei / ',web3.fromWei(res, "ether").toString(10),'ETH');
 
 	});
 
@@ -206,7 +206,7 @@ app.post('/fillup', function(req, res) {
         gasPrice: 2 * 1e9,
          gas: 50000,
       },function(err,txhash){
-      	console.log('sent gas - txhash = ',err,txhash);  
+      	console.log('sent gas - txhash = ',err,txhash);
 
       	// inject allowance TX
 		web3.eth.sendRawTransaction(req.body.tx1,function(err,res){
