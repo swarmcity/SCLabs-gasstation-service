@@ -22,17 +22,17 @@ contract gasStation is Ownable {
 		IMiniMeToken token = IMiniMeToken(token_address);
 		require(token.transferFrom(msg.sender,this,amount));
 
-	    bytes32 hash = sha256(token_address,price,msg.sender,this, valid_until,random,upfront);
-	    require (
-			!usedhashes[hash] 
-			&& (ecrecover(hash,v,r,s) == owner) 
-			&& block.number <= valid_until
-	    );
+	     //bytes32 hash = sha256(token_address,price,msg.sender,this, valid_until,random,upfront);
+	  //   require (
+			// !usedhashes[hash] 
+			// && (ecrecover(hash,v,r,s) == owner) 
+			// && block.number <= valid_until
+	  //   );
 
-		msg.sender.transfer(amount * price - upfront);
+		//msg.sender.transfer(amount * price - upfront);
 
 		// invalidate this hash
-		usedhashes[hash] = true;
+		//usedhashes[hash] = true;
 	}
 
 	function withdraw(address token_address,address to) onlyOwner {

@@ -982,6 +982,8 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       self.tokenbalance = res;
     });
 
+    console.log('sending approval for ',this.tokenamount,'to',this.getPriceResult.to);
+
     var txData = minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
       //debugger;
     });
@@ -1025,13 +1027,15 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
         var gasstation = self.web3.eth.contract(self.gasstation.abi);
         self.gasstationInstance = gasstation.at(self.getPriceResult.from);
 
+        console.log('price * amount - upfront = ' , self.getPriceResult.price*1-self.getPriceResult.upfront);
+
         txData = self.gasstationInstance.fillup.getData(
           self.getPriceResult.token_address,
           self.getPriceResult.price,
           self.getPriceResult.valid_until,
           self.getPriceResult.random,
           self.getPriceResult.upfront,
-          100,
+          1,
           self.getPriceResult.sig.v,
           self.getPriceResult.sig.r,
           self.getPriceResult.sig.s,
@@ -1101,7 +1105,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
       var self = this;
 
-      this.tokenamount = 100;
+      this.tokenamount = 1;
       this.gasPrice = 2 * 1e9; // 2 GWei
 
       this.address = EthJS.Util.addHexPrefix(EthJS.Util.privateToAddress(EthJS.Util.addHexPrefix(this.privatekey)).toString('hex'));
@@ -1115,7 +1119,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
       minimeInstance.balanceOf(this.address, function(err, res) {
         if (!err) {
-          console.log('SWT balance is', res.toFormat(2));
+          console.log('SWT balance of client\'s account (',self.address,') is', res.toFormat(2));
           var tokenshit = res / 1e18;
           self.tokenbalance = tokenshit.toFixed(2);
           //self.tokenbalance = res;
@@ -1123,8 +1127,8 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       });
 
       this.web3.eth.getBalance(this.address, function(err, res) {
-        console.log(err, res.toString(10));
-        self.ethbalance = res.toString(10);
+        console.log('ETH balance of client\'s account (',self.address,') is', res.toString(10));
+        self.ethbalance = (res/ 1e18).toFixed(2);
       });
 
       this.getPrice();
