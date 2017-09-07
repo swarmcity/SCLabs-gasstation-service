@@ -169,7 +169,7 @@
     <iron-pages selected="{{selectedpage}}">
       <!-- page 0 -->
       <div>
-        <div>{{project}} is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly, that's why you need gas.</div>
+        <div>{{project}} is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly. Gas makes Swarm City transactions go.</div>
         <div>&nbsp;</div>
         <div>Balances for current address: </div>
         <div class="address">[[address]]</div>
@@ -184,7 +184,7 @@
 
       <!-- page 1 -->
       <div>
-        <p>How many deals do you want to do?</p>
+        <p>How many deals would you like to do?</p>
         <div>
           <iron-selector
             id="selector"
@@ -227,20 +227,25 @@
         <p>Filling now</p>
         <h1>{{fillingbalance}} / {{swtamount}} SWT</h1>
         <div><pre>[[fillUpResult_pre]]</pre></div>
-        <div class="btn" on-tap="getPrice">Continue</div>
-      </div>
-
-      <!-- page 4 -->
-      <div>
-        <h1>Done!</h1>
-        <p>Balances for current address: [[address]]</p>
         <p>&nbsp;</p>
+        <div id="balancesview" hidden>
         <div class="balances">
           <div class="balance_single"><div class="balance">[[ethbalance]]</div><div>ETH</div></div>
           <div class="spacer"></div>
           <div class="balance_single"><div class="balance">[[tokenbalance]]</div><div>{{short}}</div></div>
         </div>
-        <div class="btn" on-tap="getPrice">Exit Gas Station</div>
+        <div class="btn" on-tap="toEnd">Continue</div>
+      </div>
+      </div>
+
+      <!-- page 4 -->
+      <div>
+        <h1>Set up automatic refills</h1>
+        <p>If you want, your gas balance can be automatically refilled when needed.</p>
+        <p>&nbsp;</p>
+        <input type="checkbox" name="autofill" value=""> Automatically fill up my gas tank
+        <p>&nbsp;</p>
+        <div class="btn" on-tap="getPrice">Leave Gas Station</div>
 
       </div>
     </iron-pages>
@@ -308,6 +313,10 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       fillingbalance: {
         type: Number,
         value: 0
+      },
+      swtamount: {
+        type: Number,
+        value: 0.00
       },
       gasstation: {
         type: Object,
@@ -941,6 +950,10 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
     this.selectedpage = 2;
   }
 
+  toEnd() {
+    this.selectedpage = 4;
+  }
+
   doSomething() {
     console.log('something was selected, ', this.selecteditem);
   }
@@ -978,24 +991,37 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
     });
   }
 
+  showbalances() {
+    var self = this;
+    // animation to open up the balances view and check the current balance.
+    setTimeout(function() {
+  //your code to be executed after 1 second
+  self.$.balancesview.hidden = false;
+}, 1000);
+
+
+  }
+
   fillUp() {
 
     this.selectedpage = 3;
-
-    this.swtamount = 1;
+    var audio = new Audio('/gs-client/images/done.m4a');
+    this.swtamount = 1.00;
+    var amounttoget = 0.5;
 
     var self = this;
     var now = 0;
 
     var x = setInterval(function() {
       now = now+0.01;
+      audio.play();
       self.fillingbalance = now.toFixed(2);
 
       // If the count down is finished, write some text
-      if (now >= self.swtamount) {
-        var audio = new Audio('/gs-client/images/done.wav');
+      if (now >= amounttoget) {
         audio.play();
         clearInterval(x);
+        self.showbalances();
       }
     }, 100);
     //
