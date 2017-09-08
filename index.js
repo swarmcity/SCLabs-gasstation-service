@@ -114,6 +114,12 @@ app.get('/tokens', function(req, res) {
 	});
 });
 
+app.get('/p2',function(req,res){
+	getprice('swarm-city', function(error, p) {
+		res.status(200).json({p:p});
+	});
+});
+
 app.get('/price', function(req, res) {
 
 	var tokensymbol;
