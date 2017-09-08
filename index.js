@@ -138,7 +138,6 @@ app.get('/price', function(req, res) {
 			var from = req.query.from;
 			var price = p[0].price_eth * 1e18;
 			var random = Math.floor(Math.random() * 10000000);
-			var upfront = 2000;
 
 			const condensed = utility.pack(
 				[
@@ -148,7 +147,7 @@ app.get('/price', function(req, res) {
 					to,
 					valid_until,
 					random,
-					upfront
+					config.upfrontgas * 2 * 1e9
 				], [160,256,160,160, 256, 256, 256]);
 			const hash = sha256(new Buffer(condensed, 'hex'));
 
@@ -170,7 +169,7 @@ app.get('/price', function(req, res) {
 				to: to,
 				valid_until: blockNumber,
 				random: random,
-				upfront: upfront,
+				upfront: config.upfrontgas * 2 * 1e9,
 				sig: result
 			};
 			console.log('requested price');
@@ -185,12 +184,14 @@ app.post('/fillup', function(req, res) {
 	console.log(req.body);
 
     var decodetx = new EthJStx(req.body.tx1);
-    var txGas = web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
-    var txGasPrice = web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
+    console.log('gas=',decodetx.gas);
+
+    var txGas = web3.toBigNumber(ethUtil.addHexPrefix(decodetx.gas.toString('hex')));
+    var txGasPrice = web3.toBigNumber(ethUtil.addHexPrefix(decodetx.gasPrice.toString('hex')));
     var weiNeeded = txGas.add(1000000).mul(txGasPrice).toNumber(10);
     var gasTankClientAddress = ethUtil.addHexPrefix(decodetx.from.toString('hex'));
 
-    console.log(decodetx);
+    
     console.log('txGas=',txGas);
     console.log('txGasPrice=',txGasPrice);
     console.log('weiNeeded=',weiNeeded);
@@ -208,23 +209,41 @@ app.post('/fillup', function(req, res) {
       },function(err,txhash){
       	console.log('sent gas - txhash = ',err,txhash);  
 
-      	// inject allowance TX
+      	//inject allowance TX
 		web3.eth.sendRawTransaction(req.body.tx1,function(err,res){
 			console.log('create allowance - tx sent',err,res);
 		})
 
-      	// inject purchase TX
-		web3.eth.sendRawTransaction(req.body.tx2,function(err,res){
-			console.log('call gasstation - tx sent',err,res);
-		})
+		console.log('-----FILL TX-----');
+
+ 	decodetx = new EthJStx(req.body.tx2);
+	console.log(decodetx);
+	var txTo = ethUtil.addHexPrefix(decodetx.to.toString('hex'));
+     txGas = web3.toBigNumber('0x' + decodetx.gas.toString('hex'));
+     txGasPrice = web3.toBigNumber('0x' + decodetx.gasPrice.toString('hex'));
+     weiNeeded = txGas.add(1000000).mul(txGasPrice).toNumber(10);
+     gasTankClientAddress = ethUtil.addHexPrefix(decodetx.from.toString('hex'));
+
+    
+    console.log('txTo=',txTo);
+    console.log('txGas=',txGas);
+    console.log('txGasPrice=',txGasPrice);
+    console.log('weiNeeded=',weiNeeded);
+    console.log('from=',gasTankClientAddress);
 
 
+	// inject purchase TX
+	web3.eth.sendRawTransaction(req.body.tx2, function(err, res) {
+		console.log('call gasstation - tx sent', err, res);
+	})
+	console.log('-----/FILL TX-----');
 
-		res.status(200).json({
-			msg: 'sent for processing - hang in there...',
-			txhash: txhash
-		});
-      })
+
+	res.status(200).json({
+		msg: 'sent for processing - hang in there...',
+		txhash: txhash
+	});
+})
 
 
 

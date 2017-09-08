@@ -307,91 +307,134 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
         type: Object,
         value:
         {
-          "contract_name": "gasStation",
-          "abi": [
-            {
-              "constant": true,
-              "inputs": [],
-              "name": "owner",
-              "outputs": [
-                {
-                  "name": "",
-                  "type": "address"
-                }
-              ],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": false,
-              "inputs": [
-                {
-                  "name": "price",
-                  "type": "uint256"
-                },
-                {
-                  "name": "valid_until",
-                  "type": "uint256"
-                },
-                {
-                  "name": "random",
-                  "type": "uint256"
-                },
-                {
-                  "name": "upfront",
-                  "type": "uint256"
-                },
-                {
-                  "name": "amount",
-                  "type": "uint256"
-                },
-                {
-                  "name": "v",
-                  "type": "uint8"
-                },
-                {
-                  "name": "r",
-                  "type": "bytes32"
-                },
-                {
-                  "name": "s",
-                  "type": "bytes32"
-                }
-              ],
-              "name": "fillup",
-              "outputs": [],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "constant": false,
-              "inputs": [
-                {
-                  "name": "newOwner",
-                  "type": "address"
-                }
-              ],
-              "name": "transferOwnership",
-              "outputs": [],
-              "payable": false,
-              "type": "function"
-            },
-            {
-              "inputs": [
-                {
-                  "name": "_tokenAddress",
-                  "type": "address"
-                }
-              ],
-              "payable": true,
-              "type": "constructor"
-            }
-          ],
-          "unlinked_binary": "0x6060604052604051602080610423833981016040528080519150505b5b60008054600160a060020a03191633600160a060020a03161790555b60018054600160a060020a031916600160a060020a0383161790555b505b6103be806100656000396000f300606060405263ffffffff7c01000000000000000000000000000000000000000000000000000000006000350416638da5cb5b8114610053578063f251fc0914610082578063f2fde38b146100b2575b600080fd5b341561005e57600080fd5b6100666100d3565b604051600160a060020a03909116815260200160405180910390f35b341561008d57600080fd5b6100b060043560243560443560643560843560ff60a4351660c43560e4356100e2565b005b34156100bd57600080fd5b6100b0600160a060020a036004351661033a565b005b600054600160a060020a031681565b600154600090600160a060020a03166323b872dd33308885604051602001526040517c010000000000000000000000000000000000000000000000000000000063ffffffff8616028152600160a060020a0393841660048201529190921660248201526044810191909152606401602060405180830381600087803b151561016957600080fd5b6102c65a03f1151561017a57600080fd5b50505060405180519050151561018f57600080fd5b60028933308b8b8b6000604051602001526040518087815260200186600160a060020a0316600160a060020a03166c0100000000000000000000000002815260140185600160a060020a0316600160a060020a03166c01000000000000000000000000028152601401848152602001838152602001828152602001965050505050505060206040518083038160008661646e5a03f1151561022f57600080fd5b5050604051805160008181526002602052604090205490925060ff1615905080156102da5750600054600160a060020a03166001828686866040516000815260200160405260006040516020015260405193845260ff90921660208085019190915260408085019290925260608401929092526080909201915160208103908084039060008661646e5a03f115156102c657600080fd5b505060206040510351600160a060020a0316145b80156102e65750874311155b156102f057600080fd5b33600160a060020a03166108fc8a8781151561030857fe5b049081150290604051600060405180830381858888f19350505050151561032e57600080fd5b5b505050505050505050565b60005433600160a060020a0390811691161461035557600080fd5b600160a060020a0381161561038d576000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b5b5b505600a165627a7a723058200a6ad73f5058d6cc2a693ad547327fc7465c3caba6a306432bee73d00c2ec9e10029",
-          "networks": {},
-          "schema_version": "0.0.5",
-          "updated_at": 1504533550399
+  "contract_name": "gasStation",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
         }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "tr",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "token_address",
+          "type": "address"
+        },
+        {
+          "name": "price",
+          "type": "uint256"
+        },
+        {
+          "name": "valid_until",
+          "type": "uint256"
+        },
+        {
+          "name": "random",
+          "type": "uint256"
+        },
+        {
+          "name": "upfront",
+          "type": "uint256"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "name": "v",
+          "type": "uint8"
+        },
+        {
+          "name": "r",
+          "type": "bytes32"
+        },
+        {
+          "name": "s",
+          "type": "bytes32"
+        }
+      ],
+      "name": "fillup",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "token_address",
+          "type": "address"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        }
+      ],
+      "name": "withdraw",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [],
+      "name": "ntr",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "payable": true,
+      "type": "constructor"
+    },
+    {
+      "payable": true,
+      "type": "fallback"
+    }
+  ],
+  "unlinked_binary": "0x60606040525b5b60008054600160a060020a03191633600160a060020a03161790555b5b5b610391806100336000396000f3006060604052361561005c5763ffffffff60e060020a6000350416638da5cb5b8114610060578063c5917cbd1461008f578063e315f37b146100a4578063f2fde38b146100e1578063f940e38514610102578063fe9afc881461008f575b5b5b005b341561006b57600080fd5b61007361013e565b604051600160a060020a03909116815260200160405180910390f35b341561009a57600080fd5b61005c61014d565b005b34156100af57600080fd5b61005c600160a060020a036004351660243560443560643560843560a43560ff60c4351660e43561010435610154565b005b34156100ec57600080fd5b61005c600160a060020a03600435166101f6565b005b341561010d57600080fd5b61005c600160a060020a036004358116906024351661024e565b005b341561009a57600080fd5b61005c61014d565b005b600054600160a060020a031681565b600080fd5b565b88600160a060020a0381166323b872dd33308860006040516020015260405160e060020a63ffffffff8616028152600160a060020a0393841660048201529190921660248201526044810191909152606401602060405180830381600087803b15156101bf57600080fd5b6102c65a03f115156101d057600080fd5b50505060405180519050151561014d57600080fd5b600080fd5b50505050505050505050565b60005433600160a060020a0390811691161461021157600080fd5b600160a060020a03811615610249576000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b5b5b50565b6000805433600160a060020a0390811691161461026a57600080fd5b5081600160a060020a03811663a9059cbb83826370a082313060006040516020015260405160e060020a63ffffffff8416028152600160a060020a039091166004820152602401602060405180830381600087803b15156102ca57600080fd5b6102c65a03f115156102db57600080fd5b5050506040518051905060006040516020015260405160e060020a63ffffffff8516028152600160a060020a0390921660048301526024820152604401602060405180830381600087803b151561033157600080fd5b6102c65a03f1151561034257600080fd5b50505060405180519050151561035757600080fd5b5b5b505050565b600080fd5b5600a165627a7a72305820702d471dda6bde9a4aec6381d6161e972c24ddf91f03c264051fe57c9574a73c0029",
+  "networks": {
+    "1504619068964": {
+      "links": {},
+      "events": {},
+      "updated_at": 1504708350175,
+      "address": "0x89f421467949bb1ec9a5aa9c57997651894f59ce"
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1504790700611
+}
       },
 
       minimetoken: {
@@ -964,6 +1007,8 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
           this.pricefor50 = this.pricefor1 * 50;
           this.pricefor100 = this.pricefor1 * 100;
 
+          console.log(JSON.stringify(this.getPriceResult,null,2));
+
           this.showfill = true;
           resolve();
         }
@@ -975,43 +1020,45 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
   fillUp() {
 
     //this.selectedpage = 2;
-    var self=this;
+    var self = this;
 
     var minime = this.web3.eth.contract(this.minimetoken.abi);
     var minimeInstance = minime.at(this.getPriceResult.token_address);
 
-    minimeInstance.balanceOf(this.address,function(err,res){
+    minimeInstance.balanceOf(this.address, function(err, res) {
       console.log('SWT balance is', res.toFormat(2));
       self.tokenbalance = res;
     });
 
-    console.log('sending approval for ',this.tokenamount,'to',this.getPriceResult.to);
+    console.log('sending approval for ', this.tokenamount, 'to', this.getPriceResult.to);
 
     var txData = minimeInstance.approve.getData(this.getPriceResult.to, this.tokenamount, function(a, b) {
       //debugger;
     });
-    minimeInstance.approve.estimateGas(this.getPriceResult.to, this.gastankaddress, this.tokenamount, {
+    minimeInstance.approve.estimateGas(this.getPriceResult.from, this.getPriceResult.to, this.tokenamount, {
       from: self.address
     }, function(err, res) {
-
+      if (err) {
+        console.log(err);
+      }
       var gasRequired = res;
 
       // get nonce
       self.web3.eth.getTransactionCount(self.address, function(err, nonce) {
 
-        if (!nonce){
-          console.log('nonce of address',self.address,'is undefined...');
+        if (!nonce) {
+          console.log('nonce of address', self.address, 'is undefined...');
           nonce = 0;
         }
 
-        console.log('nonce of address',self.address,'is',nonce);
+        console.log('nonce of address', self.address, 'is', nonce);
 
         var txParams = {
           nonce: nonce++,
           gasPrice: self.gasPrice,
           gasLimit: gasRequired,
-          to: self.getPriceResult.to,
-          from: self.getPriceResult.from,
+          to: self.getPriceResult.token_address,
+          from: self.address,
           data: txData,
           chainId: 1
         }
@@ -1022,15 +1069,12 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
         var tx1 = '0x' + serializedTx.toString('hex');
 
-
         console.log('tx1');
         console.log(txParams);
         console.log(tx1);
 
         var gasstation = self.web3.eth.contract(self.gasstation.abi);
-        self.gasstationInstance = gasstation.at(self.getPriceResult.from);
-
-        console.log('price * amount - upfront = ' , self.getPriceResult.price*1-self.getPriceResult.upfront);
+        self.gasstationInstance = gasstation.at(self.getPriceResult.to);
 
         txData = self.gasstationInstance.fillup.getData(
           self.getPriceResult.token_address,
@@ -1041,66 +1085,73 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
           1,
           self.getPriceResult.sig.v,
           self.getPriceResult.sig.r,
-          self.getPriceResult.sig.s,
-          function(a, b) {
-            //debugger;
-          });
+          self.getPriceResult.sig.s);
 
+        txParams = {
+          nonce: nonce++,
+          gasPrice: self.gasPrice,
+          gasLimit: 1000000,
+          from: self.address,
+          to: self.getPriceResult.to,
+          data: txData,
+          chainId: 1
+        }
 
-          txParams = {
-            nonce: nonce++,
-            gasPrice: self.gasPrice,
-            gasLimit: 1000000,
-            from: self.getPriceResult.from,
-            to: self.getPriceResult.to,
-            data: txData,
-            chainId: 1
+        var tx2 = new EthJS.Tx(txParams);
+        tx2.sign(self.privatekey_buffer);
+        serializedTx = tx2.serialize();
+
+        var tx2 = '0x' + serializedTx.toString('hex');
+
+        console.log('tx2');
+        console.log(txParams);
+        console.log(tx2);
+
+        var res = {
+          tx1: tx1,
+          tx2: tx2
+        };
+
+        // send the TX to the backend
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/fillup', true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+            console.log(xhr);
           }
+        }
+        xhr.send(JSON.stringify(res));
 
-          var tx2 = new EthJS.Tx(txParams);
-          tx2.sign(self.privatekey_buffer);
-          serializedTx = tx2.serialize(); //.toString('hex');
+        self.fillUpResult_pre = JSON.stringify(res, null, 2);
 
-          var tx2 = '0x' + serializedTx.toString('hex');
-
-          console.log('tx2');
-          console.log(txParams);
-          console.log(tx2);
-
-          var res = {
-            tx1: tx1,
-            tx2: tx2
-          };
-
-
-          // send the TX to the backend
-          var xhr = new XMLHttpRequest();
-          xhr.open("POST", '/fillup', true);
-          xhr.setRequestHeader("Content-Type", "application/json");
-          xhr.onreadystatechange = function() {
-            if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-              console.log(xhr);
-            }
-          }
-          xhr.send(JSON.stringify(res));
-
-          self.fillUpResult_pre = JSON.stringify(res, null, 2);
-
-        });
       });
+    });
 
-    }
+  }
 
     gettankbalance() {
       var minime = this.web3.eth.contract(this.minimetoken.abi);
       var minimeInstance = minime.at(this.erc20);
       var self = this;
-      minimeInstance.balanceOf(this.getPriceResult.to, function(err, res) {
-        if (!err) {
-          console.log('GT balance at '+self.getPriceResult.to+'is', res.toFormat(2));
-          //self.tokenbalance = res;
-        }
+
+      minimeInstance.balanceOf(this.getPriceResult.to, function(err, res) {  
+        console.log('GT SWT balance is', res.toNumber(10));
       });
+
+      minimeInstance.allowance(self.address,this.getPriceResult.to, function(err, res) {
+        console.log('GT allowance is', res.toNumber(10));
+      });
+
+      this.web3.eth.getBalance(this.getPriceResult.to, function(err, res) {
+        console.log('GT ETH balance is', res.toNumber(10));
+      });      
+
+      this.web3.eth.getBalance(this.address, function(err, res) {
+        console.log('CL ETH balance is', res.toNumber(10));
+      });
+
+      
     }
 
     ready() {
@@ -1131,7 +1182,7 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
       this.web3.eth.getBalance(this.address, function(err, res) {
         console.log('ETH balance of client\'s account (',self.address,') is', res.toString(10));
-        self.ethbalance = (res/ 1e18).toFixed(2);
+        self.ethbalance = (res/ 1e18).toFixed(4);
       });
 
       this.getPrice();

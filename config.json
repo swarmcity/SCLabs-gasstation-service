@@ -3,5 +3,6 @@
 	"httpport": 3000,
 	"web3": {
 		"host": "http://localhost:8546"
-	}
+	},
+	"upfrontgas": 200000
 }
