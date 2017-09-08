@@ -108,6 +108,12 @@ function getprice(token, cb) {
 	}
 }
 
+app.get('/tokens', function(req, res) {
+	res.status(200).json({
+		"swarm-city": process.env.erc20token
+	});
+});
+
 app.get('/price', function(req, res) {
 
 	var tokensymbol;
