@@ -8,10 +8,11 @@
 
     <script src="./gs-client/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="./gs-client/gs-client.html">
-    <link rel="import" href="./gs-client/shared-styles.html">
+    <link rel="import" href="./shared-styles.html">
 
     <custom-style>
       <style is="custom-style" include="shared-styles">
+
       </style>
     </custom-style>
     <style>
@@ -32,10 +33,15 @@
         line-height: 1.4;
         min-height: 100vh;
     }
+
+    .hello {
+      color: blue;
+    }
     </style>
   </head>
   <body>
-    <div class="vertical-section-container centered">
+    <div class="horizontal-section-container">
+      <div class="hello">hello</div>
       <gs-client project="Swarm City" short="SWT" erc20="0x6a4e72fcd16ed76a4124c8b2dc05d80ad0484c64" privatekey="87c530f508c58eb8a0f3c46a4b33d420dfc3e8c0839370b03db2577fede67400"></gs-client>
     </div>
   </body>

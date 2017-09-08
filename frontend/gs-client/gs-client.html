@@ -1,4 +1,3 @@
-<link rel="import" href="./bower_components/polymer/polymer-element.html">
 <link rel="import" href="./bower_components/polymer/lib/mixins/gesture-event-listeners.html">
 <script src="utility.js"></script>
 <!-- <script src="keythereum.js"></script> -->
@@ -9,7 +8,7 @@
 <link rel="import" href="./bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="./bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="./shared-styles.html">
-
+<!-- TESTING -->
 <dom-module id="gs-client">
   <template>
 
@@ -92,6 +91,11 @@
     text-align: center;
   }
 
+  div {
+    @apply --body-default;
+    text-align: center;
+  }
+
   .balance {
     @apply --body-default-wide;
     font-size: 26px;
@@ -158,6 +162,8 @@
 
   </style>
 
+  <template is="dom-if" if="{{gasstationready}}">
+
   <div class="close" on-click="_close"></div>
   <div class="container">
     <div class="vertical">
@@ -169,7 +175,7 @@
     <iron-pages selected="{{selectedpage}}">
       <!-- page 0 -->
       <div>
-        <div>{{project}} is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly, that's why you need gas.</div>
+        <div>{{project}} is built on top of the Ethereum blockchain. For every transaction, a small fee called "gas" is paid to the miners who make sure the blockchain is running perfectly. Gas makes Swarm City transactions go.</div>
         <div>&nbsp;</div>
         <div>Balances for current address: </div>
         <div class="address">[[address]]</div>
@@ -184,67 +190,92 @@
 
       <!-- page 1 -->
       <div>
-        <p>How many deals do you want to do?</p>
+        <p>How many deals would you like to do?</p>
         <div>
           <iron-selector
-            id="selector"
-            attr-for-selected="name"
-            on-iron-select="doSomething"
-            selected-item="{{selecteditem}}">
-            <div class="gasbtn" name="1">1</div>
-            <div class="gasbtn" name="10">10</div>
-            <div class="gasbtn" name="20">20</div>
-            <div class="gasbtn" name="50">50</div>
-          </iron-selector>
-        </div>
-        <div class="btn" on-tap="toPersonalizedoffer">Continue ></div>
-
-        <!-- <h1>Our best offer:</h1>
-        <div><pre>[[getPriceResult_pre]]</pre></div> -->
-        <!-- <div on-tap="fillUp"><b>Fill her up</b></div> -->
+          id="selector"
+          attr-for-selected="name"
+          on-iron-select="doSomething"
+          selected-item="{{selecteditem}}">
+          <div class="gasbtn" name="1">1</div>
+          <div class="gasbtn" name="10">10</div>
+          <div class="gasbtn" name="20">20</div>
+          <div class="gasbtn" name="50">50</div>
+        </iron-selector>
       </div>
+      <div class="btn" on-tap="toPersonalizedoffer">Continue ></div>
 
-      <!-- page personalizedoffer -->
+      <!-- <h1>Our best offer:</h1>
+      <div><pre>[[getPriceResult_pre]]</pre></div> -->
+      <!-- <div on-tap="fillUp"><b>Fill her up</b></div> -->
+    </div>
+
+    <!-- page personalizedoffer -->
+    <div>
       <div>
-        <div>
-          <p>This offer is personal and limited to the next 5 blocks.</p>
-          <p>&nbsp;</p>
-          <div class="balances">
-            <div class="balance_single"><div class="balance">[[numberofdeals]]</div><div>DEALS</div></div>
-            <div class="spacer">=</div>
-            <div class="balance_single"><div class="balance">[[swtamount]]</div><div>{{short}}</div></div>
-          </div>
-
-        </div>
+        <p>This offer is personal and limited to the next 5 blocks.</p>
         <p>&nbsp;</p>
-
-        <div class="btn" on-tap="fillUp">Start filling</div>
+        <div class="balances">
+          <div class="balance_single"><div class="balance">[[numberofdeals]]</div><div>DEALS</div></div>
+          <div class="spacer">=</div>
+          <div class="balance_single"><div class="balance">[[swtamount]]</div><div>{{short}}</div></div>
+        </div>
 
       </div>
+      <p>&nbsp;</p>
 
-      <!-- page 2 -->
-      <div>
-        <h1>Filling now</h1>
-        <div><pre>[[fillUpResult_pre]]</pre></div>
-      </div>
+      <div class="btn" on-tap="fillUp">Start filling</div>
 
-      <!-- page 3 -->
-      <div>
-        <h1>Done!</h1>
-        <p>Balances for current address: [[address]]</p>
-        <p>&nbsp;</p>
+    </div>
+
+    <!-- page 3 -->
+    <div>
+      <p>Filling now</p>
+      <h1>{{fillingbalance}} / {{swtamount}} SWT</h1>
+      <div><pre>[[fillUpResult_pre]]</pre></div>
+      <p>&nbsp;</p>
+      <div id="balancesview">
         <div class="balances">
           <div class="balance_single"><div class="balance">[[ethbalance]]</div><div>ETH</div></div>
           <div class="spacer"></div>
           <div class="balance_single"><div class="balance">[[tokenbalance]]</div><div>{{short}}</div></div>
         </div>
-        <div class="btn" on-tap="getPrice">Exit Gas Station</div>
-
+        <div class="btn" on-tap="toEnd">Continue</div>
       </div>
-    </iron-pages>
-  </div>
+    </div>
 
-  <div on-tap="gettankbalance">bal</div>
+    <!-- page 4 -->
+    <div>
+      <h1>Set up automatic refills</h1>
+      <p>If you want, your gas balance can be automatically refilled when needed.</p>
+      <p>&nbsp;</p>
+      <input type="checkbox" name="autofill" value=""> Automatically fill up my gas tank
+      <p>&nbsp;</p>
+      <div class="btn" on-tap="exitStation">Exit Gas Station</div>
+    </div>
+  </iron-pages>
+</div>
+
+</template>
+
+<template is="dom-if" if="{{!gasstationready}}">
+  <div class="container">
+    <div class="vertical">
+      <div class="big">
+        <img src="/gs-client/images/gasstation.png" />
+      </div>
+      <h1>Gas Station</h1>
+      <p>&nbsp;</p>
+      <p><b>Could not find a valid wallet.</b></p>
+      <p>Gas Station could not find a valid wallet. Follow the instructions to set up your wallet to see this amazing component in action.</p>
+      <p>&nbsp;</p>
+      <div class="btn" on-tap="">Retry</div>
+
+    </div>
+  </div>
+</template>
+
+<!-- <div on-tap="gettankbalance">bal</div> -->
 
 </template>
 
@@ -272,6 +303,10 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
         value: function(){
           return window.keythereum;
         }
+      },
+      gasstationready: {
+        type: Boolean,
+        value: true
       },
       project: {
         type: String,
@@ -302,6 +337,14 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       },
       privatekey: {
         type: String
+      },
+      fillingbalance: {
+        type: Number,
+        value: 0
+      },
+      swtamount: {
+        type: Number,
+        value: 0.00
       },
       gasstation: {
         type: Object,
@@ -978,6 +1021,14 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
     this.selectedpage = 2;
   }
 
+  toEnd() {
+    this.selectedpage = 4;
+  }
+
+  exitStation() {
+    this.selectedpage = 0;
+  }
+
   doSomething() {
     console.log('something was selected, ', this.selecteditem);
   }
@@ -1019,8 +1070,27 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
 
   fillUp() {
 
-    //this.selectedpage = 2;
+
+    this.selectedpage = 3;
+    var audio = new Audio('/gs-client/images/done.m4a');
+    this.swtamount = 1.00;
+    var amounttoget = 0.5;
+
     var self = this;
+    var now = 0;
+
+    var x = setInterval(function() {
+      now = now+0.01;
+      //audio.play();
+      self.fillingbalance = now.toFixed(2);
+
+      // If the count down is finished, write some text
+      if (now >= amounttoget) {
+        audio.play();
+        clearInterval(x);
+        self.showbalances();
+      }
+    }, 100);
 
     var minime = this.web3.eth.contract(this.minimetoken.abi);
     var minimeInstance = minime.at(this.getPriceResult.token_address);
@@ -1154,42 +1224,67 @@ class GsClient extends Polymer.GestureEventListeners(Polymer.Element) {
       
     }
 
-    ready() {
-      super.ready();
+  showbalances() {
+    var self = this;
+    //debugger;
+    // animation to open up the balances view and check the current balance.
+    setTimeout(function() {
+      //your code to be executed after 1 second
+      self.$.balancesview.hidden = false;
+    }, 1000);
 
-      var self = this;
 
-      this.tokenamount = 1;
-      this.gasPrice = 2 * 1e9; // 2 GWei
+  }
 
-      this.address = EthJS.Util.addHexPrefix(EthJS.Util.privateToAddress(EthJS.Util.addHexPrefix(this.privatekey)).toString('hex'));
+  gettankbalance() {
+    var minime = this.web3.eth.contract(this.minimetoken.abi);
+    var minimeInstance = minime.at(this.erc20);
+    var self = this;
+    minimeInstance.balanceOf(this.getPriceResult.to, function(err, res) {
+      if (!err) {
+        console.log('GT balance at '+self.getPriceResult.to+'is', res.toFormat(2));
+        //self.tokenbalance = res;
+      }
+    });
+  }
 
-      this.privatekey_buffer = new EthJS.Buffer.Buffer(this.privatekey, "hex");
+  ready() {
+    super.ready();
 
-      this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8546/"));
+    var self = this;
 
-      var minime = this.web3.eth.contract(this.minimetoken.abi);
-      var minimeInstance = minime.at(this.erc20);
+    this.tokenamount = 1;
+    this.gasPrice = 2 * 1e9; // 2 GWei
 
-      minimeInstance.balanceOf(this.address, function(err, res) {
-        if (!err) {
-          console.log('SWT balance of client\'s account (',self.address,') is', res.toFormat(2));
-          var tokenshit = res / 1e18;
-          self.tokenbalance = tokenshit.toFixed(2);
-          //self.tokenbalance = res;
-        }
-      });
+    this.address = EthJS.Util.addHexPrefix(EthJS.Util.privateToAddress(EthJS.Util.addHexPrefix(this.privatekey)).toString('hex'));
+
+    this.privatekey_buffer = new EthJS.Buffer.Buffer(this.privatekey, "hex");
+
+    this.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8546/"));
+
+    var minime = this.web3.eth.contract(this.minimetoken.abi);
+    var minimeInstance = minime.at(this.erc20);
+
+    minimeInstance.balanceOf(this.address, function(err, res) {
+      if (!err) {
+        console.log('SWT balance of client\'s account (',self.address,') is', res.toFormat(2));
+        var tokenshit = res / 1e18;
+        self.tokenbalance = tokenshit.toFixed(2);
+        //self.tokenbalance = res;
+      }
+    });
 
       this.web3.eth.getBalance(this.address, function(err, res) {
         console.log('ETH balance of client\'s account (',self.address,') is', res.toString(10));
         self.ethbalance = (res/ 1e18).toFixed(4);
       });
 
-      this.getPrice();
 
-    }
+    this.getPrice();
+
   }
+}
 
-  window.customElements.define(GsClient.is, GsClient);
-  </script>
+window.customElements.define(GsClient.is, GsClient);
+</script>
 </dom-module>
