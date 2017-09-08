@@ -1,8 +1,8 @@
 {
-	"etherscanroot": "http://etherscan.io/address/",
+	"etherscanroot": "https://etherscan.io/address/",
 	"httpport": 3000,
 	"web3": {
-		"host": "http://localhost:8546"
+		"host": "http://ethpool.swarm.city/"
 	},
 	"upfrontgas": 200000
 }
