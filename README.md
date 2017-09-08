@@ -31,6 +31,7 @@ Create a file ```.env``` containing these parameters :
 privatekey="(a private key holding the ETH to supply the upfront gas)"
 gastankaddress="(the address of the gastank contract)"
 erc20token="(the address of the ERC20 token your gastank accepts)"
+PORT=3000
 ```
 
 Now start up your gastank

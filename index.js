@@ -75,8 +75,8 @@ lightwallet.keystore.deriveKeyFromPassword(password, function(err, pwDerivedKey)
 
 
 	// start webserver...
-	app.listen(config.httpport, function() {
-		console.log('server listening on port ', config.httpport);
+	app.listen(process.env.PORT, function() {
+		console.log('server listening on port ', process.env.PORT);
 	});
 
 
