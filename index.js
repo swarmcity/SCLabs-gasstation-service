@@ -131,6 +131,14 @@ app.get('/tokens', function(req, res) {
 	});
 });
 
+app.get('/abi', function(req, res) {
+	res.status(200).json({
+		erc20: IMiniMeToken.abi,
+		gasstation: gasStation.abi,
+	});
+});
+
+
 
 app.get('/price', function(req, res) {
 
@@ -188,8 +196,6 @@ app.get('/price', function(req, res) {
 			};
 			var resp = {
 				token_address : req.query.tokenaddress,
-				erc20abi: IMiniMeToken.abi,
-				gasstationabi: gasStation.abi,
 				price: price,
 				from: from,
 				to: to,
