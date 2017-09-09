@@ -11,6 +11,10 @@ var config = require('./config.json');
 const sha256 = require('js-sha256').sha256;
 var cache = require('memory-cache');
 var request = require('request');
+// contracts
+var gasStation = require('./build/contracts/gasStation.json');
+var IMiniMeToken = require('./build/contracts/IMiniMeToken.json');
+
 require('dotenv').config();
 
 
@@ -127,11 +131,6 @@ app.get('/tokens', function(req, res) {
 	});
 });
 
-app.get('/p2',function(req,res){
-	getprice('swarm-city', function(error, p) {
-		res.status(200).json({p:p});
-	});
-});
 
 app.get('/price', function(req, res) {
 
@@ -189,6 +188,8 @@ app.get('/price', function(req, res) {
 			};
 			var resp = {
 				token_address : req.query.tokenaddress,
+				erc20abi: IMiniMeToken.abi,
+				gasstationabi: gasStation.abi,
 				price: price,
 				from: from,
 				to: to,
