@@ -5,13 +5,9 @@ import './Ownable.sol';
 
 
 contract gasStation is Ownable {
-
-	// the ERC20 token that we'll use
-	//IMiniMeToken token;
 	
 	// track used fillup hashes
 	mapping(bytes32=>bool) usedhashes;
-	uint a;
 
 	// constructor
 	function gasStation() payable {}
@@ -37,9 +33,13 @@ contract gasStation is Ownable {
 		usedhashes[hash] = true;
 	}
 
-	function withdraw(address token_address,address to) onlyOwner {
+	function withdrawTokens(address token_address,address to) onlyOwner {
 		IMiniMeToken token = IMiniMeToken(token_address);
 		require(token.transfer(to,token.balanceOf(this)));
+	}
+
+	function withdrawETH(address to) onlyOwner {
+		require(to.send(this.balance));
 	}
 
 }

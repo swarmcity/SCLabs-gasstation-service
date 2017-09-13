@@ -14,6 +14,7 @@ contract('Token Setup', function(accounts) {
     private: "47e7dc8f5b4add6ef178332134e28e9a6f2421317f2624c1e8e684090aed4298",
     public: "0x17334c07f6f9b974f5d4c3b279972d25586830d1"
   }];
+
   // and the indexes of these keys represent these persona :
   var gasstation_client = 0;
   var gasstation_nodeserver = 1;
@@ -33,7 +34,9 @@ contract('Token Setup', function(accounts) {
 
   describe('Deploy MiniMeToken TokenFactory', function() {
     it("should deploy MiniMeToken contract", function(done) {
-      MiniMeTokenFactory.new().then(function(_miniMeTokenFactory) {
+      MiniMeTokenFactory.new({
+        from: accounts[2]
+      }).then(function(_miniMeTokenFactory) {
         assert.ok(_miniMeTokenFactory.address);
         miniMeTokenFactory = _miniMeTokenFactory;
         console.log('miniMeTokenFactory created at address', _miniMeTokenFactory.address);
@@ -51,7 +54,9 @@ contract('Token Setup', function(accounts) {
         "Swarm City Token",
         18,
         "SWT",
-        true
+        true, {
+          from: accounts[2]
+        }
       ).then(function(_miniMeToken) {
         assert.ok(_miniMeToken.address);
         console.log('SWT token created at address', _miniMeToken.address);
@@ -61,11 +66,14 @@ contract('Token Setup', function(accounts) {
     });
 
     it("should mint tokens for gasstation client ", function(done) {
-      swtToken.generateTokens(randomkeys[gasstation_client].public, 4 * 1e18).then(function() {
+      swtToken.generateTokens(randomkeys[gasstation_client].public, 4 * 1e18, {
+        from: accounts[2]
+      }).then(function() {
         console.log('minted SWT to address', accounts[1]);
         done();
       });
     });
+
 
     it("should send ETH to the gasstation-server", function(done) {
       self.web3.eth.sendTransaction({
@@ -84,18 +92,27 @@ contract('Token Setup', function(accounts) {
     it("should deploy a gasStation-contract", function(done) {
       gasStation.new(swtToken.address, {
         gas: 4700000,
-        from: accounts[0]
-          //value: self.web3.toWei(1, "ether"), // put 100 ETH on the contract.
+        from: accounts[2]
       }).then(function(instance) {
         gasStationInstance = instance;
         assert.isNotNull(gasStationInstance);
         console.log('gasstation created at address', gasStationInstance.address);
-        console.log('owner is ', accounts[0]);
+        console.log('owner is ', accounts[2]);
         done();
       });
     });
 
-    it("should be able to refill the gasStation", function(done) {
+
+    it("should mint tokens for gasstation contract ", function(done) {
+      swtToken.generateTokens(gasStationInstance.address, 1 * 1e18, {
+        from: accounts[2]
+      }).then(function() {
+        console.log('minted SWT to address', accounts[1]);
+        done();
+      });
+    });
+
+    it("should be able to fund/refill the gasStation", function(done) {
       self.web3.eth.sendTransaction({
         from: accounts[0],
         to: gasStationInstance.address,
@@ -134,7 +151,7 @@ contract('Token Setup', function(accounts) {
       });
     });
 
-   it("gasstation-client should have no ETH", function(done) {
+    it("gasstation-client should have no ETH", function(done) {
       self.web3.eth.getBalance(randomkeys[gasstation_client].public, function(err, ethbalance) {
         console.log('gasstation-client owns', ethbalance.toNumber(10), 'Wei');
         assert.ok(ethbalance.toNumber(10) == 0);
@@ -155,14 +172,42 @@ contract('Token Setup', function(accounts) {
       done();
 
     });
-
-
-
   });
 
   describe('test transaction on gasstation', function() {
 
 
+
+  });
+
+  describe('clean up gasstation', function() {
+
+    it("gasstation-contract should have a non-zero Token balance ", function(done) {
+      swtToken.balanceOf.call(gasStationInstance.address).then(function(balance) {
+        _swtbalance = balance.toNumber(10);
+        console.log('gasstation-contract token balance =', _swtbalance);
+        assert.ok(_swtbalance > 0);
+        done();
+      });
+    });
+
+    it("withDrawtokens should not be possible from other account than the owner", function(done) {
+      gasStationInstance.withdrawTokens(swtToken.address, accounts[4], {
+        from: accounts[2]
+      }).then(function() {
+        done();
+        // this should fail
+      });
+    });
+
+    it("gasstation-contract should have a zero Token balance ", function(done) {
+      swtToken.balanceOf.call(gasStationInstance.address).then(function(balance) {
+        _swtbalance = balance.toNumber(10);
+        console.log('gasstation-contract token balance =', _swtbalance);
+        assert.ok(_swtbalance == 0);
+        done();
+      });
+    });
 
   });
 
