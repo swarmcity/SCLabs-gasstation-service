@@ -1,8 +1,8 @@
 var MiniMeTokenFactory = artifacts.require("./MiniMeToken.sol");
 var MiniMeToken = artifacts.require("./MiniMeToken.sol");
 var gasStation = artifacts.require("./gasStation.sol");
-var utility = require('../utility.js')();
-var ethUtil = require("ethereumjs-util");
+// var utility = require('../utility.js')();
+// var ethUtil = require("ethereumjs-util");
 
 contract('Token Setup', function(accounts) {
 
