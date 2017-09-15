@@ -13,11 +13,15 @@ contract('Token Setup', function(accounts) {
   }, {
     private: "47e7dc8f5b4add6ef178332134e28e9a6f2421317f2624c1e8e684090aed4298",
     public: "0x17334c07f6f9b974f5d4c3b279972d25586830d1"
+  }, {
+    private: "2d05f775fca7bb7fa4cb0c50798f4bb19c12ba7d541c2ddc236d448e87979927",
+    public: "0xcf8cd0b14ae3aa7695c68b5e2c4a65bcbf0217c9"
   }];
 
   // and the indexes of these keys represent these persona :
   var gasstation_client = 0;
   var gasstation_nodeserver = 1;
+  var gasstation_withdrawaccount = 2;
 
 
 
@@ -94,7 +98,7 @@ contract('Token Setup', function(accounts) {
   describe('gasStation setup', function() {
 
     it("should deploy a gasStation-contract", function(done) {
-      gasStation.new(swtToken.address, {
+      gasStation.new(randomkeys[gasstation_withdrawaccount].public, {
         gas: 4700000,
         from: accounts[2]
       }).then(function(instance) {
@@ -106,16 +110,29 @@ contract('Token Setup', function(accounts) {
       });
     });
 
-    // TODO remove me
-    it("should mint tokens for gasstation contract ", function(done) {
-      swtToken.generateTokens(gasStationInstance.address, 1 * 1e18, {
-        from: accounts[2]
-      }).then(function() {
-        console.log('minted SWT to address', accounts[1]);
-        done();
-      });
-    });
+    // it("gasstation-contract withdraw account should get transfered ", function(done) {
+    //   gasStationInstance.changeWithdrawer(randomkeys[gasstation_withdrawaccount].public, {
+    //     from: accounts[2]
+    //   }).then(function() {
+    //     gasStationInstance.withdrawer.call().then(function(owner) {
+    //       console.log('withdrawaccount of gasstation is now', owner);
+    //       assert.ok(owner == randomkeys[gasstation_withdrawaccount].public);
+    //       done();
+    //     });
+    //   });
+    // });
 
+    // // TODO remove me
+    // it("should mint tokens for gasstation contract ", function(done) {
+    //   swtToken.generateTokens(gasStationInstance.address, 1 * 1e18, {
+    //     from: accounts[2]
+    //   }).then(function() {
+    //     console.log('minted SWT to address', accounts[1]);
+    //     done();
+    //   });
+    // });
+
+    // gasstation client should have some tokens to start with.
     it("should mint tokens for gasstation client ", function(done) {
       swtToken.generateTokens(randomkeys[gasstation_client].public, 3 * 1e18, {
         from: accounts[2]
@@ -125,6 +142,7 @@ contract('Token Setup', function(accounts) {
       });
     });
 
+    // gasstation contract should have some ETH.
     it("should be able to fund/refill the gasStation", function(done) {
       self.web3.eth.sendTransaction({
         from: accounts[0],
@@ -242,134 +260,8 @@ contract('Token Setup', function(accounts) {
             done();
           });
         });
-
       });
     });
-
-    // describe('access gasstation', function() {
-    //   it("should allow the gasstation to get tokens from accounts[1]", function(done) {
-    //     swtToken.approve(gasStationInstance.address, _tokensToExchange, {
-    //       from: accounts[1]
-    //     }).then(function(instance) {
-    //       done();
-    //     });
-    //   });
-
-    //   var _ethbalance;
-    //   var _swtbalance;
-    //   var _fillMeUpestimate;
-    //   var _fillMeUpcost;
-    //   var gasStationInfo = {};
-
-    //   it("should read account[1] ETH balance before exchange", function(done) {
-    //     self.web3.eth.getBalance(accounts[1], function(err, ethbalance) {
-    //       _ethbalance = ethbalance.toNumber();
-    //       console.log('ethbalance before', _ethbalance);
-    //       done();
-    //     });
-    //   });
-
-    //   it("should read account[1] Token balance before exchange", function(done) {
-    //     swtToken.balanceOf.call(accounts[1]).then(function(balance) {
-    //       _swtbalance = balance.toNumber(10);
-    //       console.log('token balance before', _swtbalance);
-    //       done();
-    //     });
-    //   });
-
-    //   it("should read gasStation ETH balance before exchange", function(done) {
-    //     self.web3.eth.getBalance(gasStationInstance.address, function(err, ethbalance) {
-    //       gasStationInfo._ethbalance = ethbalance.toNumber();
-    //       console.log('ethbalance before', gasStationInfo._ethbalance);
-    //       done();
-    //     });
-    //   });
-
-    //   it("should read gasStation] Token balance before exchange", function(done) {
-    //     swtToken.balanceOf.call(gasStationInstance.address).then(function(balance) {
-    //       gasStationInfo._swtbalance = balance.toNumber(10);
-    //       console.log('token balance before', gasStationInfo._swtbalance);
-    //       done();
-    //     });
-    //   });
-
-
-    //   it("should send gas to do Tx", function(done) {
-    //     self.web3.eth.sendTransaction({
-    //       from: accounts[0],
-    //       to: accounts[1],
-    //       value: _triggercost,
-    //     }, function(r, s) {
-    //       done();
-    //     });
-    //   });
-
-
-    //   it("should call the gasstation to get tokens from accounts[1]", function(done) {
-
-    //     self.web3.eth.getGasPrice(function(err, gasPrice) {
-    //       _gasPrice = gasPrice.toNumber(10);
-    //       gasStationInstance.fillMeUp.estimateGas(1, {
-    //         from: accounts[1]
-    //       }).then(function(e) {
-    //         console.log('estimate=', e);
-    //         console.log('gasprice=', _gasPrice);
-
-    //         _fillMeUpestimate = e;
-
-    //         console.log('estimated cost is', _fillMeUpestimate);
-
-    //         gasStationInstance.fillMeUp(_tokensToExchange, {
-    //           from: accounts[1],
-    //           gas: _fillMeUpestimate,
-    //           gasPrice: _gasPrice
-    //         }).then(function(a, b) {
-    //           _fillMeUpcost = a.receipt.gasUsed * _gasPrice;
-    //           console.log('actual cost', _fillMeUpcost);
-    //           console.log('delta from estimate', _fillMeUpcost - _fillMeUpestimate * _gasPrice);
-    //           done();
-    //         });
-    //       });
-    //     });
-    //   });
-
-    //   it("should read account[1] ETH balance after exchange", function(done) {
-    //     self.web3.eth.getBalance(accounts[1], function(err, ethbalance) {
-    //       console.log('ETH balance', ethbalance.toNumber(10));
-    //       console.log('ETH diff', ethbalance.toNumber(10) - _ethbalance);
-    //       done();
-    //     });
-    //   });
-
-    //   it("should read account[1] Token balance after exchange", function(done) {
-    //     swtToken.balanceOf.call(accounts[1]).then(function(balance) {
-    //       console.log('token balance', balance.toNumber(10));
-    //       console.log('token diff', balance.toNumber(10) - _swtbalance);
-    //       done();
-    //     });
-    //   });
-
-    //   it("should read gasStation ETH balance after exchange", function(done) {
-    //     self.web3.eth.getBalance(gasStationInstance.address, function(err, ethbalance) {
-    //       console.log('ETH balance', ethbalance.toNumber(10));
-    //       console.log('ETH diff', ethbalance.toNumber(10) - gasStationInfo._ethbalance);
-    //       done();
-    //     });
-    //   });
-
-    //   it("should read gasStation Token balance after exchange", function(done) {
-    //     swtToken.balanceOf.call(gasStationInstance.address).then(function(balance) {
-    //       console.log('token balance', balance.toNumber(10));
-    //       console.log('token diff', balance.toNumber(10) - gasStationInfo._swtbalance);
-    //       done();
-    //     });
-    //   });
-
-
-    // });
-
-
-
+    
   });
-
 });

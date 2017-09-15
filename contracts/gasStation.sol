@@ -2,18 +2,16 @@ pragma solidity ^0.4.11;
 
 import './IMiniMeToken.sol';
 import './Ownable.sol';
-import './Withdrawable.sol';
 
-
-contract gasStation is Ownable,Withdrawable {
+contract gasStation is Ownable {
 	
 	// track used fillup hashes
 	mapping(bytes32=>bool) usedhashes;
+	address public tokenreceiver; 
 
 	// constructor
-	function gasStation(address _owner,address _withdrawer) payable {
-		owner = _owner;
-		withdrawer = _withdrawer;
+	function gasStation(address _tokenreceiver) payable {
+		tokenreceiver = _tokenreceiver;
 	}
 
 	// default function
@@ -31,7 +29,7 @@ contract gasStation is Ownable,Withdrawable {
 
 		// claim tokens
 		IMiniMeToken token = IMiniMeToken(_token_address);
-		require(token.transferFrom(msg.sender,withdrawer,_give));
+		require(token.transferFrom(msg.sender,tokenreceiver,_give));
 
 		// send ETH (gas)
 		msg.sender.transfer(_take);
@@ -51,7 +49,7 @@ contract gasStation is Ownable,Withdrawable {
 
 		// claim tokens
 		IMiniMeToken token = IMiniMeToken(_token_address);
-		require(token.transferFrom(to,withdrawer,_give));
+		require(token.transferFrom(to,tokenreceiver,_give));
 
 		// send ETH (gas)
 		to.transfer(_take);
@@ -60,12 +58,11 @@ contract gasStation is Ownable,Withdrawable {
 		usedhashes[hash] = true;		
 	}
 
-	function withdrawTokens(address _token_address,address to) onlyWithdrawer {
-		IMiniMeToken token = IMiniMeToken(_token_address);
-		require(token.transfer(to,token.balanceOf(this)));
+	function changeTokenReceiver(address _newTokenReceiver) onlyOwner {
+		tokenreceiver = _newTokenReceiver;
 	}
 
-	function withdrawETH(address to) onlyWithdrawer {
+	function withdrawETH(address to) onlyOwner {
 		require(to.send(this.balance));
 	}
 

@@ -94,12 +94,111 @@ module.exports={
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1505298358987
+  "updated_at": 1505507315489
 }
 },{}],2:[function(require,module,exports){
 module.exports={
   "contract_name": "IgasStation",
   "abi": [
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_token_address",
+          "type": "address"
+        },
+        {
+          "name": "_valid_until",
+          "type": "uint256"
+        },
+        {
+          "name": "_random",
+          "type": "uint256"
+        },
+        {
+          "name": "_take",
+          "type": "uint256"
+        },
+        {
+          "name": "_give",
+          "type": "uint256"
+        },
+        {
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "name": "_v",
+          "type": "uint8"
+        },
+        {
+          "name": "_r",
+          "type": "bytes32"
+        },
+        {
+          "name": "_s",
+          "type": "bytes32"
+        }
+      ],
+      "name": "pushfill",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "_token_address",
+          "type": "address"
+        },
+        {
+          "name": "_valid_until",
+          "type": "uint256"
+        },
+        {
+          "name": "_random",
+          "type": "uint256"
+        },
+        {
+          "name": "_take",
+          "type": "uint256"
+        },
+        {
+          "name": "_give",
+          "type": "uint256"
+        },
+        {
+          "name": "_v",
+          "type": "uint8"
+        },
+        {
+          "name": "_r",
+          "type": "bytes32"
+        },
+        {
+          "name": "_s",
+          "type": "bytes32"
+        }
+      ],
+      "name": "pullfill",
+      "outputs": [],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "tokenreceiver",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
     {
       "constant": false,
       "inputs": [
@@ -130,60 +229,11 @@ module.exports={
       "constant": false,
       "inputs": [
         {
-          "name": "token_address",
-          "type": "address"
-        },
-        {
-          "name": "to",
+          "name": "_newTokenReceiver",
           "type": "address"
         }
       ],
-      "name": "withdrawTokens",
-      "outputs": [],
-      "payable": false,
-      "type": "function"
-    },
-    {
-      "constant": false,
-      "inputs": [
-        {
-          "name": "token_address",
-          "type": "address"
-        },
-        {
-          "name": "price",
-          "type": "uint256"
-        },
-        {
-          "name": "valid_until",
-          "type": "uint256"
-        },
-        {
-          "name": "random",
-          "type": "uint256"
-        },
-        {
-          "name": "upfront",
-          "type": "uint256"
-        },
-        {
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "name": "v",
-          "type": "uint8"
-        },
-        {
-          "name": "r",
-          "type": "bytes32"
-        },
-        {
-          "name": "s",
-          "type": "bytes32"
-        }
-      ],
-      "name": "fillup",
+      "name": "changeTokenReceiver",
       "outputs": [],
       "payable": false,
       "type": "function"
@@ -205,7 +255,7 @@ module.exports={
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1505304834039
+  "updated_at": 1505507315490
 }
 },{}],3:[function(require,module,exports){
 // Reference https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
