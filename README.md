@@ -6,6 +6,8 @@ An experimental service providing a way to exchange ERC20 tokens in ETH to pay f
 
 ```
 $ npm install -g ethereumjs-testrpc
+$ npm install -g generate-contract-interface
+$ npm install -g browserify
 ```
 
 # running the service
@@ -16,15 +18,7 @@ In one terminal - start testRPC
 $ testrpc -p 8546
 ```
 
-in another terminal - go to the polymer client and run it
-
-```
-$ truffle compile
-$ truffle migrate
-$ truffle test ./test/gasStation.js
-```
-
-Create a file ```.env``` containing these parameters :
+in another terminal - create a file ```.env``` containing these parameters :
 
 
 ```
@@ -44,6 +38,20 @@ or
 
 ```
 node index.js
+```
+
+## Building
+
+Create contract interfaces and browserify utility library
+
+```
+. ./build.sh
+```
+
+## Running smart contract unit tests
+
+```
+truffle test ./test/gasStation.js
 ```
 
 

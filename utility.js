@@ -14,9 +14,13 @@
 // const keythereum = require('keythereum');
 const ethUtil = require('ethereumjs-util');
 //const BigNumber = require('bignumber.js');
+const IgasStation = require('./build/contracts/IgasStation.json');
+const IMiniMeToken = require('./build/contracts/IMiniMeToken.json');
 
 module.exports = (config) => {
   const utility = {};
+
+
 
   // utility.weiToEth = function weiToEth(wei, divisorIn) {
   //   const divisor = !divisorIn ? 1000000000000000000 : divisorIn;
@@ -710,39 +714,48 @@ module.exports = (config) => {
   utility.sign = function sign(web3, address, msgToSignIn, privateKeyIn, callback) {
     let msgToSign = msgToSignIn;
     if (msgToSign.substring(0, 2) !== '0x') msgToSign = `0x${msgToSign}`;
+
     function prefixMessage(msgIn) {
       let msg = msgIn;
       msg = new Buffer(msg.slice(2), 'hex');
       msg = Buffer.concat([
         new Buffer(`\x19Ethereum Signed Message:\n${msg.length.toString()}`),
-        msg]);
-            console.log('MSG TO BE HASHED 1',msg.toString('hex'));
+        msg
+      ]);
+      console.log('MSG TO BE HASHED 1', msg.toString('hex'));
 
-      msg = sha3(`0x${msg.toString('hex')}`, { encoding: 'hex' });
+      msg = sha3(`0x${msg.toString('hex')}`, {
+        encoding: 'hex'
+      });
       msg = new Buffer((msg.substring(0, 2) === '0x') ? msg.slice(2) : msg, 'hex');
       return `0x${msg.toString('hex')}`;
     }
+
     function testSig(msg, sig) {
       const recoveredAddress =
         `0x${ethUtil.pubToAddress(ethUtil.ecrecover(msg, sig.v, sig.r, sig.s)).toString('hex')}`;
       return recoveredAddress === address;
     }
     //if (privateKeyIn) {
-      let privateKey = privateKeyIn;
-      if (privateKey.substring(0, 2) === '0x') privateKey = privateKey.substring(2, privateKey.length);
-      msgToSign = prefixMessage(msgToSign);
-      try {
-        const sig = ethUtil.ecsign(
-          new Buffer(msgToSign.slice(2), 'hex'),
-          new Buffer(privateKey, 'hex'));
-        const r = `0x${sig.r.toString('hex')}`;
-        const s = `0x${sig.s.toString('hex')}`;
-        const v = sig.v;
-        const result = { r, s, v };
-        callback(undefined, result);
-      } catch (err) {
-        callback(err, undefined);
-      }
+    let privateKey = privateKeyIn;
+    if (privateKey.substring(0, 2) === '0x') privateKey = privateKey.substring(2, privateKey.length);
+    msgToSign = prefixMessage(msgToSign);
+    try {
+      const sig = ethUtil.ecsign(
+        new Buffer(msgToSign.slice(2), 'hex'),
+        new Buffer(privateKey, 'hex'));
+      const r = `0x${sig.r.toString('hex')}`;
+      const s = `0x${sig.s.toString('hex')}`;
+      const v = sig.v;
+      const result = {
+        r,
+        s,
+        v
+      };
+      callback(undefined, result);
+    } catch (err) {
+      callback(err, undefined);
+    }
     // } else {
     //   web3.version.getNode((error, node) => {
     //     // these nodes still use old-style eth_sign
@@ -804,6 +817,38 @@ module.exports = (config) => {
     } else {
       return result;
     }
+  };
+
+
+  utility.getapprovaltx = function(web3, from, token_address, tokenamount, to) {
+
+    var minime = web3.eth.contract(IMiniMeToken.abi);
+    var minimeInstance = minime.at(token_address);
+
+    // minimeInstance.balanceOf(this.address, function(err, res) {
+    //   console.log('SWT balance is', res.toFormat(2));
+    //   self.tokenbalance = res;
+    // });
+
+    console.log('sending approval for ', tokenamount, 'to', to);
+
+    var txData = minimeInstance.approve.getData(to, tokenamount);
+
+
+    web3.eth.estimateGas({
+      to: to,
+      data: txData,
+      from: from
+    }, function(err, res) {
+      if (err) {
+        console.log(err);
+      }
+      var gasRequired = res;
+      console.log('GAZZE required ', res);
+    });
+
+    return txData;
+
   };
 
   // utility.createAccount = function createAccount() {
@@ -928,10 +973,10 @@ module.exports = (config) => {
     let packed = '';
     const data = dataIn.map(x => x);
     for (let i = 0; i < lengths.length; i += 1) {
-      if (typeof (data[i]) === 'string' && data[i].substring(0, 2) === '0x') {
+      if (typeof(data[i]) === 'string' && data[i].substring(0, 2) === '0x') {
         if (data[i].substring(0, 2) === '0x') data[i] = data[i].substring(2);
         packed += utility.zeroPad(data[i], lengths[i] / 4);
-      } else if (typeof (data[i]) !== 'number' && /[a-f]/.test(data[i])) {
+      } else if (typeof(data[i]) !== 'number' && /[a-f]/.test(data[i])) {
         if (data[i].substring(0, 2) === '0x') data[i] = data[i].substring(2);
         packed += utility.zeroPad(data[i], lengths[i] / 4);
       } else {
