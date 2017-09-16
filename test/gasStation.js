@@ -2,23 +2,30 @@ var MiniMeTokenFactory = artifacts.require("./MiniMeToken.sol");
 var MiniMeToken = artifacts.require("./MiniMeToken.sol");
 var gasStation = artifacts.require("./gasStation.sol");
 var utility = require('../utility.js')();
-// var ethUtil = require("ethereumjs-util");
+var ethUtil = require("ethereumjs-util");
+var ethTx = require("ethereumjs-tx");
+var keythereum = require('keythereum');
 
 contract('Token Setup', function(accounts) {
 
-  // some random ethereum keys
-  var randomkeys = [{
-    private: "87cbcd43c97a886d1106105c9d257070dd5ae20aae0a1714e002d75b4e310368",
-    public: "0xff4f07e077aa43e41fcecbb6bef9d51e4173c184"
-  }, {
-    private: "47e7dc8f5b4add6ef178332134e28e9a6f2421317f2624c1e8e684090aed4298",
-    public: "0x17334c07f6f9b974f5d4c3b279972d25586830d1"
-  }, {
-    private: "2d05f775fca7bb7fa4cb0c50798f4bb19c12ba7d541c2ddc236d448e87979927",
-    public: "0xcf8cd0b14ae3aa7695c68b5e2c4a65bcbf0217c9"
-  }];
+  // create some random ethereum keypairs
 
-  // and the indexes of these keys represent these persona :
+  function mkkeypair() {
+    var dk = keythereum.create();
+    var keyObject = keythereum.dump("none", dk.privateKey, dk.salt, dk.iv);
+    return ({
+      private: ethUtil.addHexPrefix(dk.privateKey.toString('hex')),
+      public: ethUtil.addHexPrefix(keyObject.address)
+    });
+  }
+
+  var randomkeys = [];
+
+  for (var i = 0; i < 3; i++) {
+    randomkeys.push(mkkeypair());
+  }
+
+  // the indexes of these keys represent these persona :
   var gasstation_client = 0;
   var gasstation_nodeserver = 1;
   var gasstation_withdrawaccount = 2;
@@ -28,6 +35,9 @@ contract('Token Setup', function(accounts) {
   var miniMeTokenFactory;
   var swtToken;
   var gasStationInstance;
+
+  // parameters
+  const gasPrice = 2 * 1e9;
 
   // gasstation params
   var _triggercost = 2137880000000000;
@@ -90,9 +100,6 @@ contract('Token Setup', function(accounts) {
         done();
       })
     });
-
-
-
   });
 
   describe('gasStation setup', function() {
@@ -109,28 +116,6 @@ contract('Token Setup', function(accounts) {
         done();
       });
     });
-
-    // it("gasstation-contract withdraw account should get transfered ", function(done) {
-    //   gasStationInstance.changeWithdrawer(randomkeys[gasstation_withdrawaccount].public, {
-    //     from: accounts[2]
-    //   }).then(function() {
-    //     gasStationInstance.withdrawer.call().then(function(owner) {
-    //       console.log('withdrawaccount of gasstation is now', owner);
-    //       assert.ok(owner == randomkeys[gasstation_withdrawaccount].public);
-    //       done();
-    //     });
-    //   });
-    // });
-
-    // // TODO remove me
-    // it("should mint tokens for gasstation contract ", function(done) {
-    //   swtToken.generateTokens(gasStationInstance.address, 1 * 1e18, {
-    //     from: accounts[2]
-    //   }).then(function() {
-    //     console.log('minted SWT to address', accounts[1]);
-    //     done();
-    //   });
-    // });
 
     // gasstation client should have some tokens to start with.
     it("should mint tokens for gasstation client ", function(done) {
@@ -207,37 +192,90 @@ contract('Token Setup', function(accounts) {
 
   describe('test transaction on gasstation', function() {
 
+    var approvaltx;
+
     it("should create getapproval TX", function(done) {
-      var tx = utility.getapprovaltx(self.web3, randomkeys[gasstation_client].public, swtToken.address, 1, gasStationInstance.address);
-      console.log('tx=', tx);
-      done();
+      var tx = utility.getapprovaltx(self.web3, randomkeys[gasstation_client].public, randomkeys[gasstation_client].private, swtToken.address, 1, gasStationInstance.address, gasPrice, function(err, tx) {
+        console.log('err=', err, 'tx=', tx);
+
+        approvaltx = tx;
+
+        var decodedTx = new ethTx(tx.signedtx);
+
+        //console.log('decoded tx=', decodedTx);
+        //console.log('cost tostring=', tx.cost);
+
+
+
+        done();
+      });
     });
 
+    it("gasstation-client should have no ETH", function(done) {
+      self.web3.eth.getBalance(randomkeys[gasstation_client].public, function(err, ethbalance) {
+        console.log('gasstation-client owns', ethbalance.toNumber(10), 'Wei');
+        assert.ok(ethbalance.toNumber(10) == 0);
+        done();
+      });
+    });
+
+    it("should send gas to cover cost", function(done) {
+      self.web3.eth.sendTransaction({
+        from: accounts[0],
+        to: randomkeys[gasstation_client].public,
+        value: approvaltx.cost
+      }, function(err) {
+        done();
+      })
+    });
+
+    it("gasstation-client should have enough ETH to cover initial tx costs", function(done) {
+      self.web3.eth.getBalance(randomkeys[gasstation_client].public, function(err, ethbalance) {
+        console.log('gasstation-client owns', ethbalance.toNumber(10), 'Wei');
+        assert.ok(ethbalance.toNumber(10) == approvaltx.cost);
+        done();
+      });
+    });
+
+    it("gasstation-client should be able to execute TX", function(done) {
+      web3.eth.sendRawTransaction(approvaltx.signedtx, function(err, res) {
+        console.log('create allowance - tx sent', err, res);
+        done();
+      })
+    });
+
+    it("gasstation-client should have no ETH after tx", function(done) {
+      self.web3.eth.getBalance(randomkeys[gasstation_client].public, function(err, ethbalance) {
+        console.log('gasstation-client owns', ethbalance.toNumber(10), 'Wei');
+        assert.ok(ethbalance.toNumber(10) == 0);
+        done();
+      });
+    });
 
   });
 
   describe('clean up gasstation', function() {
 
-    it("gasstation-contract should have a non-zero Token balance ", function(done) {
-      swtToken.balanceOf.call(gasStationInstance.address).then(function(balance) {
-        _swtbalance = balance.toNumber(10);
-        console.log('gasstation-contract token balance =', _swtbalance);
-        assert.ok(_swtbalance > 0);
-        done();
-      });
-    });
+    // it("gasstation-contract should have a non-zero Token balance ", function(done) {
+    //   swtToken.balanceOf.call(gasStationInstance.address).then(function(balance) {
+    //     _swtbalance = balance.toNumber(10);
+    //     console.log('gasstation-contract token balance =', _swtbalance);
+    //     assert.ok(_swtbalance > 0);
+    //     done();
+    //   });
+    // });
 
-    it("withDrawtokens should not be possible from other account than the owner", function(done) {
-      gasStationInstance.withdrawTokens(swtToken.address, accounts[4], {
-        from: accounts[2]
-      }).then(function() {
-        done();
-        // this should fail
-      }).catch(function(e) {
-        assert.fail(null, null, 'this function should not throw', e);
-        done();
-      });
-    });
+    // it("withDrawtokens should not be possible from other account than the owner", function(done) {
+    //   gasStationInstance.withdrawTokens(swtToken.address, accounts[4], {
+    //     from: accounts[2]
+    //   }).then(function() {
+    //     done();
+    //     // this should fail
+    //   }).catch(function(e) {
+    //     assert.fail(null, null, 'this function should not throw', e);
+    //     done();
+    //   });
+    // });
 
     it("gasstation-contract should have a zero Token balance ", function(done) {
       swtToken.balanceOf.call(gasStationInstance.address).then(function(balance) {
@@ -249,7 +287,8 @@ contract('Token Setup', function(accounts) {
     });
 
 
-    describe('transfer ownership of gasstation', function() {
+    describe('Transfer ownership of gasstation', function() {
+
       it("gasstation-contract should get transfered ", function(done) {
         gasStationInstance.transferOwnership(randomkeys[gasstation_nodeserver].public, {
           from: accounts[2]
@@ -261,7 +300,8 @@ contract('Token Setup', function(accounts) {
           });
         });
       });
+
     });
-    
+
   });
 });

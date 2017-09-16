@@ -10,7 +10,7 @@
 // const coder = require('web3/lib/solidity/coder.js');
 // const utils = require('web3/lib/utils/utils.js');
 // const sha3 = require('web3/lib/utils/sha3.js');
-// const Tx = require('ethereumjs-tx');
+const Tx = require('ethereumjs-tx');
 // const keythereum = require('keythereum');
 const ethUtil = require('ethereumjs-util');
 //const BigNumber = require('bignumber.js');
@@ -711,7 +711,7 @@ module.exports = (config) => {
   //   }
   // };
 
-  utility.sign = function sign(web3, address, msgToSignIn, privateKeyIn, callback) {
+  utility.sign = function sign(address, msgToSignIn, privateKeyIn, callback) {
     let msgToSign = msgToSignIn;
     if (msgToSign.substring(0, 2) !== '0x') msgToSign = `0x${msgToSign}`;
 
@@ -722,7 +722,7 @@ module.exports = (config) => {
         new Buffer(`\x19Ethereum Signed Message:\n${msg.length.toString()}`),
         msg
       ]);
-      console.log('MSG TO BE HASHED 1', msg.toString('hex'));
+      //console.log('MSG TO BE HASHED 1', msg.toString('hex'));
 
       msg = sha3(`0x${msg.toString('hex')}`, {
         encoding: 'hex'
@@ -797,7 +797,7 @@ module.exports = (config) => {
     // }
   };
 
-  utility.verify = function verify(web3, addressIn, // eslint-disable-line consistent-return
+  utility.verify = function verify(addressIn, // eslint-disable-line consistent-return
     v, rIn, sIn, valueIn, callback) {
     const address = addressIn.toLowerCase();
     let r = rIn;
@@ -820,7 +820,7 @@ module.exports = (config) => {
   };
 
 
-  utility.getapprovaltx = function(web3, from, token_address, tokenamount, to) {
+  utility.getapprovaltx = function(web3, from, from_pk, token_address, tokenamount, to, gasprice, cb) {
 
     var minime = web3.eth.contract(IMiniMeToken.abi);
     var minimeInstance = minime.at(token_address);
@@ -834,20 +834,49 @@ module.exports = (config) => {
 
     var txData = minimeInstance.approve.getData(to, tokenamount);
 
-
     web3.eth.estimateGas({
       to: to,
       data: txData,
       from: from
     }, function(err, res) {
       if (err) {
-        console.log(err);
+        return cb(err);
       }
       var gasRequired = res;
-      console.log('GAZZE required ', res);
+
+      // get nonce
+      web3.eth.getTransactionCount(from, function(err, nonce) {
+
+        if (!nonce) {
+          nonce = 0;
+        }
+
+        var txParams = {
+          nonce: nonce++,
+          gasPrice: gasprice,
+          gasLimit: gasRequired,
+          to: to,
+          from: from,
+          data: txData,
+          chainId: 1
+        };
+
+        var tx = new Tx(txParams);
+        tx.sign(new Buffer(from_pk.slice(2), 'hex'));
+
+        //var serializedTx = tx.serialize();
+
+        return cb(null, {
+          signedtx: `0x${tx.serialize().toString('hex')}`,
+          cost: txParams.gasPrice * txParams.gasLimit
+        });
+
+
+      });
+
     });
 
-    return txData;
+    //    return txData;
 
   };
 
