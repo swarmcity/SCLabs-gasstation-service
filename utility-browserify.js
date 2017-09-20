@@ -116,7 +116,7 @@ module.exports={
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1505912053708
+  "updated_at": 1505915605348
 }
 },{}],2:[function(require,module,exports){
 module.exports={
@@ -277,7 +277,7 @@ module.exports={
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1505912053708
+  "updated_at": 1505915605349
 }
 },{}],3:[function(require,module,exports){
 // Reference https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
@@ -13147,29 +13147,32 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":44,"minimalistic-assert":33,"minimalistic-crypto-utils":34}],60:[function(require,module,exports){
 module.exports={
-  "_from": "elliptic@^6.2.3",
+  "_args": [
+    [
+      "elliptic@6.4.0",
+      "/Users/sponnet/Documents/projects/gasstation-service"
+    ]
+  ],
+  "_from": "elliptic@6.4.0",
   "_id": "elliptic@6.4.0",
   "_inBundle": false,
   "_integrity": "sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=",
   "_location": "/secp256k1/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "elliptic@^6.2.3",
+    "raw": "elliptic@6.4.0",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "^6.2.3",
+    "rawSpec": "6.4.0",
     "saveSpec": null,
-    "fetchSpec": "^6.2.3"
+    "fetchSpec": "6.4.0"
   },
-  "_requiredBy": [
-    "/secp256k1"
-  ],
+  "_requiredBy": [],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
-  "_shasum": "cac9af8762c85836187003c8dfe193e5e2eae5df",
-  "_spec": "elliptic@^6.2.3",
-  "_where": "/Users/sponnet/Documents/projects/sc-gasstation/node_modules/secp256k1",
+  "_spec": "6.4.0",
+  "_where": "/Users/sponnet/Documents/projects/gasstation-service",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -13177,7 +13180,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -13187,7 +13189,6 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
-  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",
