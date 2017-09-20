@@ -236,15 +236,23 @@ contract('Token Setup', function(accounts) {
       });
     });
 
+    it("gasstation-client should have zero allowance", function(done) {
+      var allowance_from = randomkeys[gasstation_client].public;
+      var allowance_to = gasStationInstance.address;
+      console.log('check allowance -> from=',allowance_from,'to=',allowance_to);
+      swtToken.allowance.call(allowance_from,allowance_to).then(function(allowance) {
+        console.log('allowance=', allowance.toNumber(10));
+        assert.ok(allowance == 0);
+        done();
+      });
+    });    
+
     it("gasstation-client should be able to execute TX", function(done) {
       web3.eth.sendRawTransaction(approvaltx.signedtx, function(err, res) {
         console.log('create allowance - tx sent', err, res);
         done();
       })
     });
-
-// this.MiniMeContractInstance.allowance.call(owner,spender, function(err, result) {
-      
 
     it("gasstation-client should have an allowance", function(done) {
       var allowance_from = randomkeys[gasstation_client].public;

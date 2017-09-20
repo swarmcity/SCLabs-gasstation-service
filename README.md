@@ -26,7 +26,7 @@ Now create contract interfaces and browserify utility library
 $ truffle test test/gasStation-pushfill.js
 ```
 
-# running the gasstation API service
+# Running the gasstation API service
 
 In one terminal - start testRPC
 
@@ -56,7 +56,9 @@ or
 node index.js
 ```
 
-# A sample frontend that uses the gastank API can be found here : https://github.com/swarmcity/sc-gasstationclient
+# Frontend
+
+A sample frontend that uses the gastank API can be found here : https://github.com/swarmcity/sc-gasstationclient
 
 
 ![Fill me up](images/station.jpeg)

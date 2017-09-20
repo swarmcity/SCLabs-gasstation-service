@@ -858,7 +858,7 @@ module.exports = (config) => {
     //   self.tokenbalance = res;
     // });
 
-    console.log('sending approval for ', tokenamount, 'to', to);
+    console.log('sending approval from ',from,'for ', tokenamount, 'to', to);
 
     var txData = minimeInstance.approve.getData(to, tokenamount);
 
