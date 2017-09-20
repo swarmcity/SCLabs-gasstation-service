@@ -8,14 +8,30 @@ An experimental service providing a way to exchange ERC20 tokens in ETH to pay f
 $ npm install -g ethereumjs-testrpc
 $ npm install -g generate-contract-interface
 $ npm install -g browserify
+$ npm install
 ```
 
-# running the service
+Now create contract interfaces and browserify utility library
+
+```
+. ./build.sh
+```
+
+
+# Running Truffle tests
+
+## Gasstation using the push-fill ( where gasstation service triggers the tokens->ETH exchange )
+
+```
+$ truffle test test/gasStation-pushfill.js
+```
+
+# running the gasstation API service
 
 In one terminal - start testRPC
 
 ```
-$ testrpc -p 8546
+$ testrpc -p 18546
 ```
 
 in another terminal - create a file ```.env``` containing these parameters :
@@ -40,20 +56,7 @@ or
 node index.js
 ```
 
-## Building
-
-Create contract interfaces and browserify utility library
-
-```
-. ./build.sh
-```
-
-## Running smart contract unit tests
-
-```
-truffle test ./test/gasStation.js
-```
-
+# A sample frontend that uses the gastank API can be found here : https://github.com/swarmcity/sc-gasstationclient
 
 
 ![Fill me up](images/station.jpeg)
