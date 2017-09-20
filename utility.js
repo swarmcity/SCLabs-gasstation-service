@@ -10,6 +10,7 @@
 // const coder = require('web3/lib/solidity/coder.js');
 // const utils = require('web3/lib/utils/utils.js');
 // const sha3 = require('web3/lib/utils/sha3.js');
+const sha256 = require('js-sha256').sha256;
 const Tx = require('ethereumjs-tx');
 // const keythereum = require('keythereum');
 const ethUtil = require('ethereumjs-util');
@@ -817,6 +818,33 @@ module.exports = (config) => {
     } else {
       return result;
     }
+  };
+
+  utility.signgastankparameters = function(tokenaddress, to, from, take, give, valid_until, random, privatekey) {
+    if (privatekey.substring(0, 2) === '0x') privatekey = privatekey.substring(2, privatekey.length);
+    const condensed = utility.pack(
+      [
+        tokenaddress,
+        to,
+        from,
+        take,
+        give,
+        valid_until,
+        random,
+      ], [160, 160, 160, 256, 256, 256, 256]);
+    const hash = sha256(new Buffer(condensed, 'hex'));
+    const sig = ethUtil.ecsign(
+      new Buffer(hash, 'hex'),
+      new Buffer(privatekey, 'hex'));
+    const r = `0x${sig.r.toString('hex')}`;
+    const s = `0x${sig.s.toString('hex')}`;
+    const v = sig.v;
+    const result = {
+      r,
+      s,
+      v
+    };
+    return result;
   };
 
 

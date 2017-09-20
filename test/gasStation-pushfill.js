@@ -200,14 +200,13 @@ contract('Token Setup', function(accounts) {
 
         approvaltx = tx;
 
-        var decodedTx = new ethTx(tx.signedtx);
+        //var decodedTx = new ethTx(tx.signedtx);
 
         //console.log('decoded tx=', decodedTx);
         //console.log('cost tostring=', tx.cost);
 
-
-
         done();
+
       });
     });
 
@@ -244,12 +243,36 @@ contract('Token Setup', function(accounts) {
       })
     });
 
+// this.MiniMeContractInstance.allowance.call(owner,spender, function(err, result) {
+      
+
+    it("gasstation-client should have an allowance", function(done) {
+      var allowance_from = randomkeys[gasstation_client].public;
+      var allowance_to = gasStationInstance.address;
+      console.log('check allowance -> from=',allowance_from,'to=',allowance_to);
+      swtToken.allowance.call(allowance_from,allowance_to).then(function(allowance) {
+        console.log('allowance=', allowance.toNumber(10));
+        assert.ok(allowance == 1);
+        done();
+      });
+    });
+
+
     it("gasstation-client should have no ETH after tx", function(done) {
       self.web3.eth.getBalance(randomkeys[gasstation_client].public, function(err, ethbalance) {
         console.log('gasstation-client owns', ethbalance.toNumber(10), 'Wei');
         assert.ok(ethbalance.toNumber(10) == 0);
         done();
       });
+    });
+
+
+
+    it("gasstation-server should be able to exchange gas", function(done) {
+      //tokenaddress, to, from, take, give, valid_until, random, privatekey
+      var sig = utility.signgastankparameters(swtToken.address, randomkeys[gasstation_nodeserver].public, randomkeys[gasstation_client].public, 1, 1, 400, 123456, randomkeys[gasstation_nodeserver].private)
+      console.log('sig =>', sig);
+      done();
     });
 
   });
