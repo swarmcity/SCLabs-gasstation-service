@@ -116,7 +116,7 @@ module.exports={
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1505915605348
+  "updated_at": 1506003727561
 }
 },{}],2:[function(require,module,exports){
 module.exports={
@@ -146,7 +146,7 @@ module.exports={
           "type": "uint256"
         },
         {
-          "name": "to",
+          "name": "gastankclient",
           "type": "address"
         },
         {
@@ -277,7 +277,7 @@ module.exports={
   "unlinked_binary": "0x",
   "networks": {},
   "schema_version": "0.0.5",
-  "updated_at": 1505915605349
+  "updated_at": 1506003727562
 }
 },{}],3:[function(require,module,exports){
 // Reference https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki
@@ -14864,19 +14864,27 @@ module.exports = (config) => {
     }
   };
 
-  utility.signgastankparameters = function(tokenaddress, to, from, take, give, valid_until, random, privatekey) {
+  utility.signgastankparameters = function(tokenaddress, gastankaddress, gastankclient, take, give, valid_until, random, privatekey) {
     if (privatekey.substring(0, 2) === '0x') privatekey = privatekey.substring(2, privatekey.length);
     const condensed = utility.pack(
       [
         tokenaddress,
-        to,
-        from,
+        gastankaddress,
+        gastankclient,
         take,
         give,
         valid_until,
         random,
       ], [160, 160, 160, 256, 256, 256, 256]);
     const hash = sha256(new Buffer(condensed, 'hex'));
+    console.log('tokenaddress', tokenaddress);
+    console.log('gastankaddress', gastankaddress);
+    console.log('gastankclient', gastankclient);
+    console.log('take', take);
+    console.log('give', give);
+    console.log('valid_until', valid_until);
+    console.log('random', random);
+    console.log('my hash=', hash);
     const sig = ethUtil.ecsign(
       new Buffer(hash, 'hex'),
       new Buffer(privatekey, 'hex'));
@@ -14902,12 +14910,12 @@ module.exports = (config) => {
     //   self.tokenbalance = res;
     // });
 
-    console.log('sending approval for ', tokenamount, 'to', to);
+    console.log('sending approval from ', from, 'for ', tokenamount, 'to', to);
 
     var txData = minimeInstance.approve.getData(to, tokenamount);
 
     web3.eth.estimateGas({
-      to: to,
+      to: token_address,
       data: txData,
       from: from
     }, function(err, res) {
@@ -14927,7 +14935,7 @@ module.exports = (config) => {
           nonce: nonce++,
           gasPrice: gasprice,
           gasLimit: gasRequired,
-          to: to,
+          to: token_address,
           from: from,
           data: txData,
           chainId: 1
