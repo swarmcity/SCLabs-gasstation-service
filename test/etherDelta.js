@@ -173,7 +173,7 @@ contract('Token Setup', function(accounts) {
 
       console.log('hash=', hash);
 
-      utility.sign(null, gastankInstance, hash, gastankInstancePrivateKey, function(err, signature) {
+      utility.sign(gastankInstance, hash, gastankInstancePrivateKey, function(err, signature) {
         if (err) {
           console.log('ERR', err);
           return done();
@@ -219,7 +219,7 @@ contract('Token Setup', function(accounts) {
 
       console.log('hash=', hash);
 
-      utility.sign(null, gastankInstance, hash, gastankInstancePrivateKey, function(err, signature) {
+      utility.sign(gastankInstance, hash, gastankInstancePrivateKey, function(err, signature) {
         if (err) {
           console.log('ERR', err);
           return done();
@@ -242,7 +242,7 @@ contract('Token Setup', function(accounts) {
           return `0x${msg.toString('hex')}`;
         }
 
-        utility.verify(null, gastankInstance, signature.v, signature.r, signature.s, prefixMessage('0x' + hash), function(err, res) {
+        utility.verify(gastankInstance, signature.v, signature.r, signature.s, prefixMessage('0x' + hash), function(err, res) {
           if (err) {
             console.log('verify err', err);
           }

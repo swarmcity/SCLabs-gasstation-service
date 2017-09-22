@@ -208,9 +208,7 @@ contract('Token Setup', function(accounts) {
         approvaltx = tx;
 
         //var decodedTx = new ethTx(tx.signedtx);
-
-        //console.log('decoded tx=', decodedTx);
-        //console.log('cost tostring=', tx.cost);
+        console.log('approvaltx cost =', tx.cost);
 
         done();
 
