@@ -18,6 +18,9 @@ var IMiniMeToken = require('./build/contracts/IMiniMeToken.json');
 require('dotenv').config();
 
 
+console.log(process.env.PRIVKEY);
+process.exit();
+
 var secretSeed = lightwallet.keystore.generateRandomSeed();
 
 var utility = require('./utility.js')();
@@ -98,7 +101,6 @@ var allowCrossDomain = function(req, res, next) {
 	}
 };
 app.use(allowCrossDomain);
-//app.use(cors());
 app.use(bodyparser.json());
 
 function getprice(token, cb) {
@@ -193,7 +195,13 @@ app.get('/price', function(req, res) {
 	}.bind(this));
 });
 
-
+/**
+ * {
+ *  take: <Wei amount needed>,
+ *  from: <address requesting Wei>
+ *  tokenaddress: <ERC20 token address>
+ * }
+ */
 app.post('/sign', function(req, res) {
 
 	var tokensymbol;
@@ -230,7 +238,6 @@ app.post('/sign', function(req, res) {
 				var give = Math.floor(req.body.take * parseFloat(process.env.pricemargin) / p[0].price_eth) - upfrontgas * gasPrice;
 				var random = Math.floor(Math.random() * 100000000000);
 
-				//token_address,this,msg.sender,take,give,valid_until,random
 				const condensed = utility.pack(
 					[
 						req.body.tokenaddress,
@@ -284,17 +291,11 @@ app.post('/fillup', function(req, res) {
 	console.log('tx=', decodetx);
 	console.log('gas tostring=', decodetx.gas.toString('hex'));
 
-
 	var txGas = web3.toBigNumber(ethUtil.addHexPrefix(decodetx.gas.toString('hex')));
-	//var txGasPrice = web3.toBigNumber(ethUtil.addHexPrefix(decodetx.gasPrice.toString('hex')));
-
-	//	var weiNeeded = txGas.add(1000000).mul(txGasPrice).toNumber(10);
 	var gasTankClientAddress = ethUtil.addHexPrefix(decodetx.from.toString('hex'));
 
 
 	console.log('txGas=', txGas);
-	//console.log('txGasPrice=', txGasPrice);
-	//console.log('weiNeeded=', weiNeeded);
 	console.log('from=', gasTankClientAddress);
 
 	console.log('gastank account=', gastankAccount);
