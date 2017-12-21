@@ -2,6 +2,14 @@
 
 An experimental service providing a way to exchange ERC20 tokens in ETH to pay for future transactions. 
 
+
+# Introduction
+
+We presented the gasstation on DEVCON3 (Nov 4th 2017). You can view the video here :
+
+[![SwarmCity GasStation on DEVCON3](https://img.youtube.com/vi/ItAe8CNuY-I/0.jpg)](https://youtu.be/ItAe8CNuY-I?t=8m28s)
+
+
 # Installing
 
 ```
