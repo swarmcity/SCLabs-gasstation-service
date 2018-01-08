@@ -29,9 +29,6 @@ contract('Token Setup', function(accounts) {
   var gasstation_client = 0;
   var gasstation_nodeserver = 1;
   var gasstation_withdrawaccount = 2;
-
-
-
   var miniMeTokenFactory;
   var swtToken;
   var gasStationInstance;
@@ -41,7 +38,6 @@ contract('Token Setup', function(accounts) {
 
   // gasstation params
   var _triggercost = 2137880000000000;
-
   var _tokensToExchange = 2137880000000000;
 
   var self = this;
@@ -105,7 +101,7 @@ contract('Token Setup', function(accounts) {
   describe('gasStation setup', function() {
 
     it("should deploy a gasStation-contract", function(done) {
-      gasStation.new(randomkeys[gasstation_withdrawaccount].public, {
+      gasStation.new(randomkeys[gasstation_withdrawaccount].public, randomkeys[gasstation_withdrawaccount].public, {
         gas: 4700000,
         from: accounts[2]
       }).then(function(instance) {
@@ -223,7 +219,7 @@ contract('Token Setup', function(accounts) {
           console.log('gasstation contract has (in ETH units) =', ethbalance.toNumber(10));
           console.log('gasstation_client wants to give ( in SWT )', amount_give);
           console.log('gasstation_client has ( in SWT )', swtbalance.toNumber(10));
-          
+
           assert.isAbove(ethbalance.toNumber(10), amount_take - approvaltx.cost);
           assert.isAbove(swtbalance.toNumber(10), amount_give);
 
@@ -312,11 +308,11 @@ contract('Token Setup', function(accounts) {
       var sig = utility.signgastankparameters(swtToken.address, gasStationInstance.address, randomkeys[gasstation_client].public, amount_take - approvaltx.cost, amount_give, valid_until, random, randomkeys[gasstation_client].private)
       console.log('sig =>', sig, 'rand=', random, 'valid_until=', valid_until);
 
-      gasStationInstance.pushfill(swtToken.address, valid_until, random, amount_take - approvaltx.cost, amount_give, randomkeys[gasstation_client].public, sig.v, sig.r, sig.s, {
+      gasStationInstance.pushFill(swtToken.address, valid_until, random, amount_take - approvaltx.cost, amount_give, randomkeys[gasstation_client].public, sig.v, sig.r, sig.s, {
         from: accounts[2]
       }).then(function(txhash) {
-        console.log('pushfill', txhash);
-        console.log('pushfill', txhash.logs[0].args);
+        console.log('pushFill', txhash);
+        console.log('pushFill', txhash.logs[0].args);
         done();
       }).catch(function(e) {
         assert.fail(null, null, 'this function should not throw', e);
@@ -330,7 +326,7 @@ contract('Token Setup', function(accounts) {
       var sig = utility.signgastankparameters(swtToken.address, gasStationInstance.address, randomkeys[gasstation_client].public, amount_take - approvaltx.cost, amount_give, valid_until, random, randomkeys[gasstation_client].private)
       console.log('sig =>', sig, 'rand=', random, 'valid_until=', valid_until);
 
-      gasStationInstance.pushfill(swtToken.address, valid_until, random, amount_take - approvaltx.cost, amount_give, randomkeys[gasstation_client].public, sig.v, sig.r, sig.s, {
+      gasStationInstance.pushFill(swtToken.address, valid_until, random, amount_take - approvaltx.cost, amount_give, randomkeys[gasstation_client].public, sig.v, sig.r, sig.s, {
         from: accounts[2]
       }).then(function(txhash) {
         assert.fail(null, null, 'this function should throw', e);
