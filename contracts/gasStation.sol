@@ -25,9 +25,9 @@ contract gasStation is Ownable {
 	function() payable {}
 
 	// exchange by client ( hash signed by gasstation )
-	function pullFill(address _token_address, uint _valid_until, uint _random, uint _take, uint _give, uint8 _v, bytes32 _r, bytes32 _s){
+	function pullFill(address _token_address, uint _valid_until, uint _random, uint _take, uint _give, uint8 _v, bytes32 _r, bytes32 _s, address gastankclient){
 
-	  bytes32 hash = sha256(_token_address, this, msg.sender, _take,_give, _valid_until, _random);
+	  bytes32 hash = sha256(_token_address, this, gastankclient, _take,_give, _valid_until, _random);
 
 		NewHash(hash, _token_address, this, _take, _give, _valid_until, _random);
 
@@ -40,10 +40,10 @@ contract gasStation is Ownable {
 		// claim tokens
 		IMiniMeToken token = IMiniMeToken(_token_address);
 
-		require(token.transferFrom(msg.sender,tokenreceiver,_give));
+		require(token.transferFrom(gastankclient,tokenreceiver,_give));
 
 		// send ETH (gas)
-		msg.sender.transfer(_take);
+		gastankclient.transfer(_take);
 
 		// invalidate this deal's hash
 		usedhashes[hash] = true;
